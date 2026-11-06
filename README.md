@@ -19,14 +19,9 @@ Plataforma moderna de comercio electrónico mayorista y minorista para **OSSIL E
 
 ---
 
-## 📂 Arquitectura y Documentación
+## 📂 Documentación
 
-- **Bóveda de Obsidian:** `/home/spukerrs/Documentos/Obsidian Sync/10 - Proyectos/13 - OSSIL Envases/`
-  - `00 - MOC OSSIL Envases.md`
-  - `Arquitectura/01 - Stack Tecnológico y Servidor.md`
-  - `Arquitectura/02 - Auditoría Web Original vs Rediseño.md`
-  - `Plan de Desarrollo/00 - Plan Maestro Paso a Paso.md`
-  - `Bitácoras IA/2026-11-06 - Configuración de Skills y Arquitectura OSSIL.md`
+La documentación técnica, arquitectura y registros del proyecto se encuentran resguardados en una **bóveda privada de Obsidian**.
 
 ---
 
