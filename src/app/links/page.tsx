@@ -138,12 +138,12 @@ export default function LinksPage() {
       <div className="max-w-md mx-auto w-full space-y-6">
         {/* Cabecera / Perfil de Marca Industrial Apothecary */}
         <div className="text-center space-y-3">
-          <div className="w-20 h-20 mx-auto rounded-3xl bg-[#FFFFFF] p-2 flex items-center justify-center shadow-lg border border-[#E6E2DC] relative overflow-hidden">
+          <div className="w-20 h-20 mx-auto relative flex items-center justify-center">
             <Image
-              src="/images/brand/logo-ossil.webp"
+              src="/images/brand/logo-ossil.png"
               alt="OSSIL Envases"
-              width={64}
-              height={64}
+              width={72}
+              height={72}
               className="object-contain"
               priority
             />

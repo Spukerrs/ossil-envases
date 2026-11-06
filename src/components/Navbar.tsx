@@ -23,13 +23,13 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
           {/* Logo & Identidad de Marca */}
           <div className="flex items-center gap-4 sm:gap-6">
             <Link href="/" className="flex items-center gap-2.5 group select-none">
-              <div className="relative w-10 h-10 rounded-xl bg-[#FFFFFF] border border-[#E6E2DC] p-1 flex items-center justify-center shrink-0 shadow-2xs group-hover:border-[#9E734E] transition-colors">
+              <div className="relative h-11 w-9 shrink-0 flex items-center justify-center">
                 <Image
-                  src="/images/brand/logo-ossil.webp"
+                  src="/images/brand/logo-ossil.png"
                   alt="OSSIL Envases & Home"
-                  width={34}
-                  height={34}
-                  className="object-contain"
+                  width={38}
+                  height={46}
+                  className="object-contain group-hover:scale-105 transition-transform"
                   priority
                 />
               </div>

@@ -44,6 +44,7 @@ export interface Product {
   businessUnit: BusinessUnit;
   category: Category;
   categoryLabel: string;
+  subcategory?: string;
   material: Material;
   capacity: string;
   capacityValue?: number; // en cc o gramos
@@ -56,6 +57,10 @@ export interface Product {
   description: string;
   badge?: string;
   imageUrl?: string;
+  applications?: string[];
+  dimensions?: string;
+  features?: string[];
+  compatibleAccessories?: string[];
 }
 
 export interface CartItem {

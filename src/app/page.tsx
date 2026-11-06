@@ -2,7 +2,6 @@
 
 import {
   ArrowRight,
-  Eye,
   Factory,
   FileSpreadsheet,
   MapPin,
@@ -15,7 +14,6 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { CartDrawer } from "@/components/CartDrawer";
-import { Material3DDemo } from "@/components/Material3DDemo";
 import { Navbar } from "@/components/Navbar";
 import { ProductCard } from "@/components/ProductCard";
 import { ThreadComboModal } from "@/components/ThreadComboModal";
@@ -30,7 +28,6 @@ export default function HomePage() {
   const [selectedMaterial, setSelectedMaterial] = useState<string>("TODOS");
   const [selectedThread, setSelectedThread] = useState<string>("TODOS");
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
-  const [show3DInspector, setShow3DInspector] = useState<boolean>(false);
 
   // Totales para mobile sticky pill
   const totalItemsCount = useCartStore((s) => s.getTotalItemsCount());
@@ -274,32 +271,8 @@ export default function HomePage() {
                       );
                     },
                   )}
-
-                  <div className="ml-auto">
-                    <button
-                      type="button"
-                      onClick={() => setShow3DInspector(!show3DInspector)}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all cursor-pointer ${
-                        show3DInspector
-                          ? "bg-[#141413] text-white border-[#141413]"
-                          : "bg-[#FAF8F5] text-[#835C3A] border-[#E0D9CE] hover:border-[#9E734E]"
-                      }`}
-                    >
-                      <Eye className="w-3.5 h-3.5 text-[#9E734E]" />
-                      <span>
-                        {show3DInspector ? "Ocultar Visor 3D" : "Inspeccionar Materiales 3D"}
-                      </span>
-                    </button>
-                  </div>
                 </div>
               </section>
-
-              {/* Visor 3D Demostrador de Materiales Desplegable */}
-              {show3DInspector && (
-                <div className="mb-10 animate-fade-in-up">
-                  <Material3DDemo />
-                </div>
-              )}
 
               {/* Grilla de Productos */}
               <section className="animate-fade-in-stagger-2">
@@ -535,19 +508,6 @@ export default function HomePage() {
                 ))}
               </div>
 
-              {/* Inspector 3D Interactivo para la Vista B2B */}
-              <div className="space-y-3">
-                <div className="text-center">
-                  <span className="text-xs font-bold text-[#9E734E] uppercase tracking-wider block">
-                    Previsualización de Materiales Físicos
-                  </span>
-                  <h2 className="text-xl font-black text-[#141413]">
-                    Comprobá cómo luce el vidrio satinado vs. cristal y sus tintes
-                  </h2>
-                </div>
-                <Material3DDemo />
-              </div>
-
               {/* Estimador de Tiradas y CTA WhatsApp B2B */}
               <div className="p-8 rounded-3xl bg-[#141413] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
                 <div className="space-y-2 max-w-xl">
@@ -667,26 +627,17 @@ export default function HomePage() {
       {/* Barra Flotante de Acciones Rápidas para Smartphones y Tablets */}
       <div className="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:right-6 z-40 lg:hidden">
         <div className="bg-[#141413]/95 text-white backdrop-blur-md rounded-2xl border border-[#2C2B29] p-2.5 shadow-2xl flex items-center justify-between gap-3 max-w-md mx-auto">
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => setShow3DInspector(!show3DInspector)}
-              className="px-3 py-2 rounded-xl bg-[#242422] border border-[#3A3A36] text-[11px] font-bold text-[#D4CEBF] flex items-center gap-1.5 active:scale-95"
-            >
-              <Eye className="w-3.5 h-3.5 text-[#9E734E]" />
-              <span>3D</span>
-            </button>
-
+          <div className="flex items-center gap-2">
             <a
               href={STORE_CONFIG.contact.whatsappUrl(
                 "Hola OSSIL, tengo una consulta sobre el catálogo.",
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-2 rounded-xl bg-[#242422] border border-[#3A3A36] text-[11px] font-bold text-emerald-400 flex items-center gap-1.5 active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-[#242422] border border-[#3A3A36] text-xs font-bold text-emerald-400 flex items-center gap-1.5 active:scale-95"
             >
-              <MessageCircle className="w-3.5 h-3.5" />
-              <span>WA</span>
+              <MessageCircle className="w-4 h-4" />
+              <span>WhatsApp Directo</span>
             </a>
           </div>
 
@@ -695,7 +646,7 @@ export default function HomePage() {
             onClick={() => setIsCartOpen(true)}
             className="px-4 py-2 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-black flex items-center gap-2 shadow-md active:scale-95 cursor-pointer"
           >
-            <span>Pedido ({totalItemsCount})</span>
+            <span>Mi Pedido ({totalItemsCount})</span>
             <span className="font-mono text-[11px] bg-black/30 px-1.5 py-0.5 rounded">
               ${totalCartAmount.toLocaleString("es-AR")}
             </span>

@@ -127,3 +127,4 @@ model Order {
   @@index([orderNumber])
   @@index([status])
 }
+

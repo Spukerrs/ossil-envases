@@ -2,6 +2,7 @@
 
 import { Layers, Plus } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/useCartStore";
@@ -59,8 +60,11 @@ export function ProductCard({ product, onFilterThread, onOpenComboModal }: Produ
           )}
         </div>
 
-        {/* Fotografía de Producto Real o Esquema de Boticario */}
-        <div className="relative w-full h-44 mb-3 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF] overflow-hidden flex items-center justify-center p-2 group-hover:bg-[#F5F1EB] transition-colors">
+        {/* Fotografía de Producto Real o Esquema de Boticario (Clickeable hacia pantalla dedicada) */}
+        <Link
+          href={`/producto/${product.id}`}
+          className="relative w-full h-44 mb-3 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF] overflow-hidden flex items-center justify-center p-2 group-hover:bg-[#F5F1EB] transition-colors block cursor-pointer"
+        >
           {product.imageUrl ? (
             <div className="relative w-full h-full">
               <Image
@@ -86,16 +90,18 @@ export function ProductCard({ product, onFilterThread, onOpenComboModal }: Produ
           <span className="absolute bottom-1.5 right-2 font-mono text-[9px] text-[#8C827A] bg-[#FFFFFF]/95 px-1.5 py-0.5 rounded shadow-2xs border border-[#E6E2DC]">
             {product.sku}
           </span>
-        </div>
+        </Link>
 
         {/* Acabado Visual y Nombre */}
         <div className="my-2">
           <span className="text-[10px] uppercase font-bold tracking-wider text-[#9E734E]">
             {product.finish}
           </span>
-          <h3 className="text-base font-bold text-[#141413] leading-snug group-hover:text-[#9E734E] transition-colors mt-0.5">
-            {product.name}
-          </h3>
+          <Link href={`/producto/${product.id}`} className="block">
+            <h3 className="text-base font-bold text-[#141413] leading-snug group-hover:text-[#9E734E] transition-colors mt-0.5">
+              {product.name}
+            </h3>
+          </Link>
           <p className="text-xs text-[#66615B] line-clamp-2 mt-1.5 leading-relaxed">
             {product.description}
           </p>
