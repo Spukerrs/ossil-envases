@@ -1,0 +1,19 @@
+{
+  "plugins": {
+    "science": {
+      "enabled": false
+    },
+    "flutter": {
+      "enabled": false
+    },
+    "android-cli-plugin": {
+      "enabled": false
+    },
+    "firebase": {
+      "enabled": false
+    },
+    "data-agent-kit-plugin": {
+      "enabled": false
+    }
+  }
+}

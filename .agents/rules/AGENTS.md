@@ -1,0 +1,1 @@
+/home/spukerrs/Documentos/OSSIL-Envases/AGENTS.md
