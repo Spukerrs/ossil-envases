@@ -19,16 +19,14 @@ Plataforma moderna de comercio electrónico mayorista y minorista para **OSSIL E
 
 ---
 
-## 📂 Estructura de Documentación
+## 📂 Arquitectura y Documentación
 
-- **Plan Maestro Local:** [`PLAN/00-plan-maestro-ossil.md`](./PLAN/00-plan-maestro-ossil.md)
-- **Bóveda de Obsidian (Sincronizada):** `/home/spukerrs/Documentos/Obsidian Sync/10 - Proyectos/13 - OSSIL Envases/`
+- **Bóveda de Obsidian:** `/home/spukerrs/Documentos/Obsidian Sync/10 - Proyectos/13 - OSSIL Envases/`
   - `00 - MOC OSSIL Envases.md`
   - `Arquitectura/01 - Stack Tecnológico y Servidor.md`
   - `Arquitectura/02 - Auditoría Web Original vs Rediseño.md`
   - `Plan de Desarrollo/00 - Plan Maestro Paso a Paso.md`
   - `Bitácoras IA/2026-11-06 - Configuración de Skills y Arquitectura OSSIL.md`
-  - `Guiones/Guion Video Documentador - Rediseño OSSIL Envases.md`
 
 ---
 
