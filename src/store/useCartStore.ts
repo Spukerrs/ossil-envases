@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product, CartItem, PriceTier } from "@/types/catalog";
+import type { CartItem, Product } from "@/types/catalog";
 
 interface CartStore {
   items: CartItem[];
@@ -8,7 +8,7 @@ interface CartStore {
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  
+
   // Helpers de cálculo dinámico mayorista
   getItemUnitPrice: (item: CartItem) => number;
   getItemDiscountPct: (item: CartItem) => number;
@@ -19,11 +19,11 @@ interface CartStore {
     targetDiscountPct: number;
     potentialSavingsUnit: number;
   } | null;
-  
+
   getTotalAmount: () => number;
   getTotalItemsCount: () => number;
   hasManualQuoteItems: () => boolean;
-  
+
   // Generador de mensaje de WhatsApp estructurado
   generateWhatsAppMessage: (customerData?: {
     name?: string;
@@ -43,9 +43,7 @@ export const useCartStore = create<CartStore>()(
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.product.id === product.id
-                  ? { ...i, quantity: i.quantity + quantity }
-                  : i
+                i.product.id === product.id ? { ...i, quantity: i.quantity + quantity } : i,
               ),
             };
           }
@@ -65,9 +63,7 @@ export const useCartStore = create<CartStore>()(
           return;
         }
         set((state) => ({
-          items: state.items.map((i) =>
-            i.product.id === productId ? { ...i, quantity } : i
-          ),
+          items: state.items.map((i) => (i.product.id === productId ? { ...i, quantity } : i)),
         }));
       },
 
@@ -78,9 +74,7 @@ export const useCartStore = create<CartStore>()(
           return item.product.basePrice;
         }
         // Buscar el tramo más alto alcanzado
-        const sortedTiers = [...item.product.priceTiers].sort(
-          (a, b) => b.minQty - a.minQty
-        );
+        const sortedTiers = [...item.product.priceTiers].sort((a, b) => b.minQty - a.minQty);
         const match = sortedTiers.find((t) => item.quantity >= t.minQty);
         return match ? match.unitPrice : item.product.basePrice;
       },
@@ -89,9 +83,7 @@ export const useCartStore = create<CartStore>()(
         if (item.product.requiresManualQuote || !item.product.priceTiers.length) {
           return 0;
         }
-        const sortedTiers = [...item.product.priceTiers].sort(
-          (a, b) => b.minQty - a.minQty
-        );
+        const sortedTiers = [...item.product.priceTiers].sort((a, b) => b.minQty - a.minQty);
         const match = sortedTiers.find((t) => item.quantity >= t.minQty);
         return match ? match.discountPct : 0;
       },
@@ -104,9 +96,7 @@ export const useCartStore = create<CartStore>()(
         if (item.product.requiresManualQuote || !item.product.priceTiers.length) {
           return null;
         }
-        const sortedAsc = [...item.product.priceTiers].sort(
-          (a, b) => a.minQty - b.minQty
-        );
+        const sortedAsc = [...item.product.priceTiers].sort((a, b) => a.minQty - b.minQty);
         // Buscar el próximo tramo no alcanzado
         const nextTier = sortedAsc.find((t) => t.minQty > item.quantity);
         if (!nextTier) return null;
@@ -133,7 +123,8 @@ export const useCartStore = create<CartStore>()(
       },
 
       generateWhatsAppMessage: (customerData) => {
-        const { items, getTotalAmount, getItemUnitPrice, getItemDiscountPct, hasManualQuoteItems } = get();
+        const { items, getTotalAmount, getItemUnitPrice, getItemDiscountPct, hasManualQuoteItems } =
+          get();
         const total = getTotalAmount();
         const deliveryText =
           customerData?.deliveryMethod === "LOCAL"
@@ -182,6 +173,6 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "ossil-cart-storage",
-    }
-  )
+    },
+  ),
 );

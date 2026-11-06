@@ -1,0 +1,129 @@
+// Prisma Schema para OSSIL Envases & OSSIL Home
+// Base de datos PostgreSQL alojada en Supabase Cloud
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum BusinessUnit {
+  ENVASES
+  HOME
+}
+
+enum Category {
+  PERFUMERIA
+  COSMETICA_BOTELLAS
+  COSMETICA_POTES
+  MEDICINAL
+  ALIMENTICIO
+  ACCESORIOS
+  BAZAR
+  VELAS
+}
+
+enum Material {
+  VIDRIO
+  PET
+  PEAD
+  ACRILICO
+  ALUMINIO
+  PVC
+  INSUMOS
+  VARIOS
+}
+
+enum NeckThread {
+  THREAD_18_415
+  THREAD_20_410
+  THREAD_24_410
+  THREAD_28_400
+  THREAD_28_410
+  BE_15
+  BR_18
+  BR_28
+  NA
+}
+
+model Product {
+  id                  String       @id @default(cuid())
+  sku                 String       @unique
+  name                String
+  businessUnit        BusinessUnit @default(ENVASES)
+  category            Category     @default(PERFUMERIA)
+  categoryLabel       String
+  material            Material     @default(VIDRIO)
+  capacity            String
+  capacityValue       Float?
+  neckThread          NeckThread   @default(NA)
+  finish              String
+  basePrice           Decimal      @db.Decimal(10, 2)
+  requiresManualQuote Boolean      @default(false)
+  inStock             Boolean      @default(true)
+  stockQuantity       Int          @default(100)
+  description         String       @db.Text
+  badge               String?
+  imageUrl            String?
+
+  priceTiers          PriceTier[]
+  accessories         ProductAccessory[] @relation("ProductToAccessory")
+  compatibleProducts  ProductAccessory[] @relation("AccessoryToProduct")
+
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  @@index([businessUnit, category])
+  @@index([neckThread])
+  @@index([material])
+}
+
+model PriceTier {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  minQty      Int
+  unitPrice   Decimal  @db.Decimal(10, 2)
+  discountPct Int
+
+  @@unique([productId, minQty])
+  @@index([productId])
+}
+
+model ProductAccessory {
+  id          String   @id @default(cuid())
+  productId   String
+  accessoryId String
+
+  product     Product  @relation("ProductToAccessory", fields: [productId], references: [id], onDelete: Cascade)
+  accessory   Product  @relation("AccessoryToProduct", fields: [accessoryId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+
+  @@unique([productId, accessoryId])
+  @@index([productId])
+  @@index([accessoryId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique // ej: OS-4821
+  customerName    String
+  customerPhone   String?
+  customerEmail   String?
+  deliveryMethod  String      @default("PICKUP_ONCATIVO") // "PICKUP_ONCATIVO" | "EXPRESO" | "LOCAL_DELIVERY"
+  paymentMethod   String      @default("EFECTIVO")        // "EFECTIVO" | "TRANSFERENCIA"
+  totalAmount     Decimal     @db.Decimal(12, 2)
+  itemsJson       Json
+  status          String      @default("PENDIENTE")       // "PENDIENTE" | "CONFIRMADO" | "RETIRADO"
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([orderNumber])
+  @@index([status])
+}

@@ -2,19 +2,19 @@
 
 @layer base {
   :root {
-    --background: #FAF8F5;
+    --background: #faf8f5;
     --foreground: #141413;
-    --card: #FFFFFF;
+    --card: #ffffff;
     --card-foreground: #141413;
-    --border: #E6E2DC;
-    --primary: #9E734E;
-    --primary-hover: #835C3A;
-    --primary-foreground: #FFFFFF;
-    --accent-amber: #B45309;
-    --accent-amber-light: #FEF3C7;
-    --muted: #F3EFEA;
-    --muted-foreground: #66615B;
-    --ring: #9E734E;
+    --border: #e6e2dc;
+    --primary: #9e734e;
+    --primary-hover: #835c3a;
+    --primary-foreground: #ffffff;
+    --accent-amber: #b45309;
+    --accent-amber-light: #fef3c7;
+    --muted: #f3efea;
+    --muted-foreground: #66615b;
+    --ring: #9e734e;
   }
 
   body {
@@ -24,18 +24,48 @@
   }
 }
 
+/* Textura sutil de papel artesanal / botica */
+.apothecary-grid-subtle {
+  background-image: radial-gradient(#d8d2c4 0.7px, transparent 0.7px);
+  background-size: 20px 20px;
+}
+
+/* Animaciones suaves de entrada (motion-safe) */
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-fade-in-up {
+    animation: fadeInSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .animate-fade-in-stagger-1 {
+    animation: fadeInSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+  }
+  .animate-fade-in-stagger-2 {
+    animation: fadeInSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+  }
+}
+
 /* Scrollbar refinada */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAF8F5;
+  background: #faf8f5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D4CEBF;
+  background: #d4cebf;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9E734E;
+  background: #9e734e;
 }

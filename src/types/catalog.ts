@@ -55,6 +55,7 @@ export interface Product {
   inStock: boolean;
   description: string;
   badge?: string;
+  imageUrl?: string;
 }
 
 export interface CartItem {

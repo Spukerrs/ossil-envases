@@ -1,17 +1,19 @@
 "use client";
 
+import { Layers, Plus } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
-import { Product } from "@/types/catalog";
-import { useCartStore } from "@/store/useCartStore";
-import { Check, Plus, ShieldCheck, Layers, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { useCartStore } from "@/store/useCartStore";
+import type { Product } from "@/types/catalog";
 
 interface ProductCardProps {
   product: Product;
   onFilterThread?: (thread: string) => void;
+  onOpenComboModal?: (product: Product) => void;
 }
 
-export function ProductCard({ product, onFilterThread }: ProductCardProps) {
+export function ProductCard({ product, onFilterThread, onOpenComboModal }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [selectedQty, setSelectedQty] = useState<number>(1);
   const [showTiers, setShowTiers] = useState<boolean>(false);
@@ -27,15 +29,14 @@ export function ProductCard({ product, onFilterThread }: ProductCardProps) {
 
   const handleAdd = () => {
     addItem(product, selectedQty);
-    toast.success(
-      `Agregaste ${selectedQty} u. de ${product.name}`,
-      {
-        description: `Subtotal: $${subtotal.toLocaleString("es-AR")} ${
-          discountPct > 0 ? `(${discountPct}% OFF aplicado)` : ""
-        }`,
-      }
-    );
+    toast.success(`Agregaste ${selectedQty} u. de ${product.name}`, {
+      description: `Subtotal: $${subtotal.toLocaleString("es-AR")} ${
+        discountPct > 0 ? `(${discountPct}% OFF aplicado)` : ""
+      }`,
+    });
   };
+
+  const isBottleWithThread = product.neckThread !== "N/A" && product.category !== "accesorios";
 
   return (
     <div className="group relative flex flex-col justify-between bg-[#FFFFFF] rounded-2xl border border-[#E6E2DC] hover:border-[#9E734E]/60 transition-all duration-200 hover:shadow-md p-5">
@@ -58,6 +59,35 @@ export function ProductCard({ product, onFilterThread }: ProductCardProps) {
           )}
         </div>
 
+        {/* Fotografía de Producto Real o Esquema de Boticario */}
+        <div className="relative w-full h-44 mb-3 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF] overflow-hidden flex items-center justify-center p-2 group-hover:bg-[#F5F1EB] transition-colors">
+          {product.imageUrl ? (
+            <div className="relative w-full h-full">
+              <Image
+                src={product.imageUrl}
+                alt={product.name}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-contain p-1 group-hover:scale-105 transition-transform duration-300 motion-safe:transition-transform"
+                loading="lazy"
+              />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center p-4 text-[#8C827A]">
+              <div className="w-12 h-12 rounded-full bg-[#EAE5DC] flex items-center justify-center mb-1 text-[#835C3A]">
+                <Layers className="w-6 h-6" />
+              </div>
+              <span className="font-mono text-[10px] uppercase font-bold text-[#8C827A]">
+                {product.material} • {product.neckThread}
+              </span>
+            </div>
+          )}
+          {/* Identificador SKU técnico tipo inventario de boticario */}
+          <span className="absolute bottom-1.5 right-2 font-mono text-[9px] text-[#8C827A] bg-[#FFFFFF]/95 px-1.5 py-0.5 rounded shadow-2xs border border-[#E6E2DC]">
+            {product.sku}
+          </span>
+        </div>
+
         {/* Acabado Visual y Nombre */}
         <div className="my-2">
           <span className="text-[10px] uppercase font-bold tracking-wider text-[#9E734E]">
@@ -71,15 +101,30 @@ export function ProductCard({ product, onFilterThread }: ProductCardProps) {
           </p>
         </div>
 
-        {/* Compatibilidad de Roscas Clickable */}
-        {product.neckThread !== "N/A" && onFilterThread && (
-          <button
-            onClick={() => onFilterThread(product.neckThread)}
-            className="flex items-center gap-1.5 text-[11px] font-semibold text-[#835C3A] hover:text-[#141413] mt-2 py-1 px-2 rounded-lg bg-[#FAF8F5] border border-dashed border-[#DCD6C9] transition-colors w-full justify-center"
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Ver tapas y válvulas {product.neckThread} compatibles</span>
-          </button>
+        {/* Botón de Compatibilidad y Combo */}
+        {isBottleWithThread && (
+          <div className="mt-3 space-y-1.5">
+            {onOpenComboModal && (
+              <button
+                type="button"
+                onClick={() => onOpenComboModal(product)}
+                className="w-full py-1.5 px-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFEA] border border-[#E0D9CE] text-[#835C3A] hover:text-[#141413] text-xs font-bold flex items-center justify-center gap-1.5 transition-all group-hover:border-[#9E734E] cursor-pointer"
+              >
+                <Layers className="w-3.5 h-3.5 text-[#9E734E]" />
+                <span>Armar Combo con Tapa Compatible</span>
+              </button>
+            )}
+
+            {onFilterThread && (
+              <button
+                type="button"
+                onClick={() => onFilterThread(product.neckThread)}
+                className="w-full text-center text-[10px] font-semibold text-[#8C827A] hover:text-[#141413] transition-colors cursor-pointer"
+              >
+                Filtrar catálogo solo con rosca {product.neckThread}
+              </button>
+            )}
+          </div>
         )}
       </div>
 
@@ -97,8 +142,9 @@ export function ProductCard({ product, onFilterThread }: ProductCardProps) {
                 Escalas de Volumen:
               </span>
               <button
+                type="button"
                 onClick={() => setShowTiers(!showTiers)}
-                className="text-[11px] font-bold text-[#9E734E] underline hover:text-[#835C3A]"
+                className="text-[11px] font-bold text-[#9E734E] underline hover:text-[#835C3A] cursor-pointer"
               >
                 {showTiers ? "Ocultar tabla" : "Ver descuentos"}
               </button>
@@ -117,7 +163,7 @@ export function ProductCard({ product, onFilterThread }: ProductCardProps) {
                     key={qty}
                     type="button"
                     onClick={() => setSelectedQty(qty)}
-                    className={`flex flex-col items-center py-1.5 rounded-lg border text-center transition-all ${
+                    className={`flex flex-col items-center py-1.5 rounded-lg border text-center transition-all cursor-pointer ${
                       isSelected
                         ? "bg-[#141413] border-[#141413] text-white shadow-xs"
                         : "bg-[#FAF8F5] border-[#E6E2DC] text-[#141413] hover:border-[#9E734E]"
@@ -129,8 +175,8 @@ export function ProductCard({ product, onFilterThread }: ProductCardProps) {
                         isSelected
                           ? "text-amber-300"
                           : tier && tier.discountPct > 0
-                          ? "text-[#B45309]"
-                          : "text-[#66615B]"
+                            ? "text-[#B45309]"
+                            : "text-[#66615B]"
                       }`}
                     >
                       {tier && tier.discountPct > 0 ? `-${tier.discountPct}%` : "Base"}
@@ -144,10 +190,7 @@ export function ProductCard({ product, onFilterThread }: ProductCardProps) {
             {showTiers && (
               <div className="mt-2.5 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E6E2DC] text-[11px] space-y-1">
                 {product.priceTiers.map((t) => (
-                  <div
-                    key={t.minQty}
-                    className="flex justify-between items-center text-[#141413]"
-                  >
+                  <div key={t.minQty} className="flex justify-between items-center text-[#141413]">
                     <span>A partir de {t.minQty} unidades:</span>
                     <span className="font-mono font-bold">
                       ${t.unitPrice.toLocaleString("es-AR")}{" "}
@@ -172,8 +215,9 @@ export function ProductCard({ product, onFilterThread }: ProductCardProps) {
           </div>
 
           <button
+            type="button"
             onClick={handleAdd}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold transition-all shadow-xs active:scale-95"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Agregar</span>

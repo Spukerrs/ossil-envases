@@ -87,19 +87,20 @@ Tel / WhatsApp: [TU_NUMERO_DE_TELEFONO]
 > **Ventaja competitiva única:** Estar en Córdoba permite presentarse en persona, algo que ninguna agencia de Buenos Aires o del exterior puede hacer.
 
 ### Protocolo de visita:
+
 1. Ir en un horario de calma comercial (ej: martes o miércoles a las 11:30 o 15:30 hs).
 2. Llevar el celular o una tablet con la demo cargada y funcionando fluido en pantalla completa.
 3. Pedir amablemente hablar con quien administre la web o con los dueños:
-   > *"Hola, buenas tardes. Vengo seguido a comprar y quería consultar si se encuentra Silvia, Oscar o el encargado de compras/web. No vengo a venderles nada rápido, soy programador de acá de Córdoba y les preparé una demo interactiva de su catálogo para mostrarles en 2 minutos en la pantalla."*
+   > _"Hola, buenas tardes. Vengo seguido a comprar y quería consultar si se encuentra Silvia, Oscar o el encargado de compras/web. No vengo a venderles nada rápido, soy programador de acá de Córdoba y les preparé una demo interactiva de su catálogo para mostrarles en 2 minutos en la pantalla."_
 4. Si están ocupados, dejar una tarjeta o folleto prolijo con un código QR que abra directamente la demo en Vercel.
 
 ---
 
 ## 5. Manejo de Objeciones Habituales
 
-| Objeción del Cliente | Respuesta Recomendada |
-| :--- | :--- |
-| *"La web actual ya nos funciona, ¿para qué cambiar?"* | *"Totalmente de acuerdo en que les trajo hasta acá. La diferencia es que hoy su equipo gasta 4 o 5 horas al día respondiendo '¿tenés tapa para este frasco?' o '¿cuánto me hacés por 50 unidades?'. La nueva demo hace eso automático y les manda el pedido listo para despachar."* |
-| *"Nos da miedo perder nuestros correos o el .com.ar"* | *"Es la principal preocupación y se cuida primero: sus correos en Plesk no se tocan. Solo se redirige la pantalla de la tienda. Si algo no les gusta, en 60 segundos vuelve a estar la web anterior sin riesgo."* |
-| *"Ahora no tenemos presupuesto para sistemas caros"* | *"Por eso armé una propuesta escalonada para negocios locales: el costo de desarrollo es accesible ($450.000 - $700.000 ARS) y el costo fijo mensual de servidores es de $0 o mínimo en pesos, sin costos en dólares impredecibles."* |
-| *"¿Cómo actualizamos los precios con la inflación de Argentina?"* | *"Con un simple archivo Excel o Google Sheets. Suben la lista con los precios nuevos, le dan a 'Actualizar' y en 5 segundos todo el catálogo tiene los nuevos valores sin tocar código."* |
+| Objeción del Cliente                                              | Respuesta Recomendada                                                                                                                                                                                                                                                               |
+| :---------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _"La web actual ya nos funciona, ¿para qué cambiar?"_             | _"Totalmente de acuerdo en que les trajo hasta acá. La diferencia es que hoy su equipo gasta 4 o 5 horas al día respondiendo '¿tenés tapa para este frasco?' o '¿cuánto me hacés por 50 unidades?'. La nueva demo hace eso automático y les manda el pedido listo para despachar."_ |
+| _"Nos da miedo perder nuestros correos o el .com.ar"_             | _"Es la principal preocupación y se cuida primero: sus correos en Plesk no se tocan. Solo se redirige la pantalla de la tienda. Si algo no les gusta, en 60 segundos vuelve a estar la web anterior sin riesgo."_                                                                   |
+| _"Ahora no tenemos presupuesto para sistemas caros"_              | _"Por eso armé una propuesta escalonada para negocios locales: el costo de desarrollo es accesible ($450.000 - $700.000 ARS) y el costo fijo mensual de servidores es de $0 o mínimo en pesos, sin costos en dólares impredecibles."_                                               |
+| _"¿Cómo actualizamos los precios con la inflación de Argentina?"_ | _"Con un simple archivo Excel o Google Sheets. Suben la lista con los precios nuevos, le dan a 'Actualizar' y en 5 segundos todo el catálogo tiene los nuevos valores sin tocar código."_                                                                                           |

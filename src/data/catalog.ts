@@ -1,4 +1,4 @@
-import { Product } from "@/types/catalog";
+import type { Product } from "@/types/catalog";
 
 export const PRODUCTS_SEED: Product[] = [
   // --- OSSIL ENVASES: PERFUMERÍA ---
@@ -24,8 +24,10 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Frasco de vidrio de alta resistencia con acabado esmerilado satinado suave al tacto. Ideal para fragancias finas, aromaterapia y sérums faciales premium.",
+    description:
+      "Frasco de vidrio de alta resistencia con acabado esmerilado satinado suave al tacto. Ideal para fragancias finas, aromaterapia y sérums faciales premium.",
     badge: "Más Vendido",
+    imageUrl: "/images/products/equatone-30-satinado.webp",
   },
   {
     id: "tubo-liso-50-br18",
@@ -49,7 +51,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Diseño tubular cilíndrico minimalista en vidrio cristal de alta transparencia. Compatible con atomizadores y tapas ciegas.",
+    description:
+      "Diseño tubular cilíndrico minimalista en vidrio cristal de alta transparencia. Compatible con atomizadores y tapas ciegas.",
+    imageUrl: "/images/products/vial-10.webp",
   },
   {
     id: "vip-60-vidrio",
@@ -73,7 +77,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Silueta clásica con fondo pesado de vidrio que otorga presencia de marca y sensación de lujo.",
+    description:
+      "Silueta clásica con fondo pesado de vidrio que otorga presencia de marca y sensación de lujo.",
+    imageUrl: "/images/products/rectangular-30.webp",
   },
 
   // --- OSSIL ENVASES: COSMÉTICA BOTELLAS ---
@@ -99,8 +105,10 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Botella ergonómica tipo hombro redondo, óptima para lociones, shampoos, geles de ducha y alcohol en gel.",
+    description:
+      "Botella ergonómica tipo hombro redondo, óptima para lociones, shampoos, geles de ducha y alcohol en gel.",
     badge: "Línea Estrella",
+    imageUrl: "/images/products/heaven-200.webp",
   },
   {
     id: "leve-150-pet-ambar",
@@ -124,7 +132,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Tono ámbar cálido que protege fórmulas fotosensibles (extractos naturales, aceites esenciales, tónicos).",
+    description:
+      "Tono ámbar cálido que protege fórmulas fotosensibles (extractos naturales, aceites esenciales, tónicos).",
+    imageUrl: "/images/products/sevilla-ambar.webp",
   },
   {
     id: "botella-100-pead-blanca",
@@ -148,7 +158,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Plástico opaco de máxima resistencia química para emulsiones, cremas corporales o fórmulas farmacéuticas.",
+    description:
+      "Plástico opaco de máxima resistencia química para emulsiones, cremas corporales o fórmulas farmacéuticas.",
+    imageUrl: "/images/products/bidon-pead.webp",
   },
 
   // --- OSSIL ENVASES: COSMÉTICA POTES ---
@@ -174,7 +186,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Pote cosmético de alta gama con doble pared acrílica transparente, obturador interno protector y tapa a rosca.",
+    description:
+      "Pote cosmético de alta gama con doble pared acrílica transparente, obturador interno protector y tapa a rosca.",
+    imageUrl: "/images/products/pote-cristal.webp",
   },
   {
     id: "pote-rolling-60-blanco",
@@ -198,7 +212,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Envase clásico para pomadas, ceras capilares, bálsamos labiales y cremas faciales de uso diario.",
+    description:
+      "Envase clásico para pomadas, ceras capilares, bálsamos labiales y cremas faciales de uso diario.",
+    imageUrl: "/images/products/pote-rolling.webp",
   },
 
   // --- OSSIL ENVASES: MEDICINAL ---
@@ -224,7 +240,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Estándar farmacéutico para tinturas madres, aceites cannábicos, aceites esenciales puros y fitofármacos.",
+    description:
+      "Estándar farmacéutico para tinturas madres, aceites cannábicos, aceites esenciales puros y fitofármacos.",
+    imageUrl: "/images/products/gotero-ambar.webp",
   },
   {
     id: "frasco-jarabe-200-ambar",
@@ -248,7 +266,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Frasco medicinal oficial para jarabes, fórmulas magistrales y soluciones orales con boca rosca 28mm.",
+    description:
+      "Frasco medicinal oficial para jarabes, fórmulas magistrales y soluciones orales con boca rosca 28mm.",
+    imageUrl: "/images/products/jarabe-ambar.webp",
   },
 
   // --- OSSIL ENVASES: ACCESORIOS (BOMBAS, VÁLVULAS, TAPAS) ---
@@ -273,8 +293,10 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Atomizador fino niebla con recubrimiento metalizado oro y pescador transparente de 10 cm recortable.",
+    description:
+      "Atomizador fino niebla con recubrimiento metalizado oro y pescador transparente de 10 cm recortable.",
     badge: "Match 18/415",
+    imageUrl: "/images/products/spray-plata.webp",
   },
   {
     id: "bomba-spray-plata-18415",
@@ -297,8 +319,10 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Atomizador fino niebla con recubrimiento metalizado plata y pescador transparente recortable.",
+    description:
+      "Atomizador fino niebla con recubrimiento metalizado plata y pescador transparente recortable.",
     badge: "Match 18/415",
+    imageUrl: "/images/products/spray-plata.webp",
   },
   {
     id: "bomba-cremera-negra-24410",
@@ -321,8 +345,10 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Válvula dosificadora de 2 ml por pulsación con sistema de bloqueo giratorio para cremas, geles y jabones.",
+    description:
+      "Válvula dosificadora de 2 ml por pulsación con sistema de bloqueo giratorio para cremas, geles y jabones.",
     badge: "Match 24/410",
+    imageUrl: "/images/products/cremera-negra.webp",
   },
   {
     id: "gatillo-trigger-blanco-28400",
@@ -345,8 +371,10 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Pistola pulverizadora para productos de limpieza, sanitizantes, desinfectantes y cosmética capilar.",
+    description:
+      "Pistola pulverizadora para productos de limpieza, sanitizantes, desinfectantes y cosmética capilar.",
     badge: "Match 28/400",
+    imageUrl: "/images/products/gatillo-blanco.webp",
   },
 
   // --- OSSIL HOME: BAZAR & COCINA ---
@@ -361,7 +389,7 @@ export const PRODUCTS_SEED: Product[] = [
     capacity: "500 cc",
     capacityValue: 500,
     neckThread: "28/400",
-    finish: "Vidrio Ámbar Nordico + Bomba Acero Inox",
+    finish: "Vidrio Ámbar Nórdico + Bomba Acero Inox",
     basePrice: 4800,
     priceTiers: [
       { minQty: 1, unitPrice: 4800, discountPct: 0 },
@@ -371,8 +399,10 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Estética boticario nórdico para mesadas de cocina o baños de diseño. Incluye bomba metálica inoxidable duradera.",
+    description:
+      "Estética boticario nórdico para mesadas de cocina o baños de diseño. Incluye bomba metálica inoxidable duradera.",
     badge: "Tendencia Home",
+    imageUrl: "/images/products/dispenser-ambar.webp",
   },
   {
     id: "mate-imperial-alpaca",
@@ -393,7 +423,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Pieza artesanal uruguaya seleccionada con cuero cincelado a mano, 4 patas reforzadas y virola lisa de alpaca.",
+    description:
+      "Pieza artesanal uruguaya seleccionada con cuero cincelado a mano, 4 patas reforzadas y virola lisa de alpaca.",
+    imageUrl: "/images/products/termo-stanley.webp",
   },
 
   // --- OSSIL HOME: VELAS, DIFUSORES & JABONES ---
@@ -418,8 +450,10 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Insumo premium para velas en vaso o cuenco. Combustión limpia, cremosa y de óptima retención aromática.",
+    description:
+      "Insumo premium para velas en vaso o cuenco. Combustión limpia, cremosa y de óptima retención aromática.",
     badge: "Insumo Clave",
+    imageUrl: "/images/products/difusor-hexagonal.webp",
   },
   {
     id: "esencia-pura-vainilla-100",
@@ -441,7 +475,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Fragancia concentrada termo-resistente para cera de soja, difusores con varillas de ratán y aromatizantes textiles.",
+    description:
+      "Fragancia concentrada termo-resistente para cera de soja, difusores con varillas de ratán y aromatizantes textiles.",
+    imageUrl: "/images/products/esencia-vainilla.webp",
   },
   {
     id: "pabilos-encerados-50u",
@@ -462,7 +498,9 @@ export const PRODUCTS_SEED: Product[] = [
     ],
     requiresManualQuote: false,
     inStock: true,
-    description: "Mechas de combustión uniforme listas para colocar en frascos perfumeros o recipientes de vidrio y cerámica.",
+    description:
+      "Mechas de combustión uniforme listas para colocar en frascos perfumeros o recipientes de vidrio y cerámica.",
+    imageUrl: "/images/products/gotero-satinado.webp",
   },
 
   // --- ARTÍCULO CON COTIZACIÓN MANUAL REQUERIDA (REGLA DE NEGOCIO OSSIL) ---
@@ -481,7 +519,9 @@ export const PRODUCTS_SEED: Product[] = [
     priceTiers: [],
     requiresManualQuote: true, // Artículo especial que exige cotización previa
     inStock: true,
-    description: "Apertura sin contacto mediante sensor de proximidad infrarrojo. Tapa hermética bloquea olores.",
+    description:
+      "Apertura sin contacto mediante sensor de proximidad infrarrojo. Tapa hermética bloquea olores.",
     badge: "Cotización Asesor",
+    imageUrl: "/images/products/termo-stanley.webp",
   },
 ];
