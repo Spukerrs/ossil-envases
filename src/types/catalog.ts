@@ -1,14 +1,21 @@
 export type BusinessUnit = "ENVASES" | "HOME";
 
 export type Category =
-  | "perfumeria"
+  | "todos"
+  | "cosmetica"
   | "cosmetica-botellas"
   | "cosmetica-potes"
+  | "cosmetica-bidones"
+  | "perfumeria"
   | "medicinal"
   | "alimenticio"
   | "accesorios"
+  | "accesorios-cierres"
+  | "velas"
+  | "velas-difusores"
   | "bazar"
-  | "velas";
+  | "bazar-cocina"
+  | "decoracion-hogar";
 
 export type Material =
   | "Vidrio"
@@ -18,6 +25,8 @@ export type Material =
   | "Aluminio"
   | "PVC"
   | "Insumos"
+  | "Acero/Metal"
+  | "Mármol/Cerámica"
   | "Varios";
 
 export type NeckThread =
@@ -29,12 +38,28 @@ export type NeckThread =
   | "B/E 15"
   | "B/R 18"
   | "B/R 28"
-  | "N/A";
+  | "B/AX 70"
+  | "B/AX 63"
+  | "Corcho"
+  | "Canilla"
+  | "N/A"
+  | string;
 
 export interface PriceTier {
   minQty: number;
   unitPrice: number;
   discountPct: number;
+}
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  fullName: string;
+  businessName?: string;
+  cuit?: string;
+  clientType: "minorista" | "mayorista";
+  phone?: string;
+  city?: string;
 }
 
 export interface Product {

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { IVA_RATE } from "@/lib/constants";
 import { useCartStore } from "@/store/useCartStore";
 import type { Product } from "@/types/catalog";
 
@@ -27,28 +28,27 @@ export function ProductCard({ product, onFilterThread, onOpenComboModal }: Produ
   const effectiveUnitPrice = activeTier ? activeTier.unitPrice : product.basePrice;
   const discountPct = activeTier ? activeTier.discountPct : 0;
   const subtotal = effectiveUnitPrice * selectedQty;
+  const totalConIva = Math.round(subtotal * (1 + IVA_RATE));
 
   const handleAdd = () => {
     addItem(product, selectedQty);
     toast.success(`Agregaste ${selectedQty} u. de ${product.name}`, {
-      description: `Subtotal: $${subtotal.toLocaleString("es-AR")} ${
-        discountPct > 0 ? `(${discountPct}% OFF aplicado)` : ""
-      }`,
+      description: `Neto: $${subtotal.toLocaleString("es-AR")} • Final c/IVA: $${totalConIva.toLocaleString("es-AR")}${discountPct > 0 ? ` (-${discountPct}% OFF)` : ""}`,
     });
   };
 
   const isBottleWithThread = product.neckThread !== "N/A" && product.category !== "accesorios";
 
   return (
-    <div className="group relative flex flex-col justify-between bg-[#FFFFFF] rounded-2xl border border-[#E6E2DC] hover:border-[#9E734E]/60 transition-all duration-200 hover:shadow-md p-5">
+    <div className="group relative flex flex-col justify-between liquid-glass liquid-glass-interactive rounded-2xl p-5">
       {/* Cabecera de la tarjeta: Badges */}
       <div>
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="font-mono text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-[#F3EFEA] text-[#141413] border border-[#E0D9CE]">
+            <span className="font-mono text-[11px] font-bold px-2.5 py-0.5 rounded-md frosted-well text-[#141413]">
               {product.neckThread !== "N/A" ? `BOCA ${product.neckThread}` : product.material}
             </span>
-            <span className="text-[11px] font-medium text-[#66615B] px-2 py-0.5 rounded-md bg-[#FAF8F5]">
+            <span className="text-[11px] font-medium text-[#57534E] px-2 py-0.5 rounded-md bg-white/70">
               {product.capacity}
             </span>
           </div>
@@ -63,7 +63,7 @@ export function ProductCard({ product, onFilterThread, onOpenComboModal }: Produ
         {/* Fotografía de Producto Real o Esquema de Boticario (Clickeable hacia pantalla dedicada) */}
         <Link
           href={`/producto/${product.id}`}
-          className="relative w-full h-44 mb-3 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF] overflow-hidden flex items-center justify-center p-2 group-hover:bg-[#F5F1EB] transition-colors block cursor-pointer"
+          className="relative w-full h-44 mb-3 rounded-xl frosted-well overflow-hidden flex items-center justify-center p-2 group-hover:bg-white/80 transition-colors block cursor-pointer"
         >
           {product.imageUrl ? (
             <div className="relative w-full h-full">
@@ -209,15 +209,19 @@ export function ProductCard({ product, onFilterThread, onOpenComboModal }: Produ
           </div>
         )}
 
-        {/* Precio Total y Botón Agregar */}
+        {/* Precio Total con IVA y Botón Agregar */}
         <div className="flex items-center justify-between pt-1">
           <div>
-            <span className="text-[10px] uppercase font-bold text-[#66615B] block">
-              Unitario: ${effectiveUnitPrice.toLocaleString("es-AR")}
+            <span className="text-[10px] font-bold text-[#66615B] block">
+              Neto: ${subtotal.toLocaleString("es-AR")} (
+              {effectiveUnitPrice.toLocaleString("es-AR")} u.)
             </span>
-            <span className="font-mono text-lg font-black text-[#141413]">
-              ${subtotal.toLocaleString("es-AR")}
-            </span>
+            <div className="flex items-baseline gap-1">
+              <span className="font-mono text-lg font-black text-[#141413]">
+                ${totalConIva.toLocaleString("es-AR")}
+              </span>
+              <span className="text-[10px] font-semibold text-[#9E734E]">c/IVA</span>
+            </div>
           </div>
 
           <button

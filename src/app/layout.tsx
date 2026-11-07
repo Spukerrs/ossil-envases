@@ -4,6 +4,7 @@ import Link from "next/link";
 import { STORE_CONFIG } from "@/lib/constants";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { GlassIntroSplash } from "@/components/GlassIntroSplash";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -93,6 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-[#9E734E]/20 selection:text-[#835C3A]">
+        <GlassIntroSplash />
         {/* Banner Superior Sobrio */}
         <div className="bg-[#141413] text-[#FAF8F5] text-xs py-2 px-4 border-b border-[#2C2B29]">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">

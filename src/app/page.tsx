@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowLeft,
   ArrowRight,
   Factory,
   FileSpreadsheet,
@@ -12,36 +13,147 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { CartDrawer } from "@/components/CartDrawer";
-import { Navbar } from "@/components/Navbar";
+import { type ActiveView, Navbar } from "@/components/Navbar";
 import { ProductCard } from "@/components/ProductCard";
+import { StoreStatusBadge } from "@/components/StoreStatusBadge";
 import { ThreadComboModal } from "@/components/ThreadComboModal";
+import { WelcomeLanding } from "@/components/WelcomeLanding";
 import { PRODUCTS_SEED } from "@/data/catalog";
 import { STORE_CONFIG } from "@/lib/constants";
 import { useCartStore } from "@/store/useCartStore";
 import type { BusinessUnit, Product } from "@/types/catalog";
 
-export default function HomePage() {
-  const [activeUnit, setActiveUnit] = useState<BusinessUnit | "B2B">("ENVASES");
+function HomePageContent() {
+  const searchParams = useSearchParams();
+  const [activeUnit, setActiveUnit] = useState<ActiveView>("INICIO");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("TODAS");
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>("TODAS");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("TODOS");
   const [selectedThread, setSelectedThread] = useState<string>("TODOS");
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
 
-  // Totales para mobile sticky pill
+  // Sincronizar ?unit=ENVASES | HOME | B2B cuando se redirige desde /producto/[id] o /links
+  useEffect(() => {
+    const unitParam = searchParams.get("unit");
+    const threadParam = searchParams.get("thread");
+    if (unitParam === "ENVASES" || unitParam === "HOME" || unitParam === "B2B") {
+      setActiveUnit(unitParam);
+    } else if (!unitParam) {
+      setActiveUnit("INICIO");
+    }
+    if (threadParam) {
+      setSelectedThread(threadParam);
+    }
+  }, [searchParams]);
+
+  // Totales para mobile sticky pill (con IVA incluido)
   const totalItemsCount = useCartStore((s) => s.getTotalItemsCount());
-  const totalCartAmount = useCartStore((s) => s.getTotalAmount());
+  const totalCartWithIva = useCartStore((s) => s.getTotalWithIva());
 
   // Estado para el modal de combo de tapas coincidentes
   const [comboProduct, setComboProduct] = useState<Product | null>(null);
   const [isComboModalOpen, setIsComboModalOpen] = useState<boolean>(false);
 
+  // Selección curada de 4 productos estrella para la portada de bienvenida
+  const featuredProducts = useMemo(() => {
+    const preferredIds = [
+      "venecia-250-pet",
+      "equatone-50-satinado",
+      "gotero-30-ambar-vidrio",
+      "cera-soja-1kg",
+    ];
+    const picked = PRODUCTS_SEED.filter((p) => preferredIds.includes(p.id));
+    if (picked.length === 4) return picked;
+    return PRODUCTS_SEED.slice(0, 4);
+  }, []);
+
+  // Navegación desde la Landing hacia el Catálogo con filtros opcionales
+  const handleNavigateFromLanding = (
+    unit: BusinessUnit | "B2B",
+    category = "TODAS",
+    thread = "TODOS",
+  ) => {
+    setActiveUnit(unit);
+    setSelectedCategory(category);
+    setSelectedSubcategory("TODAS");
+    setSelectedMaterial("TODOS");
+    setSelectedThread(thread);
+    setSearchQuery("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Categorías según la unidad activa
+  const categoriesForUnit = useMemo(() => {
+    if (activeUnit === "ENVASES") {
+      return [
+        { id: "TODAS", label: "Todos los Envases", icon: "📦" },
+        { id: "cosmetica-botellas", label: "Botellas (PET / PEAD / Vidrio / Alu)", icon: "🧴" },
+        { id: "cosmetica-potes", label: "Potes (Acrílico / PP / Aluminio)", icon: "🥣" },
+        { id: "cosmetica-bidones", label: "Bidones & Baldes (2L a 25L)", icon: "🛢️" },
+        { id: "perfumeria", label: "Perfumería Fina & Esencias", icon: "✨" },
+        { id: "medicinal", label: "Medicinal & Goteros", icon: "🧪" },
+        { id: "alimenticio", label: "Alimenticio & Conservas", icon: "🍯" },
+        { id: "accesorios", label: "Accesorios & Cierres (Tapas / Válvulas)", icon: "🔘" },
+      ];
+    }
+    if (activeUnit === "HOME") {
+      return [
+        { id: "TODAS", label: "Todo OSSIL Home", icon: "🏡" },
+        { id: "velas", label: "Velas, Difusores & Insumos", icon: "🕯️" },
+        { id: "bazar", label: "Bazar & Cocina", icon: "☕" },
+        { id: "decoracion-hogar", label: "Decoración & Organización", icon: "🛋️" },
+      ];
+    }
+    return [];
+  }, [activeUnit]);
+
+  // Subcategorías disponibles dinámicamente según productos de la unidad/categoría
+  const availableSubcategories = useMemo(() => {
+    if (activeUnit === "INICIO" || activeUnit === "B2B") return [];
+    const unitProducts = PRODUCTS_SEED.filter((p) => {
+      if (p.businessUnit !== activeUnit) return false;
+      if (selectedCategory !== "TODAS" && p.category !== selectedCategory) return false;
+      return true;
+    });
+
+    const set = new Set<string>();
+    for (const p of unitProducts) {
+      if (p.subcategory) set.add(p.subcategory);
+    }
+    return Array.from(set);
+  }, [activeUnit, selectedCategory]);
+
+  // Roscas disponibles y cantidad de productos compatibles
+  const threadCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const p of PRODUCTS_SEED) {
+      if (p.businessUnit === "ENVASES" && p.neckThread && p.neckThread !== "N/A") {
+        counts[p.neckThread] = (counts[p.neckThread] || 0) + 1;
+      }
+    }
+    return counts;
+  }, []);
+
   // Filtrado reactivo en memoria
   const filteredProducts = useMemo(() => {
+    if (activeUnit === "INICIO" || activeUnit === "B2B") return [];
     return PRODUCTS_SEED.filter((p) => {
       // Filtrar por unidad de negocio
-      if (activeUnit !== "B2B" && p.businessUnit !== activeUnit) {
+      if (p.businessUnit !== activeUnit) {
+        return false;
+      }
+
+      // Filtrar por categoría
+      if (selectedCategory !== "TODAS" && p.category !== selectedCategory) {
+        return false;
+      }
+
+      // Filtrar por subcategoría
+      if (selectedSubcategory !== "TODAS" && p.subcategory !== selectedSubcategory) {
         return false;
       }
 
@@ -53,7 +165,8 @@ export default function HomePage() {
         const matchFinish = p.finish.toLowerCase().includes(q);
         const matchThread = p.neckThread.toLowerCase().includes(q);
         const matchCat = p.categoryLabel.toLowerCase().includes(q);
-        if (!matchName && !matchSku && !matchFinish && !matchThread && !matchCat) {
+        const matchSub = p.subcategory?.toLowerCase().includes(q) || false;
+        if (!matchName && !matchSku && !matchFinish && !matchThread && !matchCat && !matchSub) {
           return false;
         }
       }
@@ -70,16 +183,29 @@ export default function HomePage() {
 
       return true;
     });
-  }, [activeUnit, searchQuery, selectedMaterial, selectedThread]);
+  }, [
+    activeUnit,
+    selectedCategory,
+    selectedSubcategory,
+    searchQuery,
+    selectedMaterial,
+    selectedThread,
+  ]);
 
   const clearFilters = () => {
     setSearchQuery("");
+    setSelectedCategory("TODAS");
+    setSelectedSubcategory("TODAS");
     setSelectedMaterial("TODOS");
     setSelectedThread("TODOS");
   };
 
   const hasActiveFilters =
-    searchQuery.trim() !== "" || selectedMaterial !== "TODOS" || selectedThread !== "TODOS";
+    searchQuery.trim() !== "" ||
+    selectedCategory !== "TODAS" ||
+    selectedSubcategory !== "TODAS" ||
+    selectedMaterial !== "TODOS" ||
+    selectedThread !== "TODOS";
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] apothecary-grid-subtle flex flex-col justify-between selection:bg-[#9E734E]/20 selection:text-[#835C3A]">
@@ -90,16 +216,58 @@ export default function HomePage() {
             setActiveUnit(unit);
             setSelectedMaterial("TODOS");
             setSelectedThread("TODOS");
+            setSelectedCategory("TODAS");
+            setSelectedSubcategory("TODAS");
+            window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           onOpenCart={() => setIsCartOpen(true)}
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* ============================================================ */}
-          {/* PESTAÑA 1 & 2: CATÁLOGO COMERCIAL (ENVASES / HOME)           */}
+          {/* PESTAÑA 0: PORTADA DE BIENVENIDA / LANDING PAGE              */}
           {/* ============================================================ */}
-          {activeUnit !== "B2B" ? (
+          {activeUnit === "INICIO" ? (
+            <WelcomeLanding
+              featuredProducts={featuredProducts}
+              totalCatalogCount={PRODUCTS_SEED.length}
+              onNavigateUnit={handleNavigateFromLanding}
+              onOpenComboModal={(prod) => {
+                setComboProduct(prod);
+                setIsComboModalOpen(true);
+              }}
+            />
+          ) : activeUnit !== "B2B" ? (
+            /* ============================================================ */
+            /* PESTAÑA 1 & 2: CATÁLOGO COMERCIAL (ENVASES / HOME)           */
+            /* ============================================================ */
             <>
+              {/* Barra de Retorno a Bienvenida */}
+              <div className="mb-4 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setActiveUnit("INICIO")}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#66615B] hover:text-[#141413] transition-colors cursor-pointer"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 text-[#9E734E]" />
+                  <span>Volver a la portada de bienvenida</span>
+                </button>
+
+                <div className="flex items-center gap-2 text-[11px] text-[#8C827A]">
+                  <span>Cambiar unidad:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveUnit(activeUnit === "ENVASES" ? "HOME" : "ENVASES");
+                      clearFilters();
+                    }}
+                    className="font-bold text-[#9E734E] hover:underline cursor-pointer"
+                  >
+                    {activeUnit === "ENVASES" ? "Ir a OSSIL Home →" : "Ir a OSSIL Envases →"}
+                  </button>
+                </div>
+              </div>
+
               {/* Hero Editorial Apothecary con Entrada Suave */}
               <section className="mb-10 animate-fade-in-up">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-[#E6E2DC]">
@@ -107,29 +275,26 @@ export default function HomePage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E] px-2.5 py-0.5 rounded-full bg-[#EBE7DF] border border-[#DCD6C9]">
                         {activeUnit === "ENVASES"
-                          ? "División Packaging & Laboratorio"
-                          : "División Home & Insumos de Autor"}
+                          ? "Catálogo Packaging & Laboratorio"
+                          : "Catálogo Home & Insumos de Autor"}
                       </span>
                       <span className="text-xs text-[#8C827A] flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-[#9E734E]" />
                         <span>Oncativo 69, Local 1 • Córdoba Capital</span>
                       </span>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md border border-emerald-300">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                        Atendido por sus dueños
-                      </span>
+                      <StoreStatusBadge />
                     </div>
 
                     <h1 className="text-3xl sm:text-4xl font-black text-[#141413] tracking-tight leading-tight">
                       {activeUnit === "ENVASES"
-                        ? "Envases y frascos con compatibilidad de roscas garantizada"
-                        : "Ceras de soja, esencias y bazar mayorista para tu marca"}
+                        ? "Catálogo completo de Envases, Frascos y Cierres"
+                        : "Catálogo completo de Insumos para Velas, Difusores y Bazar"}
                     </h1>
 
                     <p className="text-xs sm:text-sm text-[#66615B] leading-relaxed">
                       {activeUnit === "ENVASES"
-                        ? "Accedé al stock más grande de Córdoba en vidrio cristal, ámbar UV y polímeros PEAD/PET con escalas mayoristas automáticas hasta -28% OFF."
-                        : "Insumos premium para velas de soja, difusores aromáticos, dispensers de diseño y bazar para emprendimientos y locales comerciales."}
+                        ? "Filtrá por categoría, material o medida milimétrica de rosca para encontrar el envase y su tapa compatible con escalas mayoristas hasta -28% OFF."
+                        : "Cera de soja, esencias concentradas, pabilos, frascos difusores, línea térmica y bazar gastronómico con stock inmediato."}
                     </p>
                   </div>
 
@@ -170,81 +335,140 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Tira de Métricas Clave de Confianza (Anti-Slop) */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 my-6 animate-fade-in-stagger-1">
-                  <div className="p-3.5 rounded-2xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-2xs">
-                    <span className="font-mono text-base font-black text-[#141413] block">
-                      1.316 Modelos
+                {/* ============================================================ */}
+                {/* NAVEGADOR DE CATEGORÍAS PRINCIPALES                          */}
+                {/* ============================================================ */}
+                <div className="my-6 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black uppercase tracking-wider text-[#141413]">
+                      Categorías de Catálogo:
                     </span>
-                    <span className="text-[11px] text-[#66615B]">Stock inmediato en Córdoba</span>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-2xs">
-                    <span className="font-mono text-base font-black text-[#B45309] block">
-                      Hasta -28% OFF
-                    </span>
-                    <span className="text-[11px] text-[#66615B]">
-                      Escalas por volumen automáticas
+                    <span className="text-[11px] text-[#8C827A]">
+                      {filteredProducts.length} productos coincidentes
                     </span>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-2xs">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
-                      <span className="font-mono text-base font-black text-[#141413]">
-                        4.9 Estrellas
+                  <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+                    {categoriesForUnit.map((cat) => {
+                      const isSelected = selectedCategory === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategory(cat.id);
+                            setSelectedSubcategory("TODAS");
+                          }}
+                          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                            isSelected
+                              ? "bg-[#141413] text-[#FAF8F5] shadow-xs"
+                              : "bg-[#FFFFFF] text-[#66615B] border border-[#E6E2DC] hover:border-[#9E734E] hover:text-[#141413]"
+                          }`}
+                        >
+                          <span>{cat.icon}</span>
+                          <span>{cat.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Subcategorías disponibles dinámicas */}
+                  {availableSubcategories.length > 0 && (
+                    <div className="flex items-center gap-1.5 flex-wrap pt-1 pl-1">
+                      <span className="text-[11px] font-bold text-[#8C827A] mr-1">
+                        Subcategoría:
                       </span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedSubcategory("TODAS")}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                          selectedSubcategory === "TODAS"
+                            ? "bg-[#9E734E] text-white font-bold"
+                            : "bg-[#EBE7DF] text-[#66615B] hover:text-[#141413]"
+                        }`}
+                      >
+                        Todas
+                      </button>
+                      {availableSubcategories.map((sub) => {
+                        const isSelected = selectedSubcategory === sub;
+                        return (
+                          <button
+                            key={sub}
+                            type="button"
+                            onClick={() => setSelectedSubcategory(sub)}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                              isSelected
+                                ? "bg-[#9E734E] text-white font-bold"
+                                : "bg-[#FFFFFF] text-[#66615B] border border-[#E6E2DC] hover:border-[#9E734E]"
+                            }`}
+                          >
+                            {sub}
+                          </button>
+                        );
+                      })}
                     </div>
-                    <span className="text-[11px] text-[#66615B]">
-                      7.466 opiniones en Google Maps
-                    </span>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-2xs">
-                    <span className="font-mono text-base font-black text-[#141413] block">
-                      0% Recargo
-                    </span>
-                    <span className="text-[11px] text-[#66615B]">
-                      Efectivo o Transferencia bancaria
-                    </span>
-                  </div>
+                  )}
                 </div>
 
                 {/* Filtro Inteligente de Roscas Milimétricas (Exclusivo Envases) */}
                 {activeUnit === "ENVASES" && (
-                  <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-2xs space-y-3 mb-6">
+                  <div className="p-4 rounded-2xl liquid-glass space-y-3 mb-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         <SlidersHorizontal className="w-4 h-4 text-[#9E734E]" />
                         <span className="text-xs font-black uppercase tracking-wider text-[#141413]">
-                          Filtro Rápido por Boca / Rosca:
+                          Filtro Rápido por Boca / Rosca Milimétrica:
                         </span>
                       </div>
                       <span className="text-[11px] text-[#66615B]">
-                        Garantiza compatibilidad entre envases y accesorios
+                        Asocia envases con sus tapas y bombas exactas
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap">
-                      {["TODOS", "18/415", "20/410", "24/410", "28/400", "28/410", "B/R 28"].map(
-                        (thread) => {
-                          const isSelected = selectedThread === thread;
-                          return (
-                            <button
-                              key={thread}
-                              type="button"
-                              onClick={() => setSelectedThread(thread)}
-                              className={`px-3 py-1.5 rounded-xl font-mono text-xs font-bold transition-all cursor-pointer ${
-                                isSelected
-                                  ? "bg-[#141413] text-[#FAF8F5] shadow-xs"
-                                  : "bg-[#F3EFEA] text-[#66615B] hover:text-[#141413] hover:bg-[#EBE7DF]"
-                              }`}
-                            >
-                              {thread === "TODOS" ? "Ver Todas las Roscas" : `Boca ${thread}`}
-                            </button>
-                          );
-                        },
-                      )}
+                      {[
+                        "TODOS",
+                        "18/415",
+                        "20/410",
+                        "24/410",
+                        "28/400",
+                        "28/410",
+                        "B/R 18",
+                        "B/R 28",
+                        "B/AX 70",
+                        "B/AX 63",
+                        "B/E 15",
+                        "Canilla",
+                        "Corcho",
+                      ].map((thread) => {
+                        const isSelected = selectedThread === thread;
+                        const count = thread === "TODOS" ? null : threadCounts[thread];
+                        return (
+                          <button
+                            key={thread}
+                            type="button"
+                            onClick={() => setSelectedThread(thread)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs font-bold transition-all cursor-pointer ${
+                              isSelected
+                                ? "bg-[#141413] text-[#FAF8F5] shadow-xs"
+                                : "bg-[#F3EFEA] text-[#66615B] hover:text-[#141413] hover:bg-[#EBE7DF]"
+                            }`}
+                          >
+                            <span>{thread === "TODOS" ? "Todas las Bocas" : `Boca ${thread}`}</span>
+                            {count !== null && count !== undefined && count > 0 && (
+                              <span
+                                className={`text-[10px] px-1.5 py-0.2 rounded-md ${
+                                  isSelected
+                                    ? "bg-[#FAF8F5]/20 text-[#FAF8F5]"
+                                    : "bg-[#E6E2DC] text-[#66615B]"
+                                }`}
+                              >
+                                {count}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -252,25 +476,33 @@ export default function HomePage() {
                 {/* Filtro por Material */}
                 <div className="flex items-center gap-2 flex-wrap pb-4">
                   <span className="text-xs font-bold text-[#66615B]">Material:</span>
-                  {["TODOS", "Vidrio", "PET", "PEAD", "Acrílico", "Aluminio", "Insumos"].map(
-                    (mat) => {
-                      const isSelected = selectedMaterial === mat;
-                      return (
-                        <button
-                          key={mat}
-                          type="button"
-                          onClick={() => setSelectedMaterial(mat)}
-                          className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                            isSelected
-                              ? "bg-[#9E734E] text-white font-bold"
-                              : "bg-[#FFFFFF] text-[#66615B] border border-[#E6E2DC] hover:border-[#9E734E]"
-                          }`}
-                        >
-                          {mat}
-                        </button>
-                      );
-                    },
-                  )}
+                  {[
+                    "TODOS",
+                    "Vidrio",
+                    "PET",
+                    "PEAD",
+                    "Acrílico",
+                    "Aluminio",
+                    "Acero/Metal",
+                    "Insumos",
+                    "Mármol/Cerámica",
+                  ].map((mat) => {
+                    const isSelected = selectedMaterial === mat;
+                    return (
+                      <button
+                        key={mat}
+                        type="button"
+                        onClick={() => setSelectedMaterial(mat)}
+                        className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-[#9E734E] text-white font-bold"
+                            : "bg-[#FFFFFF] text-[#66615B] border border-[#E6E2DC] hover:border-[#9E734E]"
+                        }`}
+                      >
+                        {mat}
+                      </button>
+                    );
+                  })}
                 </div>
               </section>
 
@@ -311,143 +543,39 @@ export default function HomePage() {
                   </div>
                 )}
               </section>
-
-              {/* Sección de Testimonios y Reseñas Reales de Google Maps */}
-              <section className="my-16 p-6 sm:p-8 rounded-3xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-xs">
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-[#EBE7DF]">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E] px-2.5 py-0.5 rounded-full bg-[#EBE7DF] border border-[#DCD6C9]">
-                        Comunidad de Fabricantes & Formuladores
-                      </span>
-                      <span className="text-xs text-[#8C827A]">• Oncativo 69, Córdoba</span>
-                    </div>
-                    <h2 className="text-2xl font-black text-[#141413]">
-                      Lo que opinan quienes producen con OSSIL
-                    </h2>
-                  </div>
-                  <a
-                    href="https://maps.app.goo.gl/6mLg33JqzYa4pJsP8"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#FAF8F5] border border-[#E0D9CE] hover:border-[#9E734E] text-xs font-bold text-[#141413] transition-colors"
-                  >
-                    <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
-                    <span>4.9 / 5.0 en Google Maps (7.466 opiniones)</span>
-                  </a>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
-                  {/* Review 1 */}
-                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-3 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1 text-amber-500">
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                      </div>
-                      <p className="text-xs text-[#4A4742] leading-relaxed italic">
-                        “Excelente atención de Silvia y Oscar en el local de Oncativo. Conseguí
-                        frascos goteros con rosca 18 exactos para mi laboratorio de cosmética
-                        natural, sin pérdidas ni derrames.”
-                      </p>
-                    </div>
-                    <div className="pt-3 border-t border-[#EAE5DC] flex items-center justify-between">
-                      <div>
-                        <span className="text-xs font-bold text-[#141413] block">
-                          Farm. Silvia M.
-                        </span>
-                        <span className="text-[10px] text-[#8C827A]">
-                          Cosmética Botánica & Fitofarmacia
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        ✓ Cliente Verificado
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Review 2 */}
-                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-3 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1 text-amber-500">
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                      </div>
-                      <p className="text-xs text-[#4A4742] leading-relaxed italic">
-                        “Compro la cera de soja pura y las esencias concentradas por mayor. Los
-                        precios por escala automática me permitieron triplicar el margen en mi
-                        taller de velas artesanales.”
-                      </p>
-                    </div>
-                    <div className="pt-3 border-t border-[#EAE5DC] flex items-center justify-between">
-                      <div>
-                        <span className="text-xs font-bold text-[#141413] block">Marcos G.</span>
-                        <span className="text-[10px] text-[#8C827A]">
-                          Taller de Velas & Difusores
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        ✓ Cliente Verificado
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Review 3 */}
-                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-3 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1 text-amber-500">
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                      </div>
-                      <p className="text-xs text-[#4A4742] leading-relaxed italic">
-                        “Tienen stock físico real en el centro de Córdoba. Lo que ves en el catálogo
-                        es lo que te entregan en el acto con el voucher sin dar vueltas ni sorpresas
-                        de precios.”
-                      </p>
-                    </div>
-                    <div className="pt-3 border-t border-[#EAE5DC] flex items-center justify-between">
-                      <div>
-                        <span className="text-xs font-bold text-[#141413] block">Nicolás F.</span>
-                        <span className="text-[10px] text-[#8C827A]">Emprendedor Mayorista</span>
-                      </div>
-                      <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        ✓ Cliente Verificado
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </section>
             </>
           ) : (
             /* ============================================================ */
             /* PESTAÑA 3: SERVICIOS INDUSTRIALES B2B                        */
             /* ============================================================ */
             <div className="space-y-12 animate-fade-in-up">
-              {/* Header de la Unidad B2B */}
-              <div className="border-b border-[#E6E2DC] pb-6 space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E] px-2.5 py-0.5 rounded-full bg-[#EBE7DF] border border-[#DCD6C9]">
-                    Planta Industrial Córdoba
-                  </span>
-                  <span className="text-xs text-[#8C827A]">• Tiradas desde 500 unidades</span>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setActiveUnit("INICIO")}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#66615B] hover:text-[#141413] transition-colors cursor-pointer mb-4"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 text-[#9E734E]" />
+                  <span>Volver a la portada de bienvenida</span>
+                </button>
+
+                {/* Header de la Unidad B2B */}
+                <div className="border-b border-[#E6E2DC] pb-6 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E] px-2.5 py-0.5 rounded-full bg-[#EBE7DF] border border-[#DCD6C9]">
+                      Planta Industrial Córdoba
+                    </span>
+                    <span className="text-xs text-[#8C827A]">• Tiradas desde 500 unidades</span>
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl font-black text-[#141413] tracking-tight">
+                    Personalización y Acabados de Packaging para Marcas
+                  </h1>
+                  <p className="text-xs sm:text-sm text-[#66615B] max-w-3xl leading-relaxed">
+                    Transformá envases estándar en piezas exclusivas con serigrafía vitrificable
+                    (horneada a alta temperatura), satinado químico al ácido y tampografía para
+                    tapas y superficies curvas.
+                  </p>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-black text-[#141413] tracking-tight">
-                  Personalización y Acabados de Packaging para Marcas
-                </h1>
-                <p className="text-xs sm:text-sm text-[#66615B] max-w-3xl leading-relaxed">
-                  Transformá envases estándar en piezas exclusivas con serigrafía vitrificable
-                  (horneada a alta temperatura), satinado químico al ácido y tampografía para tapas
-                  y superficies curvas.
-                </p>
               </div>
 
               {/* Grilla de Técnicas de Acabado B2B */}
@@ -553,7 +681,7 @@ export default function HomePage() {
       </div>
 
       {/* Footer Editorial y de Soporte Operativo */}
-      <footer className="bg-[#FFFFFF] border-t border-[#E6E2DC] mt-16 py-12">
+      <footer className="liquid-glass border-t border-white/70 mt-16 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-xs text-[#66615B]">
             <div className="space-y-3">
@@ -648,7 +776,7 @@ export default function HomePage() {
           >
             <span>Mi Pedido ({totalItemsCount})</span>
             <span className="font-mono text-[11px] bg-black/30 px-1.5 py-0.5 rounded">
-              ${totalCartAmount.toLocaleString("es-AR")}
+              ${totalCartWithIva.toLocaleString("es-AR")} c/IVA
             </span>
           </button>
         </div>
@@ -672,5 +800,13 @@ export default function HomePage() {
         }}
       />
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#FAF8F5]" />}>
+      <HomePageContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { IVA_RATE } from "@/lib/constants";
 import type { CartItem, Product } from "@/types/catalog";
+
+interface WhatsAppCheckoutOptions {
+  name?: string;
+  cuit?: string;
+  businessName?: string;
+  voucherCode?: string;
+  deliveryMethod: "LOCAL" | "ENVIO";
+  paymentMethod: "TRANSFERENCIA" | "TARJETA";
+}
 
 interface CartStore {
   items: CartItem[];
@@ -9,7 +19,7 @@ interface CartStore {
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
 
-  // Helpers de cálculo dinámico mayorista
+  // Helpers de cálculo dinámico mayorista e IVA
   getItemUnitPrice: (item: CartItem) => number;
   getItemDiscountPct: (item: CartItem) => number;
   getItemSubtotal: (item: CartItem) => number;
@@ -21,15 +31,14 @@ interface CartStore {
   } | null;
 
   getTotalAmount: () => number;
+  getTotalSavings: () => number;
+  getIvaAmount: () => number;
+  getTotalWithIva: () => number;
   getTotalItemsCount: () => number;
   hasManualQuoteItems: () => boolean;
 
-  // Generador de mensaje de WhatsApp estructurado
-  generateWhatsAppMessage: (customerData?: {
-    name?: string;
-    deliveryMethod: "LOCAL" | "ENVIO";
-    paymentMethod: "TRANSFERENCIA" | "TARJETA";
-  }) => string;
+  // Generador de mensaje de WhatsApp estructurado con detalle e IVA
+  generateWhatsAppMessage: (customerData?: WhatsAppCheckoutOptions) => string;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -73,7 +82,6 @@ export const useCartStore = create<CartStore>()(
         if (item.product.requiresManualQuote || !item.product.priceTiers.length) {
           return item.product.basePrice;
         }
-        // Buscar el tramo más alto alcanzado
         const sortedTiers = [...item.product.priceTiers].sort((a, b) => b.minQty - a.minQty);
         const match = sortedTiers.find((t) => item.quantity >= t.minQty);
         return match ? match.unitPrice : item.product.basePrice;
@@ -97,7 +105,6 @@ export const useCartStore = create<CartStore>()(
           return null;
         }
         const sortedAsc = [...item.product.priceTiers].sort((a, b) => a.minQty - b.minQty);
-        // Buscar el próximo tramo no alcanzado
         const nextTier = sortedAsc.find((t) => t.minQty > item.quantity);
         if (!nextTier) return null;
 
@@ -114,6 +121,23 @@ export const useCartStore = create<CartStore>()(
         return get().items.reduce((acc, item) => acc + get().getItemSubtotal(item), 0);
       },
 
+      getTotalSavings: () => {
+        return get().items.reduce((acc, item) => {
+          const baseTotal = item.product.basePrice * item.quantity;
+          const discountedTotal = get().getItemSubtotal(item);
+          return acc + Math.max(0, baseTotal - discountedTotal);
+        }, 0);
+      },
+
+      getIvaAmount: () => {
+        return Math.round(get().getTotalAmount() * IVA_RATE);
+      },
+
+      getTotalWithIva: () => {
+        const net = get().getTotalAmount();
+        return net + Math.round(net * IVA_RATE);
+      },
+
       getTotalItemsCount: () => {
         return get().items.reduce((acc, item) => acc + item.quantity, 0);
       },
@@ -123,50 +147,77 @@ export const useCartStore = create<CartStore>()(
       },
 
       generateWhatsAppMessage: (customerData) => {
-        const { items, getTotalAmount, getItemUnitPrice, getItemDiscountPct, hasManualQuoteItems } =
-          get();
-        const total = getTotalAmount();
+        const {
+          items,
+          getTotalAmount,
+          getTotalSavings,
+          getIvaAmount,
+          getTotalWithIva,
+          getItemUnitPrice,
+          getItemDiscountPct,
+          hasManualQuoteItems,
+        } = get();
+
+        const subtotalNeto = getTotalAmount();
+        const savings = getTotalSavings();
+        const iva = getIvaAmount();
+        const totalFinal = getTotalWithIva();
+
         const deliveryText =
           customerData?.deliveryMethod === "LOCAL"
-            ? "🏪 Retiro Express en Local (Oncativo 69, Córdoba Capital)"
-            : "🚚 Envío al Interior / País (Transporte a cotizar)";
+            ? `🏪 Retiro Express en Local (Oncativo 69, Córdoba)${customerData.voucherCode ? ` — Pase #${customerData.voucherCode}` : ""}`
+            : "🚚 Envío por Expreso / Transporte (a coordinar)";
         const paymentText =
           customerData?.paymentMethod === "TRANSFERENCIA"
-            ? "💳 Transferencia Bancaria / Efectivo (Sin recargo - 0%)"
-            : "💳 Tarjeta / Billetera Virtual (Recargo a confirmar)";
+            ? "💳 Transferencia Bancaria / Efectivo (0% Recargo)"
+            : "💳 Tarjeta / Billetera Virtual";
 
-        let msg = `*NUEVO PEDIDO DIGITAL — OSSIL ENVASES*\n`;
+        let msg = `*ORDEN DE COMPRA DIGITAL — OSSIL ENVASES & HOME*\n`;
+        msg += `━━━━━━━━━━━━━━━━━━━━\n`;
         if (customerData?.name) {
           msg += `*Cliente:* ${customerData.name}\n`;
         }
-        msg += `*Modalidad:* ${deliveryText}\n`;
-        msg += `*Medio de Pago:* ${paymentText}\n\n`;
-        msg += `📦 *DETALLE DE PRODUCTOS:*\n`;
+        if (customerData?.businessName) {
+          msg += `*Razón Social:* ${customerData.businessName}\n`;
+        }
+        if (customerData?.cuit) {
+          msg += `*CUIT (Factura A):* ${customerData.cuit}\n`;
+        }
+        msg += `*Entrega:* ${deliveryText}\n`;
+        msg += `*Pago:* ${paymentText}\n\n`;
+        msg += `📦 *DETALLE DE ARTÍCULOS A COMPRAR (${items.length} ítems):*\n`;
 
         items.forEach((item, idx) => {
           const unitPrice = getItemUnitPrice(item);
           const discount = getItemDiscountPct(item);
           const subtotal = unitPrice * item.quantity;
-          const discText = discount > 0 ? ` (${discount}% OFF por escala)` : "";
-          const quoteText = item.product.requiresManualQuote ? " [A COTIZAR POR ASESOR]" : "";
+          const discText = discount > 0 ? ` (-${discount}% escala)` : "";
+          const threadText =
+            item.product.neckThread !== "N/A" ? ` | Boca ${item.product.neckThread}` : "";
 
-          msg += `${idx + 1}. *${item.product.name}*\n`;
-          msg += `   • Cantidad: ${item.quantity} u.\n`;
-          msg += `   • Rosca/Cierre: ${item.product.neckThread}\n`;
+          msg += `\n${idx + 1}. *${item.product.name}* (SKU: ${item.product.sku})\n`;
+          msg += `   • Cant.: ${item.quantity} u.${threadText}\n`;
           if (!item.product.requiresManualQuote) {
-            msg += `   • Unitario: $${unitPrice.toLocaleString("es-AR")}${discText}\n`;
-            msg += `   • Subtotal: $${subtotal.toLocaleString("es-AR")}\n`;
+            msg += `   • Unit. Neto: $${unitPrice.toLocaleString("es-AR")}${discText}\n`;
+            msg += `   • Subtotal Neto: $${subtotal.toLocaleString("es-AR")}\n`;
           } else {
-            msg += `   • Precio: ${quoteText}\n`;
+            msg += `   • Precio: Sujeto a cotización de asesor\n`;
           }
         });
 
         msg += `\n━━━━━━━━━━━━━━━━━━━━\n`;
-        msg += `*TOTAL ESTIMADO:* $${total.toLocaleString("es-AR")}\n`;
-        if (hasManualQuoteItems()) {
-          msg += `⚠️ *Nota:* La orden incluye productos que requieren cotización final de flete/precio especial por asesor.\n`;
+        msg += `🧾 *RESUMEN CONTABLE DEL PEDIDO:*\n`;
+        if (savings > 0) {
+          msg += `• Ahorro por Escala Mayorista: -$${savings.toLocaleString("es-AR")}\n`;
         }
-        msg += `\n_Generado automáticamente desde la plataforma digital de OSSIL Envases_`;
+        msg += `• Subtotal Neto (s/IVA): $${subtotalNeto.toLocaleString("es-AR")}\n`;
+        msg += `• IVA (21%): $${iva.toLocaleString("es-AR")}\n`;
+        msg += `*TOTAL FINAL (IVA Incluido): $${totalFinal.toLocaleString("es-AR")}*\n`;
+
+        if (hasManualQuoteItems()) {
+          msg += `\n⚠️ *Nota:* Incluye artículos sujetos a confirmación por asesor técnico.\n`;
+        }
+        msg += `\n_Enviado desde el catálogo web de OSSIL Envases Córdoba_`;
 
         return encodeURIComponent(msg);
       },
