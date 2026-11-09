@@ -33,9 +33,6 @@ export const STORE_CONFIG = {
     instagramHandle: "@ossilenvases",
     facebook: "https://www.facebook.com/ossilenvases/",
     facebookHandle: "/ossilenvases",
-    tiktok: "https://www.tiktok.com/@ossilenvases",
-    tiktokHandle: "@ossilenvases",
-    officialWeb: "https://www.ossilenvases.com.ar/",
   },
   hours: {
     weekdays: "Lunes a Viernes de 8:00 a 17:15 hs",

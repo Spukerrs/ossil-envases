@@ -60,6 +60,7 @@ export interface UserProfile {
   clientType: "minorista" | "mayorista";
   phone?: string;
   city?: string;
+  role?: "customer" | "admin";
 }
 
 export interface Product {

@@ -6,7 +6,6 @@ import {
   Clock,
   ExternalLink,
   FileSpreadsheet,
-  Globe,
   Home,
   type LucideIcon,
   MapPin,
@@ -171,33 +170,6 @@ export default function LinksPage() {
           <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
         </svg>
       ),
-    },
-    {
-      name: "TikTok OSSIL",
-      handle: STORE_CONFIG.socials.tiktokHandle,
-      desc: "Tips de velas de soja, roscas y armado",
-      href: STORE_CONFIG.socials.tiktok,
-      badgeBg: "bg-[#141413] text-white border-[#141413]",
-      svg: (
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          className="w-5 h-5"
-          aria-hidden="true"
-        >
-          <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-        </svg>
-      ),
-    },
-    {
-      name: "Sitio Institucional",
-      handle: "ossilenvases.com.ar",
-      desc: "Portal corporativo OSSIL Córdoba",
-      href: STORE_CONFIG.socials.officialWeb,
-      badgeBg: "bg-amber-100 text-[#B45309] border-amber-300",
-      svg: <Globe className="w-5 h-5" />,
     },
   ];
 

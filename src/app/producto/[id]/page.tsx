@@ -25,6 +25,7 @@ import { Navbar } from "@/components/Navbar";
 import { ProductCard } from "@/components/ProductCard";
 import { ThreadInspectorDrawer } from "@/components/ThreadInspectorDrawer";
 import { PRODUCTS_SEED } from "@/data/catalog";
+import { getCapacityEquivalence } from "@/lib/capacity";
 import { IVA_RATE, STORE_CONFIG } from "@/lib/constants";
 import { useCartStore } from "@/store/useCartStore";
 import type { Product } from "@/types/catalog";
@@ -38,6 +39,9 @@ export default function ProductDetailPage({ params }: PageProps) {
   const product = PRODUCTS_SEED.find((p) => p.id === id);
 
   const [quantity, setQuantity] = useState<number>(1);
+  const capacityEquiv = product
+    ? getCapacityEquivalence(product.capacity, product.capacityValue)
+    : null;
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [inspectorOpen, setInspectorOpen] = useState<boolean>(false);
   const [inspectedItem, setInspectedItem] = useState<Product | null>(null);
@@ -177,7 +181,12 @@ export default function ProductDetailPage({ params }: PageProps) {
                   <span className="text-[10px] uppercase font-bold text-[#8C827A] block">
                     Capacidad
                   </span>
-                  <span className="text-xs font-bold text-[#141413]">{product.capacity}</span>
+                  <span className="text-xs font-bold text-[#141413] block">{product.capacity}</span>
+                  {capacityEquiv?.isVolume && (
+                    <span className="font-mono text-[10px] text-[#835C3A] font-bold block mt-0.5">
+                      {capacityEquiv.mlText} = {capacityEquiv.litersText}
+                    </span>
+                  )}
                 </div>
                 {product.neckThread !== "N/A" ? (
                   <button
@@ -430,6 +439,26 @@ export default function ProductDetailPage({ params }: PageProps) {
               </div>
 
               <div className="divide-y divide-[#E6E2DC]/70 text-xs">
+                <div className="py-2.5 flex justify-between">
+                  <span className="text-[#66615B]">Capacidad Nominal:</span>
+                  <strong className="text-[#141413] font-mono">{product.capacity}</strong>
+                </div>
+                {capacityEquiv?.isVolume && (
+                  <>
+                    <div className="py-2.5 flex justify-between items-center">
+                      <span className="text-[#66615B]">Equivalencia en Mililitros:</span>
+                      <span className="font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        {capacityEquiv.mlText}
+                      </span>
+                    </div>
+                    <div className="py-2.5 flex justify-between items-center">
+                      <span className="text-[#66615B]">Equivalencia en Litros:</span>
+                      <span className="font-mono font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                        {capacityEquiv.litersText}
+                      </span>
+                    </div>
+                  </>
+                )}
                 <div className="py-2.5 flex justify-between">
                   <span className="text-[#66615B]">Dimensiones:</span>
                   <strong className="text-[#141413] font-mono">

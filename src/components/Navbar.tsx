@@ -3,8 +3,10 @@
 import {
   Building2,
   ChevronDown,
+  FileSpreadsheet,
   Home,
   LogOut,
+  Share2,
   ShieldCheck,
   ShoppingBag,
   Sparkles,
@@ -12,6 +14,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthModal } from "@/components/AuthModal";
@@ -76,6 +79,7 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
                     alt="OSSIL Envases & Home"
                     width={38}
                     height={46}
+                    style={{ width: "auto", height: "auto" }}
                     className="object-contain group-hover:scale-105 transition-transform"
                     priority
                   />
@@ -160,6 +164,17 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
                 <Sparkles className="w-3.5 h-3.5 shrink-0" />
                 <span>Serigrafía B2B</span>
               </button>
+              <Link
+                href="/links"
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-97 ${
+                  pathname === "/links"
+                    ? "bg-[#141413] text-[#FAF8F5] shadow-sm"
+                    : "text-[#57534E] hover:text-[#141413] hover:bg-white/60"
+                }`}
+              >
+                <Share2 className="w-3.5 h-3.5 shrink-0" />
+                <span>Redes & Links</span>
+              </Link>
             </nav>
 
             {/* Acciones: Auth / Mi Cuenta & Carrito */}
@@ -217,6 +232,17 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
                           </span>
                         )}
                       </div>
+
+                      {user.role === "admin" && (
+                        <Link
+                          href="/admin/precios"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="w-full text-left px-3 py-2 text-xs font-bold text-[#9E734E] hover:bg-amber-50/80 rounded-lg transition-colors cursor-pointer flex items-center gap-2"
+                        >
+                          <FileSpreadsheet className="w-3.5 h-3.5 text-[#9E734E]" />
+                          <span>Panel ERP Precios (Admin)</span>
+                        </Link>
+                      )}
 
                       <button
                         type="button"
@@ -331,6 +357,17 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
               <Sparkles className="w-3 h-3" />
               <span>Serigrafía B2B</span>
             </button>
+            <Link
+              href="/links"
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
+                pathname === "/links"
+                  ? "bg-[#141413] text-[#FAF8F5]"
+                  : "frosted-well text-[#57534E]"
+              }`}
+            >
+              <Share2 className="w-3 h-3" />
+              <span>Redes & Links</span>
+            </Link>
           </div>
         </div>
       </header>

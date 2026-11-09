@@ -9,6 +9,7 @@ import {
   Layers,
   MapPin,
   MessageCircle,
+  Navigation,
   PackageCheck,
   Sparkles,
   Star,
@@ -812,6 +813,151 @@ export function WelcomeLanding({
               </div>
             </div>
             <StoreStatusBadge />
+          </div>
+        </div>
+      </section>
+
+      {/* ===================================================================== */}
+      {/* 7. ¿DÓNDE LO RETIRO? - SHOWROOM, PICKUP Y MAPA INTERACTIVO GOOGLE MAPS */}
+      {/* ===================================================================== */}
+      <section className="p-6 sm:p-10 rounded-3xl bg-white border border-[#E6E2DC] shadow-sm space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#F0ECE4] pb-6">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#9E734E]" />
+              <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
+                Punto de Retiro Oficial en Córdoba Capital
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#141413]">¿Dónde lo retiro?</h2>
+            <p className="text-xs sm:text-sm text-[#57534E] mt-1 max-w-2xl leading-relaxed">
+              Showroom mayorista y depósito central en pleno centro de Córdoba. Retirá tu pedido
+              armado sin demoras o vení a conocer las muestras físicas de envases, roscas y
+              acabados.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <StoreStatusBadge />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* Tarjeta de Información y Beneficios del Retiro */}
+          <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+            <div className="space-y-4">
+              <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-3.5">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-[#DCD6C9] flex items-center justify-center text-[#9E734E] shrink-0 shadow-2xs">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono uppercase font-bold text-[#8C827A] block">
+                      Dirección Showroom & Depósito
+                    </span>
+                    <strong className="text-sm font-bold text-[#141413] block">
+                      Oncativo 69, Local 1
+                    </strong>
+                    <span className="text-xs text-[#57534E] block">
+                      Entre calles Alvear y Maipú • Córdoba Capital (X5000)
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-[#EAE5DC] flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-[#DCD6C9] flex items-center justify-center text-[#9E734E] shrink-0 shadow-2xs">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono uppercase font-bold text-[#8C827A] block">
+                      Horarios de Atención y Entrega
+                    </span>
+                    <strong className="text-xs font-bold text-[#141413] block">
+                      Lunes a Viernes: 08:00 a 17:15 hs
+                    </strong>
+                    <span className="text-xs text-[#57534E] block">
+                      Sábados: 09:00 a 13:30 hs (Domingos y Feriados cerrado)
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3 Ventajas del retiro local */}
+              <div className="space-y-2.5">
+                <div className="p-3.5 rounded-xl frosted-well flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="text-xs">
+                    <strong className="text-[#141413] block">0% Costo de Envío</strong>
+                    <span className="text-[#57534E]">
+                      Retirás tu compra 100% gratis, sin montos mínimos obligatorios de flete.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl frosted-well flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="text-xs">
+                    <strong className="text-[#141413] block">
+                      Pase Express con tu Número de Orden
+                    </strong>
+                    <span className="text-[#57534E]">
+                      Coordinando por WhatsApp, tu pedido te espera armado y chequeado en mostrador.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl frosted-well flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="text-xs">
+                    <strong className="text-[#141413] block">
+                      Testeo de Roscas y Acabados en Vivo
+                    </strong>
+                    <span className="text-[#57534E]">
+                      Probá la compatibilidad milimétrica de tus tapas y válvulas antes de
+                      llevarlas.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Botones de acción */}
+            <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              <a
+                href={STORE_CONFIG.location.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-3 px-4 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98"
+              >
+                <Navigation className="w-4 h-4" />
+                <span>Cómo llegar en Google Maps ↗</span>
+              </a>
+
+              <a
+                href={STORE_CONFIG.contact.whatsappUrl(
+                  "Hola OSSIL, quiero consultar sobre el retiro de un pedido en el local de Oncativo 69.",
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Consultar Retiro</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Iframe Interactivo de Google Maps */}
+          <div className="lg:col-span-7 h-full min-h-[380px] sm:min-h-[460px] rounded-2xl overflow-hidden border border-[#E6E2DC] shadow-inner relative group bg-[#FAF8F5]">
+            <iframe
+              title="Ubicación oficial de OSSIL Envases - Oncativo 69, Córdoba"
+              src="https://maps.google.com/maps?q=Oncativo%2069%2C%20X5000%20C%C3%B3rdoba%2C%20Argentina&t=&z=16&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="100%"
+              className="w-full h-full min-h-[380px] sm:min-h-[460px] border-0"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       </section>

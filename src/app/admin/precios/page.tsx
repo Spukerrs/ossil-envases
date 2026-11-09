@@ -1,19 +1,30 @@
 "use client";
 
 import {
+  AlertTriangle,
   ArrowLeft,
   CheckCircle2,
+  Download,
   FileSpreadsheet,
+  Info,
+  Lock,
   RefreshCw,
   Sparkles,
   TrendingUp,
+  Upload,
   UploadCloud,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Admin2FAGuard } from "@/components/Admin2FAGuard";
 import { PRODUCTS_SEED } from "@/data/catalog";
+import {
+  type CsvParseSummary,
+  generateExcelTemplateCsv,
+  parseExcelCsv,
+} from "@/lib/csvPriceParser";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface PriceChangePreview {
   sku: string;
@@ -27,12 +38,15 @@ interface PriceChangePreview {
 
 export default function AdminPreciosPage() {
   const [csvText, setCsvText] = useState<string>(
-    "SKU,NuevoPrecioBase\nEQ-30-SAT,1450\nTB-50-BR18,1680\nHV-200-24410,790\nMED-GOT-30,1250\nVEL-CER-SOJ-1K,7500",
+    "SKU;NuevoPrecioBase;NombreReferencia\nHV-200-24410;790;Botella Heaven 200cc PET\nEQ-30-SAT;1450;Frasco Equatone 30cc Satinado\nTB-50-BR18;1680;Frasco Tubo Liso 50cc\nMED-GOT-30;1250;Gotero Vidrio Ambar 30cc\nVEL-CER-SOJ-1K;7500;Cera de Soja Pura 1000gr",
   );
   const [percentageIncrease, setPercentageIncrease] = useState<number>(12);
   const [targetCategory, setTargetCategory] = useState<string>("ALL");
   const [previewList, setPreviewList] = useState<PriceChangePreview[]>([]);
+  const [parseSummary, setParseSummary] = useState<CsvParseSummary | null>(null);
+  const [unmatchedSkus, setUnmatchedSkus] = useState<string[]>([]);
   const [isApplied, setIsApplied] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Generar cálculo de escalas mayoristas automáticas basadas en un nuevo precio base
   const calculateTiers = (basePrice: number) => {
@@ -72,41 +86,93 @@ export default function AdminPreciosPage() {
     toast.info(`Simulación calculada para ${previews.length} productos (+${percentageIncrease}%)`);
   };
 
-  // Procesar CSV pegado
-  const handleProcessCsv = () => {
-    const lines = csvText.trim().split("\n");
+  // Procesar cadena CSV con detección inteligente de Excel
+  const processCsvContent = (content: string) => {
+    const summary = parseExcelCsv(content);
+    setParseSummary(summary);
+
     const previews: PriceChangePreview[] = [];
+    const unmatched: string[] = [];
 
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      const [sku, rawPrice] = line.split(",").map((s) => s.trim());
-      const newPrice = Number.parseFloat(rawPrice);
+    for (const row of summary.validRows) {
+      const existing = PRODUCTS_SEED.find((p) => p.sku.toLowerCase() === row.sku.toLowerCase());
 
-      const existing = PRODUCTS_SEED.find((p) => p.sku.toLowerCase() === sku.toLowerCase());
-
-      if (existing && !Number.isNaN(newPrice)) {
-        const pctChange = Math.round(((newPrice - existing.basePrice) / existing.basePrice) * 100);
+      if (existing) {
+        const pctChange = Math.round(((row.price - existing.basePrice) / existing.basePrice) * 100);
         previews.push({
           sku: existing.sku,
           name: existing.name,
           material: existing.material,
           currentBasePrice: existing.basePrice,
-          newBasePrice: newPrice,
+          newBasePrice: row.price,
           pctChange,
-          newTiers: calculateTiers(newPrice),
+          newTiers: calculateTiers(row.price),
         });
+      } else {
+        unmatched.push(row.sku);
       }
     }
 
+    setUnmatchedSkus(unmatched);
+
     if (previews.length === 0) {
-      toast.error("No se encontraron coincidencias de SKU en el CSV cargado");
+      toast.error("No se encontraron coincidencias de SKU en el catálogo actual", {
+        description:
+          unmatched.length > 0
+            ? `Revisá los SKUs ingresados: ${unmatched.slice(0, 3).join(", ")}...`
+            : "Verificá que el archivo tenga datos.",
+      });
       return;
     }
 
     setPreviewList(previews);
     setIsApplied(false);
-    toast.success(`CSV procesado: ${previews.length} productos listos para actualizar`);
+
+    const delimiterName =
+      summary.delimiter === ";"
+        ? "Punto y coma (;)"
+        : summary.delimiter === "\t"
+          ? "Tabulaciones (Excel copiado)"
+          : "Coma (,)";
+
+    toast.success(`CSV procesado: ${previews.length} productos listos para actualizar`, {
+      description: `Delimitador: ${delimiterName} • Encabezados: ${summary.detectedColumns.hasHeader ? "Detectados" : "Predeterminados"}`,
+    });
+  };
+
+  const handleProcessCsv = () => {
+    processCsvContent(csvText);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (text) {
+        setCsvText(text);
+        processCsvContent(text);
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  };
+
+  const handleDownloadTemplate = () => {
+    const content = generateExcelTemplateCsv();
+    const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "plantilla-precios-ossil.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("Plantilla descargada: plantilla-precios-ossil.csv", {
+      description: "Abrila en Microsoft Excel, ajustá tus precios y guardala.",
+    });
   };
 
   const handleApplyChanges = () => {
@@ -115,6 +181,39 @@ export default function AdminPreciosPage() {
       description: `Se actualizaron ${previewList.length} artículos con recálculo automático de escalas de volumen.`,
     });
   };
+
+  const user = useAuthStore((s) => s.user);
+
+  if (user?.role !== "admin") {
+    return (
+      <div className="min-h-screen bg-[#FAF8F5] apothecary-grid-subtle flex items-center justify-center p-4">
+        <div className="max-w-md w-full p-8 rounded-3xl bg-white border border-[#E6E2DC] shadow-2xl text-center space-y-5">
+          <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#9E734E] mx-auto shadow-2xs">
+            <Lock className="w-7 h-7" />
+          </div>
+          <div className="space-y-2">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#9E734E] px-2.5 py-0.5 rounded-full bg-[#EBE7DF]">
+              Acceso Restringido • Solo Administradores
+            </span>
+            <h1 className="text-xl font-black text-[#141413]">Módulo ERP Exclusivo</h1>
+            <p className="text-xs text-[#66615B] leading-relaxed">
+              El panel de actualización de precios e ingesta masiva está reservado únicamente para
+              usuarios con permisos administrativos verificados. Los accesos de administrador se
+              gestionan internamente y no pueden ser creados desde la tienda pública.
+            </p>
+          </div>
+          <div className="pt-2 flex flex-col gap-2">
+            <Link
+              href="/"
+              className="w-full py-3 px-4 rounded-xl bg-[#141413] hover:bg-[#2C2B29] text-white text-xs font-bold transition-all shadow-md active:scale-98"
+            >
+              Volver a la Tienda Pública
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Admin2FAGuard>
@@ -259,33 +358,155 @@ export default function AdminPreciosPage() {
                   </div>
                 </div>
 
-                {/* Panel de Opciones 2: Carga de CSV */}
+                {/* Panel de Opciones 2: Carga de CSV y Conexión con Excel */}
                 <div className="p-6 rounded-3xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-2xs space-y-4">
-                  <div className="flex items-center gap-2">
-                    <UploadCloud className="w-4 h-4 text-[#9E734E]" />
-                    <h3 className="text-sm font-bold text-[#141413]">
-                      Opción B: Pegar CSV desde ERP Local
-                    </h3>
-                  </div>
-                  <p className="text-xs text-[#66615B]">
-                    Copia y pega las columnas <code>SKU,NuevoPrecioBase</code> generadas desde
-                    Excel.
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <UploadCloud className="w-4 h-4 text-[#9E734E]" />
+                      <h3 className="text-sm font-bold text-[#141413]">
+                        Opción B: Importar CSV desde Excel / ERP
+                      </h3>
+                    </div>
 
-                  <textarea
-                    rows={6}
-                    value={csvText}
-                    onChange={(e) => setCsvText(e.target.value)}
-                    className="w-full p-3 font-mono text-xs rounded-xl border border-[#E6E2DC] bg-[#FAF8F5] text-[#141413] focus:outline-hidden focus:ring-2 focus:ring-[#9E734E]"
-                  />
+                    <button
+                      type="button"
+                      onClick={handleDownloadTemplate}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold text-[#9E734E] hover:text-[#835C3A] bg-[#FAF8F5] hover:bg-[#F0ECE4] border border-[#E6E2DC] rounded-lg transition-colors cursor-pointer"
+                      title="Descargar archivo modelo compatible con Excel en Argentina"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Descargar Plantilla Excel</span>
+                    </button>
+                  </div>
+
+                  {/* Cómo acomodar las columnas en Excel */}
+                  <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE5DC] text-xs space-y-2">
+                    <div className="flex items-center gap-1.5 font-bold text-[#141413] text-[11px] uppercase tracking-wider text-[#9E734E]">
+                      <Info className="w-3.5 h-3.5 text-[#9E734E]" />
+                      <span>Cómo acomodar las columnas en tu Excel:</span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px] text-center">
+                      <div className="p-1.5 rounded-lg bg-white border border-[#E0D9CE]">
+                        <span className="font-bold text-[#141413] block">Columna A</span>
+                        <span className="text-[#9E734E]">SKU / Código</span>
+                        <span className="text-[9px] text-[#8C827A] block">(Obligatorio)</span>
+                      </div>
+                      <div className="p-1.5 rounded-lg bg-white border border-[#E0D9CE]">
+                        <span className="font-bold text-[#141413] block">Columna B</span>
+                        <span className="text-[#9E734E]">NuevoPrecioBase</span>
+                        <span className="text-[9px] text-[#8C827A] block">(Obligatorio)</span>
+                      </div>
+                      <div className="p-1.5 rounded-lg bg-white border border-[#E0D9CE]">
+                        <span className="font-bold text-[#141413] block">Columna C</span>
+                        <span className="text-[#66615B]">Nombre / Detalle</span>
+                        <span className="text-[9px] text-[#8C827A] block">(Opcional)</span>
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] text-[#66615B] leading-relaxed pt-1">
+                      💡 <strong>Tip Excel Argentina:</strong> Guardá como{" "}
+                      <em>CSV (delimitado por comas) (*.csv)</em>. El sistema auto-detecta punto y
+                      coma (<code>;</code>), comas (<code>,</code>), tabulaciones de celdas copiadas
+                      (<code>Ctrl+C</code>), elimina signos pesos (<code>$</code>) y convierte
+                      decimales con coma (<code>1450,50</code>) automáticamente.
+                    </p>
+                  </div>
+
+                  {/* Acciones de carga: Archivo o Pegado */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label htmlFor="csv-textarea" className="text-xs font-bold text-[#141413]">
+                        Pegar datos de Excel o escribir:
+                      </label>
+
+                      {/* Input de archivo oculto con botón estilizado */}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".csv,text/csv,text/plain"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#141413] hover:text-[#9E734E] cursor-pointer"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-[#9E734E]" />
+                        <span>Subir archivo .CSV</span>
+                      </button>
+                    </div>
+
+                    <textarea
+                      id="csv-textarea"
+                      rows={5}
+                      value={csvText}
+                      onChange={(e) => setCsvText(e.target.value)}
+                      placeholder="SKU;NuevoPrecioBase&#10;HV-200-24410;790&#10;EQ-30-SAT;1450"
+                      className="w-full p-3 font-mono text-xs rounded-xl border border-[#E6E2DC] bg-[#FAF8F5] text-[#141413] focus:outline-hidden focus:ring-2 focus:ring-[#9E734E]"
+                    />
+                  </div>
+
+                  {/* Estado de detección de parseo */}
+                  {parseSummary && (
+                    <div className="flex items-center justify-between text-[11px] font-mono px-3 py-1.5 rounded-lg bg-[#FAF8F5] border border-[#EAE5DC] text-[#66615B]">
+                      <span>
+                        Delimitador:{" "}
+                        <strong className="text-[#141413]">
+                          {parseSummary.delimiter === ";"
+                            ? "Punto y coma (;)"
+                            : parseSummary.delimiter === "\t"
+                              ? "Tabulaciones (Excel copiado)"
+                              : "Coma (,)"}
+                        </strong>
+                      </span>
+                      <span>
+                        Válidos:{" "}
+                        <strong className="text-emerald-700">
+                          {parseSummary.validRows.length}
+                        </strong>
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Advertencias de filas inválidas o SKUs no encontrados */}
+                  {parseSummary && parseSummary.invalidRows.length > 0 && (
+                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">
+                      <div className="flex items-center gap-1.5 font-bold">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span>
+                          {parseSummary.invalidRows.length} fila(s) con errores ignoradas:
+                        </span>
+                      </div>
+                      <ul className="list-disc pl-5 text-[11px] space-y-0.5 text-amber-800 font-mono">
+                        {parseSummary.invalidRows.slice(0, 3).map((r) => (
+                          <li key={r.rowNumber}>
+                            Fila {r.rowNumber}: {r.error} ({r.rawSku || "sin SKU"})
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {unmatchedSkus.length > 0 && (
+                    <div className="p-3 rounded-xl bg-stone-100 border border-stone-200 text-xs text-[#57534E] space-y-1">
+                      <span className="font-bold block">
+                        ℹ️ {unmatchedSkus.length} SKU(s) no coinciden con productos del catálogo:
+                      </span>
+                      <p className="font-mono text-[10px] text-[#8C827A] truncate">
+                        {unmatchedSkus.join(", ")}
+                      </p>
+                    </div>
+                  )}
 
                   <button
                     type="button"
                     onClick={handleProcessCsv}
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                   >
                     <FileSpreadsheet className="w-3.5 h-3.5" />
-                    <span>Procesar Planilla CSV</span>
+                    <span>Procesar y Comparar Precios</span>
                   </button>
                 </div>
               </div>

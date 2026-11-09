@@ -10,6 +10,7 @@ interface WhatsAppCheckoutOptions {
   voucherCode?: string;
   deliveryMethod: "LOCAL" | "ENVIO";
   paymentMethod: "TRANSFERENCIA" | "TARJETA";
+  notes?: string;
 }
 
 interface CartStore {
@@ -165,27 +166,33 @@ export const useCartStore = create<CartStore>()(
 
         const deliveryText =
           customerData?.deliveryMethod === "LOCAL"
-            ? `🏪 Retiro Express en Local (Oncativo 69, Córdoba)${customerData.voucherCode ? ` — Pase #${customerData.voucherCode}` : ""}`
-            : "🚚 Envío por Expreso / Transporte (a coordinar)";
+            ? `Retiro en Local (Oncativo 69, Cordoba)${customerData.voucherCode ? ` - Pase #${customerData.voucherCode}` : ""}`
+            : "Envio por Expreso / Transporte (a coordinar)";
         const paymentText =
           customerData?.paymentMethod === "TRANSFERENCIA"
-            ? "💳 Transferencia Bancaria / Efectivo (0% Recargo)"
-            : "💳 Tarjeta / Billetera Virtual";
+            ? "Transferencia Bancaria / Efectivo (0% Recargo)"
+            : "Tarjeta / Billetera Virtual";
 
-        let msg = `*ORDEN DE COMPRA DIGITAL — OSSIL ENVASES & HOME*\n`;
-        msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+        // Formato seguro sin caracteres especiales de dibujo ni selectores de variación que WhatsApp renderiza como '?'
+        let msg = `*ORDEN DE COMPRA DIGITAL - OSSIL ENVASES & HOME*\n`;
+        msg += `--------------------------------------------------\n`;
         if (customerData?.name) {
           msg += `*Cliente:* ${customerData.name}\n`;
         }
         if (customerData?.businessName) {
-          msg += `*Razón Social:* ${customerData.businessName}\n`;
+          msg += `*Razon Social:* ${customerData.businessName}\n`;
         }
         if (customerData?.cuit) {
           msg += `*CUIT (Factura A):* ${customerData.cuit}\n`;
         }
         msg += `*Entrega:* ${deliveryText}\n`;
-        msg += `*Pago:* ${paymentText}\n\n`;
-        msg += `📦 *DETALLE DE ARTÍCULOS A COMPRAR (${items.length} ítems):*\n`;
+        msg += `*Pago:* ${paymentText}\n`;
+
+        if (customerData?.notes?.trim()) {
+          msg += `*Mensaje / Aclaracion:* "${customerData.notes.trim()}"\n`;
+        }
+
+        msg += `\n*DETALLE DE ARTICULOS (${items.length} items):*\n`;
 
         items.forEach((item, idx) => {
           const unitPrice = getItemUnitPrice(item);
@@ -196,28 +203,28 @@ export const useCartStore = create<CartStore>()(
             item.product.neckThread !== "N/A" ? ` | Boca ${item.product.neckThread}` : "";
 
           msg += `\n${idx + 1}. *${item.product.name}* (SKU: ${item.product.sku})\n`;
-          msg += `   • Cant.: ${item.quantity} u.${threadText}\n`;
+          msg += `   - Cant.: ${item.quantity} u.${threadText}\n`;
           if (!item.product.requiresManualQuote) {
-            msg += `   • Unit. Neto: $${unitPrice.toLocaleString("es-AR")}${discText}\n`;
-            msg += `   • Subtotal Neto: $${subtotal.toLocaleString("es-AR")}\n`;
+            msg += `   - Unit. Neto: $${unitPrice.toLocaleString("es-AR")}${discText}\n`;
+            msg += `   - Subtotal Neto: $${subtotal.toLocaleString("es-AR")}\n`;
           } else {
-            msg += `   • Precio: Sujeto a cotización de asesor\n`;
+            msg += `   - Precio: Sujeto a cotizacion de asesor\n`;
           }
         });
 
-        msg += `\n━━━━━━━━━━━━━━━━━━━━\n`;
-        msg += `🧾 *RESUMEN CONTABLE DEL PEDIDO:*\n`;
+        msg += `\n--------------------------------------------------\n`;
+        msg += `*RESUMEN CONTABLE DEL PEDIDO:*\n`;
         if (savings > 0) {
-          msg += `• Ahorro por Escala Mayorista: -$${savings.toLocaleString("es-AR")}\n`;
+          msg += `- Ahorro por Escala Mayorista: -$${savings.toLocaleString("es-AR")}\n`;
         }
-        msg += `• Subtotal Neto (s/IVA): $${subtotalNeto.toLocaleString("es-AR")}\n`;
-        msg += `• IVA (21%): $${iva.toLocaleString("es-AR")}\n`;
+        msg += `- Subtotal Neto (s/IVA): $${subtotalNeto.toLocaleString("es-AR")}\n`;
+        msg += `- IVA (21%): $${iva.toLocaleString("es-AR")}\n`;
         msg += `*TOTAL FINAL (IVA Incluido): $${totalFinal.toLocaleString("es-AR")}*\n`;
 
         if (hasManualQuoteItems()) {
-          msg += `\n⚠️ *Nota:* Incluye artículos sujetos a confirmación por asesor técnico.\n`;
+          msg += `\n*Nota:* Incluye articulos sujetos a confirmacion por asesor tecnico.\n`;
         }
-        msg += `\n_Enviado desde el catálogo web de OSSIL Envases Córdoba_`;
+        msg += `\n_Enviado desde el catalogo web de OSSIL Envases Cordoba_`;
 
         return encodeURIComponent(msg);
       },

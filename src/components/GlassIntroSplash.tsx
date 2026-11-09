@@ -115,4 +115,3 @@ export function GlassIntroSplash() {
     </AnimatePresence>
   );
 }
-

@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 import { getStoreStatus, type StoreStatus } from "@/lib/storeHours";
 
 export function StoreStatusBadge() {
+  const [mounted, setMounted] = useState(false);
   const [status, setStatus] = useState<StoreStatus>(() => getStoreStatus());
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    setStatus(getStoreStatus());
     // Actualizar cada 60 segundos
     const timer = setInterval(() => {
       setStatus(getStoreStatus());
@@ -24,23 +27,23 @@ export function StoreStatusBadge() {
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shadow-2xs border ${
-          status.isOpen
+          mounted && status.isOpen
             ? "bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100"
             : "bg-stone-100 text-stone-700 border-stone-300 hover:bg-stone-200"
         }`}
-        aria-label={`Estado de la tienda: ${status.statusLabel}`}
+        aria-label={`Estado de la tienda: ${mounted ? status.statusLabel : "OSSIL Envases Oncativo 69"}`}
       >
         <span className="relative flex h-2 w-2">
-          {status.isOpen && (
+          {mounted && status.isOpen && (
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
           )}
           <span
             className={`relative inline-flex rounded-full h-2 w-2 ${
-              status.isOpen ? "bg-emerald-600" : "bg-stone-400"
+              mounted && status.isOpen ? "bg-emerald-600" : "bg-stone-400"
             }`}
           />
         </span>
-        <span>{status.statusLabel}</span>
+        <span suppressHydrationWarning>{mounted ? status.statusLabel : "Showroom Córdoba"}</span>
         <span className="hidden sm:inline font-normal text-[11px] opacity-80">• Oncativo 69</span>
       </button>
 
@@ -63,11 +66,11 @@ export function StoreStatusBadge() {
           <div className="py-2.5 space-y-1.5 text-xs">
             <div className="flex items-center justify-between">
               <span className="text-[#66615B]">Lunes a Viernes:</span>
-              <span className="font-mono font-bold text-[#141413]">08:30 a 17:30 hs</span>
+              <span className="font-mono font-bold text-[#141413]">08:00 a 17:15 hs</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-[#66615B]">Sábados:</span>
-              <span className="font-mono font-bold text-[#141413]">09:00 a 13:00 hs</span>
+              <span className="font-mono font-bold text-[#141413]">09:00 a 13:30 hs</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-[#66615B]">Domingos:</span>

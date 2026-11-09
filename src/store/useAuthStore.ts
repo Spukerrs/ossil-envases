@@ -33,6 +33,29 @@ const isSupabaseConfigured = () => {
   );
 };
 
+// Lista autorizada de correos de administración interna y gerencia de OSSIL Envases
+export const ADMIN_EMAILS = [
+  "admin@ossilenvases.com.ar",
+  "gerencia@ossilenvases.com.ar",
+  "direccion@ossil.com.ar",
+  "oscar@ossilenvases.com.ar",
+  "silvia@ossilenvases.com.ar",
+  "cuello.shair@gmail.com",
+  "spukerrs@gmail.com",
+];
+
+export function isUserAdmin(email?: string, appRole?: string): boolean {
+  if (!email) return false;
+  if (appRole === "admin") return true;
+  const clean = email.trim().toLowerCase();
+  return (
+    ADMIN_EMAILS.includes(clean) ||
+    clean.startsWith("admin@") ||
+    clean.includes("gerencia@") ||
+    clean.includes("direccion@")
+  );
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -57,6 +80,10 @@ export const useAuthStore = create<AuthState>()(
             }
 
             if (data.user) {
+              const isAdmin = isUserAdmin(
+                data.user.email || email,
+                data.user.app_metadata?.role || data.user.user_metadata?.role,
+              );
               const profile: UserProfile = {
                 id: data.user.id,
                 email: data.user.email || email,
@@ -65,6 +92,7 @@ export const useAuthStore = create<AuthState>()(
                 cuit: data.user.user_metadata?.cuit,
                 businessName: data.user.user_metadata?.business_name,
                 phone: data.user.user_metadata?.phone,
+                role: isAdmin ? "admin" : "customer",
               };
               set({ user: profile, isLoading: false });
               return { success: true };
@@ -73,6 +101,7 @@ export const useAuthStore = create<AuthState>()(
 
           // Fallback / Modo Local
           const existingUser = get().user;
+          const isAdmin = isUserAdmin(email);
           const profile: UserProfile = {
             id: existingUser?.id || `user_${Date.now()}`,
             email,
@@ -84,6 +113,7 @@ export const useAuthStore = create<AuthState>()(
             businessName: email.toLowerCase().includes("b2b")
               ? "Distribuidora & Laboratorio"
               : undefined,
+            role: isAdmin ? "admin" : "customer",
           };
           set({ user: profile, isLoading: false });
           return { success: true };
@@ -126,13 +156,14 @@ export const useAuthStore = create<AuthState>()(
                 cuit: data.cuit,
                 businessName: data.businessName,
                 phone: data.phone,
+                role: "customer",
               };
               set({ user: profile, isLoading: false });
               return { success: true };
             }
           }
 
-          // Fallback / Modo Local
+          // Fallback / Modo Local: Los registros desde la web son SIEMPRE de clientes
           const profile: UserProfile = {
             id: `usr_${Date.now()}`,
             email: data.email,
@@ -141,6 +172,7 @@ export const useAuthStore = create<AuthState>()(
             cuit: data.cuit,
             businessName: data.businessName,
             phone: data.phone,
+            role: "customer",
           };
           set({ user: profile, isLoading: false });
           return { success: true };

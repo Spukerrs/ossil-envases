@@ -7,6 +7,7 @@ import {
   FileText,
   MapPin,
   MessageCircle,
+  MessageSquare,
   Minus,
   Plus,
   Sparkles,
@@ -54,6 +55,7 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
   const [deliveryMethod, setDeliveryMethod] = useState<"LOCAL" | "ENVIO">("LOCAL");
   const [paymentMethod, setPaymentMethod] = useState<"TRANSFERENCIA" | "TARJETA">("TRANSFERENCIA");
   const [customerName, setCustomerName] = useState<string>("");
+  const [customerNotes, setCustomerNotes] = useState<string>("");
   // Selección preferida de tapa por cada rosca con faltante
   const [selectedCapByThread, setSelectedCapByThread] = useState<Record<string, string>>({});
 
@@ -152,6 +154,7 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
       voucherCode: deliveryMethod === "LOCAL" ? expressVoucherCode : undefined,
       deliveryMethod,
       paymentMethod,
+      notes: customerNotes,
     });
     window.open(`https://wa.me/${STORE_CONFIG.contact.whatsappClean}?text=${encoded}`, "_blank");
   };
@@ -549,6 +552,29 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
                       Tarjeta / Billetera
                     </button>
                   </div>
+                </div>
+
+                {/* Mensaje o Aclaración Extra para el Vendedor */}
+                <div>
+                  <label
+                    htmlFor="customer-notes"
+                    className="text-xs font-bold text-[#141413] flex items-center justify-between mb-1"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <MessageSquare className="w-3.5 h-3.5 text-[#9E734E]" />
+                      Mensaje extra para el vendedor (opcional):
+                    </span>
+                    <span className="text-[10px] text-[#8C827A] font-normal">Máx. 250 car.</span>
+                  </label>
+                  <textarea
+                    id="customer-notes"
+                    rows={2}
+                    maxLength={250}
+                    value={customerNotes}
+                    onChange={(e) => setCustomerNotes(e.target.value)}
+                    placeholder="Ej: ¿Tienen factura A? Horario en que puedo pasar a retirar, o indicaciones del transporte..."
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E6E2DC] bg-white focus:outline-none focus:ring-2 focus:ring-[#9E734E]/30 focus:border-[#9E734E] text-[#141413] placeholder:text-[#A8A29E] transition-all resize-none"
+                  />
                 </div>
 
                 {/* DETALLE COMPLETO PRE-ENVÍO A WHATSAPP CON DESGLOSE DE IVA */}

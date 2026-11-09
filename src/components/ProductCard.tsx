@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getCapacityEquivalence } from "@/lib/capacity";
 import { IVA_RATE } from "@/lib/constants";
 import { useCartStore } from "@/store/useCartStore";
 import type { Product } from "@/types/catalog";
@@ -38,6 +39,7 @@ export function ProductCard({ product, onFilterThread, onOpenComboModal }: Produ
   };
 
   const isBottleWithThread = product.neckThread !== "N/A" && product.category !== "accesorios";
+  const capacityEquiv = getCapacityEquivalence(product.capacity, product.capacityValue);
 
   return (
     <div className="group relative flex flex-col justify-between liquid-glass liquid-glass-interactive rounded-2xl p-5">
@@ -48,9 +50,18 @@ export function ProductCard({ product, onFilterThread, onOpenComboModal }: Produ
             <span className="font-mono text-[11px] font-bold px-2.5 py-0.5 rounded-md frosted-well text-[#141413]">
               {product.neckThread !== "N/A" ? `BOCA ${product.neckThread}` : product.material}
             </span>
-            <span className="text-[11px] font-medium text-[#57534E] px-2 py-0.5 rounded-md bg-white/70">
-              {product.capacity}
-            </span>
+            {capacityEquiv?.isVolume ? (
+              <span
+                className="text-[11px] font-mono font-medium text-[#57534E] px-2 py-0.5 rounded-md bg-white/80"
+                title={`Capacidad: ${product.capacity} • Equivalente a ${capacityEquiv.mlText} (${capacityEquiv.litersText})`}
+              >
+                {product.capacity} • {capacityEquiv.mlText} ({capacityEquiv.litersText})
+              </span>
+            ) : (
+              <span className="text-[11px] font-medium text-[#57534E] px-2 py-0.5 rounded-md bg-white/70">
+                {product.capacity}
+              </span>
+            )}
           </div>
 
           {product.badge && (
