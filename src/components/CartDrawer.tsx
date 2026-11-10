@@ -56,6 +56,10 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
   const [paymentMethod, setPaymentMethod] = useState<"TRANSFERENCIA" | "TARJETA">("TRANSFERENCIA");
   const [customerName, setCustomerName] = useState<string>("");
   const [customerNotes, setCustomerNotes] = useState<string>("");
+  // Selección de asesor de WhatsApp
+  const [selectedAdvisor, setSelectedAdvisor] = useState<string>(
+    STORE_CONFIG.contact.salesLines[0].clean,
+  );
   // Selección preferida de tapa por cada rosca con faltante
   const [selectedCapByThread, setSelectedCapByThread] = useState<Record<string, string>>({});
 
@@ -156,7 +160,7 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
       paymentMethod,
       notes: customerNotes,
     });
-    window.open(`https://wa.me/${STORE_CONFIG.contact.whatsappClean}?text=${encoded}`, "_blank");
+    window.open(STORE_CONFIG.contact.whatsappUrl(encoded, selectedAdvisor), "_blank");
   };
 
   return (
@@ -510,7 +514,7 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
                       </div>
                       <div className="flex items-start gap-1.5 text-[11px] text-[#66615B]">
                         <Clock className="w-3.5 h-3.5 text-[#9E734E] shrink-0 mt-0.5" />
-                        <span>Lun a Vie: 08:00 a 17:15 hs | Sáb: 09:00 a 13:30 hs</span>
+                        <span>Lun: 08:15 a 17:15 hs | Mar a Vie: 08:00 a 17:15 hs | Sáb: 09:00 a 13:30 hs</span>
                       </div>
                     </div>
                   ) : (
@@ -661,10 +665,43 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
               </div>
 
               {hasManualQuoteItems() && (
-                <p className="text-[11px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200">
-                  ⚠️ Incluye artículos especiales cuya cotización final confirma el asesor.
+                <p className="text-[11px] text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 leading-snug">
+                  ⚠️ Algunos productos no cuentan con precio mayorista automático; el descuento final se confirma con un asesor por WhatsApp antes de facturar.
                 </p>
               )}
+
+              {/* Selector de Asesor Comercial de WhatsApp */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#141413] flex items-center gap-1.5">
+                    <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                    Enviar orden a:
+                  </span>
+                  <span className="text-[10px] text-[#8C827A]">Elegí asesor comercial</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {STORE_CONFIG.contact.salesLines.map((line) => {
+                    const isSelected = selectedAdvisor === line.clean;
+                    return (
+                      <button
+                        key={line.id}
+                        type="button"
+                        onClick={() => setSelectedAdvisor(line.clean)}
+                        className={`p-2.5 rounded-xl text-left border transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-emerald-50 border-emerald-500 text-emerald-950 font-bold shadow-2xs ring-1 ring-emerald-500/30"
+                            : "bg-white border-[#E6E2DC] text-[#66615B] hover:bg-[#FAF8F5]"
+                        }`}
+                      >
+                        <span className="text-xs block font-bold leading-tight">{line.shortLabel}</span>
+                        <span className="font-mono text-[11px] block text-[#141413] mt-0.5">
+                          {line.phoneDisplay}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
               <button
                 type="button"
@@ -676,8 +713,10 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
               </button>
 
               <p className="text-[10px] text-center text-[#8C827A]">
-                Se enviará el detalle completo con SKU, roscas e IVA discriminado al{" "}
-                {STORE_CONFIG.contact.phoneDisplay}.
+                Se enviará el detalle completo con SKU, roscas e IVA discriminado al asesor (
+                {STORE_CONFIG.contact.salesLines.find((l) => l.clean === selectedAdvisor)?.phoneDisplay ||
+                  STORE_CONFIG.contact.phoneDisplay}
+                ).
               </p>
             </div>
           )}

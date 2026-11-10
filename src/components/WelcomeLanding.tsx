@@ -800,7 +800,7 @@ export function WelcomeLanding({
                   Local y Retiro: Oncativo 69, Local 1 (Centro, Córdoba).
                 </strong>
                 <span className="text-[#66615B]">
-                  Lunes a Viernes de 08:00 a 17:15 hs. Sábados de 09:00 a 13:30 hs.
+                  Lunes de 08:15 a 17:15 hs • Martes a Viernes de 08:00 a 17:15 hs • Sábados de 09:00 a 13:30 hs.
                 </span>
               </div>
             </div>
@@ -863,7 +863,7 @@ export function WelcomeLanding({
                       Días y Horarios.
                     </span>
                     <strong className="text-xs font-bold text-[#141413] block">
-                      Lunes a Viernes: 08:00 a 17:15 hs.
+                      Lun: 08:15 a 17:15 hs • Mar a Vie: 08:00 a 17:15 hs.
                     </strong>
                     <span className="text-xs text-[#57534E] block">
                       Sábados: 09:00 a 13:30 hs. Domingos cerrado.

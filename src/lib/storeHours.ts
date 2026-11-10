@@ -1,6 +1,7 @@
 // Utilidad para calcular en tiempo real si el local de Oncativo 69 (Córdoba) está abierto o cerrado
 // Horarios oficiales:
-// - Lunes a Viernes: 08:00 a 17:15 hs
+// - Lunes: 08:15 a 17:15 hs
+// - Martes a Viernes: 08:00 a 17:15 hs
 // - Sábados: 09:00 a 13:30 hs
 // - Domingos: Cerrado
 
@@ -32,8 +33,10 @@ export function getStoreStatus(now: Date = new Date()): StoreStatus {
   }).format(now);
 
   // Rangos en minutos desde medianoche:
-  // Lunes a Viernes: 08:00 (480 min) a 17:15 (1035 min)
-  const weekdayOpen = 8 * 60; // 480
+  // Lunes: 08:15 (495 min) a 17:15 (1035 min)
+  const mondayOpen = 8 * 60 + 15; // 495
+  // Martes a Viernes: 08:00 (480 min) a 17:15 (1035 min)
+  const tuesdayToFridayOpen = 8 * 60; // 480
   const weekdayClose = 17 * 60 + 15; // 1035
 
   // Sábados: 09:00 (540 min) a 13:30 (810 min)
@@ -43,12 +46,24 @@ export function getStoreStatus(now: Date = new Date()): StoreStatus {
   let isOpen = false;
   let nextChangeText = "";
 
-  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-    // Lunes a Viernes
-    if (currentMinutes >= weekdayOpen && currentMinutes < weekdayClose) {
+  if (dayOfWeek === 1) {
+    // Lunes
+    if (currentMinutes >= mondayOpen && currentMinutes < weekdayClose) {
       isOpen = true;
       nextChangeText = "Atendiendo hoy en Oncativo 69 hasta las 17:15 hs";
-    } else if (currentMinutes < weekdayOpen) {
+    } else if (currentMinutes < mondayOpen) {
+      isOpen = false;
+      nextChangeText = "Abre hoy lunes a las 08:15 hs • Pedidos web activos 24/7";
+    } else {
+      isOpen = false;
+      nextChangeText = "Abre mañana martes a las 08:00 hs • Pedidos web activos 24/7";
+    }
+  } else if (dayOfWeek >= 2 && dayOfWeek <= 5) {
+    // Martes a Viernes
+    if (currentMinutes >= tuesdayToFridayOpen && currentMinutes < weekdayClose) {
+      isOpen = true;
+      nextChangeText = "Atendiendo hoy en Oncativo 69 hasta las 17:15 hs";
+    } else if (currentMinutes < tuesdayToFridayOpen) {
       isOpen = false;
       nextChangeText = "Abre hoy a las 08:00 hs • Pedidos web activos 24/7";
     } else {
@@ -69,18 +84,25 @@ export function getStoreStatus(now: Date = new Date()): StoreStatus {
       nextChangeText = "Abre hoy a las 09:00 hs • Pedidos web activos 24/7";
     } else {
       isOpen = false;
-      nextChangeText = "Abre el lunes a las 08:00 hs • Pedidos web activos 24/7";
+      nextChangeText = "Abre el lunes a las 08:15 hs • Pedidos web activos 24/7";
     }
   } else {
     // Domingo
     isOpen = false;
-    nextChangeText = "Abre el lunes a las 08:00 hs • Pedidos web activos 24/7";
+    nextChangeText = "Abre el lunes a las 08:15 hs • Pedidos web activos 24/7";
+  }
+
+  let scheduleText = "Mar a Vie: 08:00 a 17:15 hs";
+  if (dayOfWeek === 1 || dayOfWeek === 0) {
+    scheduleText = "Lunes: 08:15 a 17:15 hs";
+  } else if (dayOfWeek === 6) {
+    scheduleText = "Sábados: 09:00 a 13:30 hs";
   }
 
   return {
     isOpen,
     statusLabel: isOpen ? "Abierto Ahora" : "Cerrado Ahora",
-    scheduleText: dayOfWeek === 6 ? "Sábados: 09:00 a 13:30 hs" : "Lun a Vie: 08:00 a 17:15 hs",
+    scheduleText,
     nextChangeText,
     localTimeDisplay: `${timeFormat} hs (Córdoba)`,
   };

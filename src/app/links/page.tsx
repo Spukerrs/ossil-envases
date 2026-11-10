@@ -90,14 +90,27 @@ function LinkCard({ link }: { link: LinkItemData }) {
 export default function LinksPage() {
   const primaryLinks: LinkItemData[] = [
     {
-      title: "WhatsApp Ventas & Pedidos",
-      subtitle: `Atención directa en Córdoba: ${STORE_CONFIG.contact.phoneDisplay}`,
+      title: "WhatsApp Ventas — Línea 1",
+      subtitle: `Atención comercial y asesoramiento: ${STORE_CONFIG.contact.salesLines[0].phoneDisplay}`,
       href: STORE_CONFIG.contact.whatsappUrl(
-        "Hola OSSIL, vengo desde sus enlaces oficiales y quiero hacer una consulta.",
+        "Hola OSSIL, quiero consultar precios y disponibilidad en la Línea 1.",
+        STORE_CONFIG.contact.salesLines[0].clean,
       ),
       icon: MessageCircle,
       featured: true,
-      badge: "Respuesta rápida",
+      badge: "Línea 1 Oficial",
+      isExternal: true,
+    },
+    {
+      title: "WhatsApp Pedidos — Línea 2",
+      subtitle: `Órdenes mayoristas y cotizaciones: ${STORE_CONFIG.contact.salesLines[1].phoneDisplay}`,
+      href: STORE_CONFIG.contact.whatsappUrl(
+        "Hola OSSIL, quiero consultar pedidos y cotizaciones en la Línea 2.",
+        STORE_CONFIG.contact.salesLines[1].clean,
+      ),
+      icon: MessageCircle,
+      featured: true,
+      badge: "Línea 2 Oficial",
       isExternal: true,
     },
     {
@@ -245,8 +258,9 @@ export default function LinksPage() {
           <div className="flex items-start gap-3 pt-2.5 border-t border-[#E6E2DC]/80">
             <Clock className="w-5 h-5 text-[#9E734E] shrink-0 mt-0.5" />
             <div className="text-[#57534E] text-xs sm:text-sm">
-              <span className="font-semibold text-[#141413]">Lunes a Viernes:</span> 08:00 a 17:15
-              hs • <span className="font-semibold text-[#141413]">Sábados:</span> 09:00 a 13:30 hs
+              <span className="font-semibold text-[#141413]">Lunes:</span> 08:15 a 17:15 hs •{" "}
+              <span className="font-semibold text-[#141413]">Martes a Viernes:</span> 08:00 a 17:15 hs •{" "}
+              <span className="font-semibold text-[#141413]">Sábados:</span> 09:00 a 13:30 hs
             </div>
           </div>
         </div>

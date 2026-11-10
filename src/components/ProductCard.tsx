@@ -6,7 +6,7 @@ import Link from "next/link";
 import { memo, useState } from "react";
 import { toast } from "sonner";
 import { getCapacityEquivalence } from "@/lib/capacity";
-import { IVA_RATE } from "@/lib/constants";
+import { IVA_RATE, STORE_CONFIG } from "@/lib/constants";
 import { useCartStore } from "@/store/useCartStore";
 import type { Product } from "@/types/catalog";
 
@@ -152,9 +152,9 @@ export const ProductCard = memo(function ProductCard({
       {/* Selector de Escalas Mayoristas Interactivo */}
       <div className="mt-5 pt-4 border-t border-[#F0ECE4]">
         {product.requiresManualQuote ? (
-          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs mb-3">
-            <span className="font-bold block">⚠️ Producto Especial:</span>
-            Precio por mayor y flete a cotizar con un asesor.
+          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs mb-3 leading-relaxed">
+            <span className="font-bold block mb-1">⚠️ Aviso Comercial:</span>
+            {STORE_CONFIG.notices.manualQuote}
           </div>
         ) : (
           <div className="mb-3.5">

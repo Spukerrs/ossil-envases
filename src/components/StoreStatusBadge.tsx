@@ -65,7 +65,11 @@ export function StoreStatusBadge() {
 
           <div className="py-2.5 space-y-1.5 text-xs">
             <div className="flex items-center justify-between">
-              <span className="text-[#66615B]">Lunes a Viernes:</span>
+              <span className="text-[#66615B]">Lunes:</span>
+              <span className="font-mono font-bold text-[#141413]">08:15 a 17:15 hs</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[#66615B]">Martes a Viernes:</span>
               <span className="font-mono font-bold text-[#141413]">08:00 a 17:15 hs</span>
             </div>
             <div className="flex items-center justify-between">

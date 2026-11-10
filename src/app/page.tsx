@@ -737,6 +737,14 @@ function HomePageContent() {
                             <div ref={sentinelRef} className="h-6 w-full pointer-events-none" />
                           </div>
                         )}
+
+                        {/* Aviso oficial de excepción comercial */}
+                        <div className="mt-8 p-4 rounded-2xl bg-[#FAF8F5] border border-[#E6E2DC] text-xs text-[#57534E] flex items-start gap-3">
+                          <span className="text-base shrink-0">ℹ️</span>
+                          <p className="leading-relaxed">
+                            <strong className="text-[#141413]">Aviso Comercial:</strong> {STORE_CONFIG.notices.manualQuote}
+                          </p>
+                        </div>
                       </>
                     ) : (
                       <div className="p-12 text-center rounded-3xl bg-[#FFFFFF] border border-[#E6E2DC] max-w-md mx-auto space-y-3">
@@ -1173,20 +1181,32 @@ function HomePageContent() {
                 📍 <strong>Local:</strong> {STORE_CONFIG.location.address} (
                 {STORE_CONFIG.location.city}).
               </p>
-              <p>
-                📞 <strong>WhatsApp:</strong>{" "}
-                <a
-                  href={STORE_CONFIG.contact.whatsappUrl("Hola OSSIL, tengo una consulta.")}
-                  className="hover:text-[#9E734E] font-bold underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {STORE_CONFIG.contact.phoneDisplay}.
-                </a>
-              </p>
+              <div>
+                <span className="font-semibold text-[#141413]">📞 WhatsApp Ventas:</span>
+                <ul className="mt-1 space-y-1">
+                  {STORE_CONFIG.contact.salesLines.map((line) => (
+                    <li key={line.id}>
+                      <a
+                        href={STORE_CONFIG.contact.whatsappUrl(
+                          "Hola OSSIL, tengo una consulta sobre el catálogo.",
+                          line.clean,
+                        )}
+                        className="hover:text-[#9E734E] font-bold underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {line.shortLabel}: {line.phoneDisplay}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <p>
                 🕒 <strong>Horarios:</strong> {STORE_CONFIG.hours.weekdays}.{" "}
                 {STORE_CONFIG.hours.saturdays}.
+              </p>
+              <p className="text-[11px] text-[#66615B] pt-1">
+                ℹ️ {STORE_CONFIG.notices.manualQuote}
               </p>
             </div>
           </div>
