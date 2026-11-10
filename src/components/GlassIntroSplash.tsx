@@ -113,9 +113,9 @@ export function GlassIntroSplash() {
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#9E734E] block">
                 Córdoba Capital • Oncativo 69.
               </span>
-              <h2 className="font-mono text-2xl sm:text-3xl font-black tracking-tight text-[#141413]">
+              <span className="font-mono text-2xl sm:text-3xl font-black tracking-tight text-[#141413] block">
                 OSSIL.
-              </h2>
+              </span>
               <p className="text-xs font-medium text-[#57534E]">
                 Envases de vidrio, bazar, velas y diseño.
               </p>

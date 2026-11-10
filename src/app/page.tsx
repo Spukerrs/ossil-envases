@@ -13,6 +13,7 @@ import {
   ZoomIn,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { ActiveFilterChips } from "@/components/ActiveFilterChips";
@@ -39,67 +40,67 @@ import type { BusinessUnit, Product } from "@/types/catalog";
 
 const B2B_SAMPLES: B2BSample[] = [
   {
-    title: "Satinado / Esmerilado",
-    tech: "Inmersión Química al Ácido",
+    title: "Satinado y Esmerilado.",
+    tech: "Baño al Ácido.",
     image: "/images/services/satinado-esmerilado.webp",
-    desc: "Otorga una textura suave tipo 'frosted glass' anti-huella. Te asesoramos sobre qué frascos de vidrio son aptos para satinado y coordinamos las tiradas con talleres especializados.",
+    desc: "Textura mate suave al tacto y sin marcas de dedos. Te decimos qué frascos de vidrio van bien para matear y armamos el nexo con talleres.",
     example:
-      "Frascos de perfumería fina de 30cc a 100cc con acabado translúcido mate suave que difumina la luz y previene marcas de huellas dactilares.",
-    leadTime: "7 a 10 días hábiles",
+      "Frascos de perfume de 30cc a 100cc con tono mate suave. Corta los reflejos de luz.",
+    leadTime: "7 a 10 días.",
     minQty: "500 u.",
-    materials: "Vidrio Cristal y Ámbar",
+    materials: "Vidrio Cristal y Ámbar.",
     features: [
-      "Acabado anti-huella dactilar mate",
-      "Textura suave al tacto y difusora de luz",
-      "No altera la capacidad ni la rosca del envase",
+      "Acabado mate sin marcas de dedos.",
+      "Tacto suave que difunde la luz.",
+      "No cambia la rosca ni la boca del frasco.",
     ],
   },
   {
-    title: "Serigrafía Vitrificable",
-    tech: "Horneado a 580°C",
+    title: "Serigrafía en Vidrio.",
+    tech: "Horno a 580°C.",
     image: "/images/services/serigrafia-vitrificable.webp",
-    desc: "Pinturas inorgánicas fusionadas con el vidrio en túnel continuo. Te orientamos técnicamente en el calce de tintas, espesores de línea y resistencia a alcoholes y fricción.",
+    desc: "Pintura fijada a fuego sobre el envase de vidrio. Te guiamos en el calce de color, líneas finas y resistencia al roce diario.",
     example:
-      "Botellas y frascos de laboratorio con logotipo, graduación milimétrica o marca horneada. Resiste alcohol 96°, aceites y lavados.",
-    leadTime: "10 a 14 días hábiles",
+      "Frascos de colonia y goteros con logo horneado. Resiste alcohol 96° y lavados diarios.",
+    leadTime: "10 a 14 días.",
     minQty: "1.000 u.",
-    materials: "Vidrio Cristal, Ámbar, Verde y Azul",
+    materials: "Vidrio Cristal, Ámbar y Azul.",
     features: [
-      "Fusión molecular al vidrio a 580°C",
-      "Resistencia total a solventes, alcohol 96° y fricción",
-      "Hasta 4 tintas con calce de alta precisión",
+      "Fijación al vidrio con calor a 580°C.",
+      "Resiste alcohol de 96°, aceites y roce.",
+      "Hasta 4 tintas con calce exacto.",
     ],
   },
   {
-    title: "Tampografía Industrial",
-    tech: "Pad Printing 1-4 Colores",
+    title: "Tampografía en Tapas.",
+    tech: "Sello de 1 a 4 Tintas.",
     image: "/images/services/tampografia-acabado.webp",
-    desc: "Transferencia de tinta mediante cabezal elástico de silicona. Te asesoramos en la personalización de tapas ciegas, bajorrelieves, válvulas y cremeras donde la serigrafía no llega.",
+    desc: "Impresión con sello de goma para piezas curvas. Va perfecto en tapas, bajorrelieves y bombas donde la malla no entra.",
     example:
-      "Tapas plásticas y metálicas a rosca 24/410, válvulas dosificadoras y pulsadores cremeros con isotipo de marca nítido en el bajorrelieve superior en 1 a 4 tintas epoxi.",
-    leadTime: "5 a 7 días hábiles",
+      "Tapas plásticas y bombas con logo nítido en la parte superior.",
+    leadTime: "5 a 7 días.",
     minQty: "500 u.",
-    materials: "PP, PEAD, Acrílico, Aluminio y Madera",
+    materials: "Plástico, Acrílico y Metal.",
     features: [
-      "Impresión sobre superficies curvas o bajorrelieves",
-      "Tintas epoxi de alta adherencia y secado rápido",
-      "Ideal para personalización de tapas y bombas",
+      "Estampa en zonas curvas o hundidas.",
+      "Tintas firmes de secado rápido.",
+      "Ideal para tapas, bombas y cremeras.",
     ],
   },
   {
-    title: "Hot-Stamping Metalizado",
-    tech: "Foil Térmico Oro / Plata",
+    title: "Hot-Stamping Dorado.",
+    tech: "Foil Térmico Oro y Plata.",
     image: "/images/services/hotstamping-dorado.webp",
-    desc: "Fijación por calor y presión de películas metalizadas reflectantes (foil térmico oro 24k o plata). Te guiamos en la elección del envase y matriz térmica para lograr un efecto espejo de alta gama.",
+    desc: "Lámina metalizada con brillo oro o plata fijada con calor. Da un toque fino y resalta la marca en la góndola.",
     example:
-      "Frascos de perfumería fina, botellas ámbar y frascos satinados con tipografía, marcos lineales y filetes perimetrales dorados brillantes que destellan bajo iluminación de góndola.",
-    leadTime: "10 a 12 días hábiles",
+      "Frascos de perfume y cajas con marco dorado brillante.",
+    leadTime: "10 a 12 días.",
     minQty: "2.000 u.",
-    materials: "Vidrio barnizado, Plásticos rígidos y Cajas",
+    materials: "Vidrio pintado, Plásticos y Cajas.",
     features: [
-      "Brillo espejo oro brillante, plata u holográfico",
-      "Realce táctil y visual de máxima gama",
-      "Excelente contraste sobre bases ámbar y negras",
+      "Brillo espejo oro brillante y plata.",
+      "Resalta la presencia de tu marca.",
+      "Gran contraste sobre vidrio ámbar y negro.",
     ],
   },
 ];
@@ -343,8 +344,8 @@ function HomePageContent() {
   const categoriesForUnit =
     activeUnit === "ENVASES" || activeUnit === "HOME" ? FAMILIES_BY_UNIT[activeUnit] : [];
 
-  // Paginación incremental de alto rendimiento (Batching inicial de 24 items para cero delay)
-  const PAGE_SIZE = 24;
+  // Paginación incremental de alto rendimiento (Batching inicial de 16 items para DOM óptimo < 1500 nodos)
+  const PAGE_SIZE = 16;
   const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -525,9 +526,9 @@ function HomePageContent() {
                 {/* ============================================================ */}
                 <div className="mt-6 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black uppercase tracking-wider text-[#141413]">
-                      Familias de Producto:
-                    </span>
+                    <h2 className="text-xs font-black uppercase tracking-wider text-[#141413]">
+                      Familias de Producto y Categorías:
+                    </h2>
                     <span className="text-[11px] text-[#8C827A]">
                       {filteredProducts.length} productos coincidentes
                     </span>
@@ -690,6 +691,17 @@ function HomePageContent() {
 
                   {/* Grilla de Productos de Alto Rendimiento */}
                   <section className="animate-fade-in">
+                    <div className="flex items-center justify-between mb-4 border-b border-[#E6E2DC] pb-3">
+                      <h2 className="text-base sm:text-lg font-black text-[#141413]">
+                        {activeUnit === "ENVASES"
+                          ? "Envases y Cierres Disponibles en Stock"
+                          : "Artículos OSSIL Home Disponibles en Stock"}
+                      </h2>
+                      <span className="text-xs font-mono text-[#8C827A]">
+                        {filteredProducts.length} productos
+                      </span>
+                    </div>
+
                     {filteredProducts.length > 0 ? (
                       <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -774,107 +786,363 @@ function HomePageContent() {
               <div>
                 <button
                   type="button"
-                  onClick={() => setActiveUnit("INICIO")}
+                  onClick={() => {
+                    startTransition(() => {
+                      setActiveUnit("INICIO");
+                    });
+                    window.history.replaceState(null, "", "/");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-[#66615B] hover:text-[#141413] transition-colors cursor-pointer mb-4"
                 >
                   <ArrowLeft className="w-3.5 h-3.5 text-[#9E734E]" />
-                  <span>Volver a la portada de bienvenida</span>
+                  <span>Volver a la portada de bienvenida.</span>
                 </button>
 
                 {/* Header de la Unidad B2B */}
                 <div className="border-b border-[#E6E2DC] pb-6 space-y-2">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E] px-2.5 py-0.5 rounded-full bg-[#EBE7DF] border border-[#DCD6C9]">
-                      Asesoramiento Técnico B2B
+                      Ayuda Técnica B2B.
                     </span>
                     <span className="text-xs text-[#8C827A]">
-                      • Tiradas comerciales desde 500 unidades
+                      • Tiradas comerciales desde 500 unidades.
                     </span>
                   </div>
                   <h1 className="text-3xl sm:text-4xl font-black text-[#141413] tracking-tight">
-                    Asesoramiento en Personalización y Acabados de Packaging
+                    Diseño de Marca y Acabados para tus Envases.
                   </h1>
                   <p className="text-xs sm:text-sm text-[#66615B] max-w-3xl leading-relaxed">
-                    Te brindamos asesoramiento integral para personalizar tus envases: evaluamos la
-                    compatibilidad técnica de cada material (vidrio, PET, PEAD o aluminio), te
-                    orientamos en la técnica ideal (serigrafía vitrificable, satinado, tampografía
-                    en tapas o hot-stamping) y articulamos el nexo con talleres especializados para
-                    que tu marca logre el acabado exacto que necesita. Hacé click en cualquier
-                    muestra para verla en detalle.
+                    Te ayudamos a elegir el mejor acabado. Vemos la técnica ideal para vidrio o
+                    plástico. Trabajamos con talleres de confianza para que tu producto quede diez
+                    puntos. Podés revisar nuestro{" "}
+                    <Link
+                      href="/?unit=ENVASES"
+                      className="font-bold underline text-[#9E734E] hover:text-[#141413]"
+                    >
+                      catálogo de envases
+                    </Link>{" "}
+                    o nuestros{" "}
+                    <Link
+                      href="/?unit=HOME"
+                      className="font-bold underline text-[#9E734E] hover:text-[#141413]"
+                    >
+                      frascos para velas y aromas
+                    </Link>
+                    . Tocá cada muestra para ver fotos reales.
                   </p>
                 </div>
               </div>
 
-              {/* Grilla de Técnicas de Acabado B2B (Muestras Clickeables) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {B2B_SAMPLES.map((s) => (
-                  <button
-                    key={s.title}
-                    type="button"
-                    onClick={() => {
-                      setB2bSelectedSample(s);
-                      setIsB2BModalOpen(true);
-                    }}
-                    aria-label={`Ver muestra detallada de ${s.title}`}
-                    className="p-5 rounded-2xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-xs hover:border-[#9E734E] hover:shadow-lg transition-all flex flex-col justify-between group overflow-hidden cursor-pointer active:scale-99 text-left w-full focus-visible:ring-2 focus-visible:ring-[#9E734E]"
+              {/* Sección 1: Grilla de Muestras */}
+              <section className="space-y-6">
+                <div className="flex items-center justify-between border-b border-[#E6E2DC] pb-3">
+                  <h2 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                    Técnicas y Muestras de Acabado.
+                  </h2>
+                  <span className="text-xs font-mono text-[#8C827A]">4 procesos disponibles.</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {B2B_SAMPLES.map((s) => (
+                    <button
+                      key={s.title}
+                      type="button"
+                      onClick={() => {
+                        setB2bSelectedSample(s);
+                        setIsB2BModalOpen(true);
+                      }}
+                      aria-label={`Ver muestra detallada de ${s.title}`}
+                      className="p-5 rounded-2xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-xs hover:border-[#9E734E] hover:shadow-lg transition-all flex flex-col justify-between group overflow-hidden cursor-pointer active:scale-99 text-left w-full focus-visible:ring-2 focus-visible:ring-[#9E734E]"
+                    >
+                      <div className="space-y-3">
+                        {/* Fotografía de ejemplo del proceso con botón de zoom */}
+                        <div className="relative w-full h-44 rounded-xl overflow-hidden bg-[#FAF8F5] border border-[#E6E2DC]/80">
+                          <Image
+                            src={s.image}
+                            alt={`Ejemplo de ${s.title}`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-500 motion-safe:transition-transform"
+                          />
+                          <span className="absolute bottom-2 left-2 font-mono text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
+                            Muestra de Referencia.
+                          </span>
+                          <span className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/60 text-white backdrop-blur-xs group-hover:bg-[#9E734E] transition-colors">
+                            <ZoomIn className="w-3.5 h-3.5" />
+                          </span>
+                        </div>
+
+                        <div>
+                          <span className="font-mono text-[10px] font-bold text-[#9E734E] uppercase tracking-wider block">
+                            {s.tech}
+                          </span>
+                          <h3 className="text-base sm:text-lg font-black text-[#141413] mt-0.5 group-hover:text-[#9E734E] transition-colors">
+                            {s.title}
+                          </h3>
+                          <p className="text-xs text-[#66615B] mt-2 leading-relaxed">{s.desc}</p>
+                        </div>
+
+                        {/* Ejemplo destacado concreto */}
+                        <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE5DC] text-[11px] space-y-1">
+                          <span className="font-bold text-[#141413] flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-[#9E734E]">
+                            <Sparkles className="w-3 h-3 text-[#9E734E]" />
+                            Ejemplo de Uso:
+                          </span>
+                          <p className="text-[#57534E] leading-snug">{s.example}</p>
+                        </div>
+                      </div>
+
+                      <div className="pt-3.5 mt-3.5 border-t border-[#F0ECE4] text-[11px] space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-[#8C827A]">Tirada Mínima:</span>
+                          <strong className="text-[#141413] font-mono">{s.minQty}</strong>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#8C827A]">Tiempo de Entrega:</span>
+                          <span className="text-[#66615B] font-medium">{s.leadTime}</span>
+                        </div>
+                        <div className="pt-1.5 text-center">
+                          <span className="text-[10px] font-bold text-[#9E734E] group-hover:underline flex items-center justify-center gap-1">
+                            <span>Ver muestra en detalle.</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              {/* Sección 2: Cómo Funciona la Ayuda Técnica en 4 Pasos */}
+              <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E6E2DC] shadow-xs space-y-6">
+                <div className="space-y-1 border-b border-[#F0ECE4] pb-4">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
+                    Paso a Paso.
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-black text-[#141413]">
+                    Cómo Funciona la Ayuda Técnica en 4 Pasos.
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2">
+                    <span className="w-8 h-8 rounded-lg bg-[#9E734E] text-white font-mono text-xs font-black flex items-center justify-center">
+                      01.
+                    </span>
+                    <h3 className="text-sm font-bold text-[#141413]">1. Elegís tu Envase en Stock.</h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Elegís el frasco, pote o botella en nuestro local de Córdoba. Tenés stock real y
+                      entrega en el acto.
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2">
+                    <span className="w-8 h-8 rounded-lg bg-[#9E734E] text-white font-mono text-xs font-black flex items-center justify-center">
+                      02.
+                    </span>
+                    <h3 className="text-sm font-bold text-[#141413]">2. Revisamos tu Logo y Diseño.</h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Revisamos tu logo y las medidas. Vemos el calce de color para la técnica que
+                      elijas.
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2">
+                    <span className="w-8 h-8 rounded-lg bg-[#9E734E] text-white font-mono text-xs font-black flex items-center justify-center">
+                      03.
+                    </span>
+                    <h3 className="text-sm font-bold text-[#141413]">3. Muestras Físicas en Oncativo 69.</h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Vení a nuestro local de Oncativo 69. Mirá y tocá muestras reales para ver
+                      brillos y tonos.
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2">
+                    <span className="w-8 h-8 rounded-lg bg-[#9E734E] text-white font-mono text-xs font-black flex items-center justify-center">
+                      04.
+                    </span>
+                    <h3 className="text-sm font-bold text-[#141413]">4. Producción en Talleres Aliados.</h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Coordinamos la tirada con talleres de primer nivel. Cuidamos cada lote de punta
+                      a punta.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Sección 3: Envases Compatibles con Enlaces Internos Ricos */}
+              <section className="p-6 sm:p-8 rounded-3xl bg-[#FAF8F5] border border-[#E6E2DC] space-y-6">
+                <div className="space-y-1 border-b border-[#E0D9CE] pb-4">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
+                    Catálogo Relacionado.
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-black text-[#141413]">
+                    Envases Listos para Tu Marca en Nuestro Catálogo.
+                  </h2>
+                  <p className="text-xs text-[#66615B]">
+                    Mirá qué envases de nuestra tienda van mejor con cada acabado:
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Link
+                    href="/?unit=ENVASES"
+                    className="p-4 rounded-2xl bg-white border border-[#E6E2DC] hover:border-[#9E734E] transition-all group flex flex-col justify-between space-y-2 shadow-2xs"
                   >
-                    <div className="space-y-3">
-                      {/* Fotografía de ejemplo del proceso con botón de zoom */}
-                      <div className="relative w-full h-44 rounded-xl overflow-hidden bg-[#FAF8F5] border border-[#E6E2DC]/80">
-                        <Image
-                          src={s.image}
-                          alt={`Ejemplo de ${s.title}`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-500 motion-safe:transition-transform"
-                        />
-                        <span className="absolute bottom-2 left-2 font-mono text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
-                          Muestra de Referencia
-                        </span>
-                        <span className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/60 text-white backdrop-blur-xs group-hover:bg-[#9E734E] transition-colors">
-                          <ZoomIn className="w-3.5 h-3.5" />
-                        </span>
-                      </div>
+                    <span className="text-xl">🧴</span>
+                    <h3 className="text-sm font-bold text-[#141413] group-hover:text-[#9E734E] transition-colors">
+                      Frascos de Vidrio para Perfumes.
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Vidrio cristal y ámbar para esmerilar o pintar a fuego.
+                    </p>
+                    <span className="text-xs font-bold text-[#9E734E] flex items-center gap-1 mt-1">
+                      <span>Ver Frascos de Vidrio</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Link>
 
-                      <div>
-                        <span className="font-mono text-[10px] font-bold text-[#9E734E] uppercase tracking-wider block">
-                          {s.tech}
-                        </span>
-                        <h3 className="text-base sm:text-lg font-black text-[#141413] mt-0.5 group-hover:text-[#9E734E] transition-colors">
-                          {s.title}
-                        </h3>
-                        <p className="text-xs text-[#66615B] mt-2 leading-relaxed">{s.desc}</p>
-                      </div>
+                  <Link
+                    href="/?unit=ENVASES"
+                    className="p-4 rounded-2xl bg-white border border-[#E6E2DC] hover:border-[#9E734E] transition-all group flex flex-col justify-between space-y-2 shadow-2xs"
+                  >
+                    <span className="text-xl">📦</span>
+                    <h3 className="text-sm font-bold text-[#141413] group-hover:text-[#9E734E] transition-colors">
+                      Botellas PET y Potes para Crema.
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Envases plásticos de gran brillo para cremas y geles.
+                    </p>
+                    <span className="text-xs font-bold text-[#9E734E] flex items-center gap-1 mt-1">
+                      <span>Ver Botellas y Potes</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Link>
 
-                      {/* Ejemplo destacado concreto */}
-                      <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE5DC] text-[11px] space-y-1">
-                        <span className="font-bold text-[#141413] flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-[#9E734E]">
-                          <Sparkles className="w-3 h-3 text-[#9E734E]" />
-                          Ejemplo de Aplicación:
-                        </span>
-                        <p className="text-[#57534E] leading-snug">{s.example}</p>
-                      </div>
-                    </div>
+                  <Link
+                    href="/?unit=ENVASES"
+                    className="p-4 rounded-2xl bg-white border border-[#E6E2DC] hover:border-[#9E734E] transition-all group flex flex-col justify-between space-y-2 shadow-2xs"
+                  >
+                    <span className="text-xl">🔘</span>
+                    <h3 className="text-sm font-bold text-[#141413] group-hover:text-[#9E734E] transition-colors">
+                      Tapas a Rosca, Bombas y Sprays.
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Tapas y pulsadores con opción de estampar tu logo.
+                    </p>
+                    <span className="text-xs font-bold text-[#9E734E] flex items-center gap-1 mt-1">
+                      <span>Ver Tapas y Válvulas</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Link>
 
-                    <div className="pt-3.5 mt-3.5 border-t border-[#F0ECE4] text-[11px] space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-[#8C827A]">Tirada Mínima:</span>
-                        <strong className="text-[#141413] font-mono">{s.minQty}</strong>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#8C827A]">Tiempo de Entrega:</span>
-                        <span className="text-[#66615B] font-medium">{s.leadTime}</span>
-                      </div>
-                      <div className="pt-1.5 text-center">
-                        <span className="text-[10px] font-bold text-[#9E734E] group-hover:underline flex items-center justify-center gap-1">
-                          <span>Ver muestra en detalle</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
+                  <Link
+                    href="/?unit=HOME"
+                    className="p-4 rounded-2xl bg-white border border-[#E6E2DC] hover:border-[#9E734E] transition-all group flex flex-col justify-between space-y-2 shadow-2xs"
+                  >
+                    <span className="text-xl">🕯️</span>
+                    <h3 className="text-sm font-bold text-[#141413] group-hover:text-[#9E734E] transition-colors">
+                      Insumos para Velas y Aromas.
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Cera de soja pura, esencias y frascos difusores.
+                    </p>
+                    <span className="text-xs font-bold text-[#9E734E] flex items-center gap-1 mt-1">
+                      <span>Ver OSSIL Home</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/links/"
+                    className="p-4 rounded-2xl bg-white border border-[#E6E2DC] hover:border-[#9E734E] transition-all group flex flex-col justify-between space-y-2 shadow-2xs"
+                  >
+                    <span className="text-xl">🔗</span>
+                    <h3 className="text-sm font-bold text-[#141413] group-hover:text-[#9E734E] transition-colors">
+                      Redes y Canales de Contacto.
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Canales oficiales y chat de WhatsApp para dudas.
+                    </p>
+                    <span className="text-xs font-bold text-[#9E734E] flex items-center gap-1 mt-1">
+                      <span>Ver Redes y Links</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/"
+                    className="p-4 rounded-2xl bg-white border border-[#E6E2DC] hover:border-[#9E734E] transition-all group flex flex-col justify-between space-y-2 shadow-2xs"
+                  >
+                    <span className="text-xl">📍</span>
+                    <h3 className="text-sm font-bold text-[#141413] group-hover:text-[#9E734E] transition-colors">
+                      Local y Retiro en Oncativo 69.
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Showroom y depósito en Córdoba para retirar sin costo.
+                    </p>
+                    <span className="text-xs font-bold text-[#9E734E] flex items-center gap-1 mt-1">
+                      <span>Ver Punto de Retiro</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Link>
+                </div>
+              </section>
+
+              {/* Sección 4: Preguntas Frecuentes FAQ */}
+              <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E6E2DC] shadow-xs space-y-6">
+                <div className="space-y-1 border-b border-[#F0ECE4] pb-4">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
+                    Respuestas Claras.
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-black text-[#141413]">
+                    Preguntas Frecuentes de Fabricantes y Marcas.
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2">
+                    <h3 className="text-sm font-bold text-[#141413]">
+                      ¿Puedo comprar los envases y pedir la muestra aquí?
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Sí. Comprás los envases en OSSIL. Te guiamos con talleres de confianza para
+                      hacer la muestra.
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2">
+                    <h3 className="text-sm font-bold text-[#141413]">
+                      ¿Qué técnica resiste mejor el alcohol y los aceites?
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      La serigrafía horneada a 580°C. No se sale con alcohol de 96° ni con el roce
+                      del uso diario.
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2">
+                    <h3 className="text-sm font-bold text-[#141413]">
+                      ¿Cuál es la cantidad mínima para hacer un trabajo?
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Las tiradas recomendadas arrancan en 500 o 1.000 piezas según la técnica que
+                      elijas.
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2">
+                    <h3 className="text-sm font-bold text-[#141413]">
+                      ¿Hacen Factura A para empresas y marcas?
+                    </h3>
+                    <p className="text-xs text-[#66615B] leading-relaxed">
+                      Sí. Emitimos Factura A y B con tu CUIT en todas las compras de nuestro local.
+                    </p>
+                  </div>
+                </div>
+              </section>
             </div>
           )}
         </main>
