@@ -411,7 +411,7 @@ export const PRODUCTS_SEED: Product[] = [
   {
     id: "venecia-250-pet",
     sku: "VEN-250-24410",
-    name: "Botella Venecia 250 cc PET Cilíndrica 24/410",
+    name: "Botella Venecia 250 cc PET 24/410.",
     businessUnit: "ENVASES",
     category: "cosmetica-botellas",
     categoryLabel: "Envases / Cosmética",
@@ -420,7 +420,7 @@ export const PRODUCTS_SEED: Product[] = [
     capacity: "250 cc",
     capacityValue: 250,
     neckThread: "24/410",
-    finish: "PET Cristal Transparente",
+    finish: "PET Cristal.",
     basePrice: 720,
     priceTiers: [
       {
@@ -452,7 +452,7 @@ export const PRODUCTS_SEED: Product[] = [
     requiresManualQuote: false,
     inStock: true,
     description:
-      "Botella cosmética ergonómica de polímero PET virgen 250 cc. Excelente brillo y resistencia con boca milimétrica 24/410 hermética.",
+      "Botella PET virgen de 250 cc. Gran brillo y firmeza. Boca 24/410 con cierre seguro.",
     badge: "Alta Rotación",
     imageUrl: "/images/products/venecia-250.webp",
     dimensions: "Alto: 160 mm • Diámetro: 50 mm",
@@ -3682,7 +3682,7 @@ export const PRODUCTS_SEED: Product[] = [
   {
     id: "equatone-50-satinado",
     sku: "EQ-50-SAT",
-    name: "Frasco Equatone 50 cc 18/415 Satinado",
+    name: "Frasco Equatone 50 cc 18/415 Mate.",
     businessUnit: "ENVASES",
     category: "perfumeria",
     categoryLabel: "Perfumería Fina",
@@ -3691,7 +3691,7 @@ export const PRODUCTS_SEED: Product[] = [
     capacity: "50 cc",
     capacityValue: 50,
     neckThread: "18/415",
-    finish: "Vidrio Satinado Esmerilado",
+    finish: "Vidrio Mate.",
     basePrice: 1480,
     priceTiers: [
       {
@@ -3723,7 +3723,7 @@ export const PRODUCTS_SEED: Product[] = [
     requiresManualQuote: false,
     inStock: true,
     description:
-      "Frasco de perfumería fina en vidrio de alta graduación óptica. Fondo pesado y boca estandarizada 18/415.",
+      "Frasco de vidrio fino para perfume. Base firme y boca 18/415 para spray.",
     imageUrl: "/images/products/equatone-30-satinado.webp",
     features: [
       "Vidrio cristal incoloro o satinado químico",
@@ -5132,7 +5132,7 @@ export const PRODUCTS_SEED: Product[] = [
   {
     id: "gotero-30-ambar-vidrio",
     sku: "GOT-30-18415",
-    name: "Gotero Vidrio 30 cc Ámbar c/ Pipeta y Bulbo 18/415",
+    name: "Gotero Vidrio 30 cc Ámbar 18/415.",
     businessUnit: "ENVASES",
     category: "medicinal",
     categoryLabel: "Medicinal & Farmacia",
@@ -5141,7 +5141,7 @@ export const PRODUCTS_SEED: Product[] = [
     capacity: "30 cc",
     capacityValue: 30,
     neckThread: "18/415",
-    finish: "Grado Farmacopea Oficial",
+    finish: "Vidrio Ámbar UV.",
     basePrice: 980,
     priceTiers: [
       {
@@ -5173,8 +5173,8 @@ export const PRODUCTS_SEED: Product[] = [
     requiresManualQuote: false,
     inStock: true,
     description:
-      "Envase farmacéutico y medicinal apto fórmulas magistrales y laboratorios. Boca 18/415.",
-    badge: "Farmacia Magistral",
+      "Frasco ámbar con pipeta para aceites, sueros y gotas. Boca 18/415.",
+    badge: "Top Ventas.",
     imageUrl: "/images/products/gotero-ambar.webp",
     features: [
       "Aprobado ANMAT grado medicinal",
@@ -7793,7 +7793,7 @@ export const PRODUCTS_SEED: Product[] = [
   {
     id: "cera-soja-bajo-punto-fusion-1kg",
     sku: "VEL-CER-SOJ-1K",
-    name: "Cera de Soja Bajo Punto de Fusión 100% Pura x 1 Kg",
+    name: "Cera de Soja Pura x 1 Kg.",
     businessUnit: "HOME",
     category: "velas",
     categoryLabel: "Velas, Difusores & Insumos",
@@ -7802,7 +7802,7 @@ export const PRODUCTS_SEED: Product[] = [
     capacity: "1000 gr",
     capacityValue: 1000,
     neckThread: "N/A",
-    finish: "Insumo Seleccionado Grado Botánico",
+    finish: "Soja 100% Pura.",
     basePrice: 4800,
     priceTiers: [
       {
@@ -7834,8 +7834,8 @@ export const PRODUCTS_SEED: Product[] = [
     requiresManualQuote: false,
     inStock: true,
     description:
-      "Insumo y material para elaboración de velas de soja y difusores aromáticos de autor. Máxima calidad y pureza.",
-    badge: "Insumo Estrella",
+      "Cera de soja pura para hacer velas en casa o taller. Quema limpio y parejo.",
+    badge: "Insumo Top.",
     imageUrl: "/images/products/esencia-vainilla.webp",
     features: [
       "100% puro y vegetal",

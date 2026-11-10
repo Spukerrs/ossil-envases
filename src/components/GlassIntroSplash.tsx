@@ -10,6 +10,31 @@ export function GlassIntroSplash() {
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
+    const ensureImageAlts = () => {
+      const images = document.querySelectorAll("img");
+      for (const img of images) {
+        const currentAlt = img.getAttribute("alt");
+        if (!currentAlt || currentAlt.trim().length === 0) {
+          img.setAttribute("alt", "Catálogo OSSIL Envases y Home Córdoba");
+        }
+      }
+    };
+
+    ensureImageAlts();
+    const observer = new MutationObserver(() => {
+      ensureImageAlts();
+    });
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["alt", "src"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     setMounted(true);
     if (prefersReducedMotion) {
       setVisible(false);
@@ -76,7 +101,7 @@ export function GlassIntroSplash() {
             <div className="mx-auto w-20 h-20 rounded-2xl frosted-well flex items-center justify-center relative">
               <Image
                 src="/images/brand/logo-ossil.png"
-                alt="OSSIL Envases & Home"
+                alt="Logo oficial de OSSIL Envases y Home Córdoba"
                 width={54}
                 height={64}
                 priority
@@ -86,13 +111,13 @@ export function GlassIntroSplash() {
 
             <div className="space-y-1.5">
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#9E734E] block">
-                Córdoba Capital • Oncativo 69
+                Córdoba Capital • Oncativo 69.
               </span>
               <h2 className="font-mono text-2xl sm:text-3xl font-black tracking-tight text-[#141413]">
-                OSSIL
+                OSSIL.
               </h2>
               <p className="text-xs font-medium text-[#57534E]">
-                Envases de Vidrio, Laboratorio, Cosmética & Home
+                Envases de vidrio, bazar, velas y diseño.
               </p>
             </div>
 
@@ -107,7 +132,7 @@ export function GlassIntroSplash() {
             </div>
 
             <span className="text-[10px] text-[#8C827A] block">
-              Preparando catálogo y escalas mayoristas...
+              Cargando catálogo y precios por mayor.
             </span>
           </motion.div>
         </motion.div>

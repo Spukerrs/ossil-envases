@@ -148,7 +148,7 @@ function HomePageContent() {
       "venecia-250-pet",
       "equatone-50-satinado",
       "gotero-30-ambar-vidrio",
-      "cera-soja-1kg",
+      "cera-soja-bajo-punto-fusion-1kg",
     ];
     const picked = PRODUCTS_SEED.filter((p) => preferredIds.includes(p.id));
     if (picked.length === 4) return picked;
@@ -886,25 +886,24 @@ function HomePageContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs text-[#66615B]">
             <div className="space-y-3">
               <span className="font-mono text-xl font-black text-[#141413] block">
-                OSSIL ENVASES & HOME
+                OSSIL ENVASES & HOME.
               </span>
               <p className="text-xs leading-relaxed max-w-md">
-                Distribuidora mayorista y minorista radicada en Córdoba Capital. Venta de packaging,
-                frascos para perfumería, cosmética, goteros medicinales y bazar.
+                Venta por mayor y menor en Córdoba. Envases de vidrio, PET, velas de soja y bazar.
               </p>
               <div className="flex items-center gap-1.5 text-[#141413] font-bold">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
-                <span>4.9 estrellas en Google Maps (7.466 opiniones)</span>
+                <span>4.9 puntos en Google Maps (7.466 reseñas).</span>
               </div>
             </div>
 
             <div className="space-y-2">
               <span className="font-bold text-[#141413] uppercase tracking-wider block mb-1">
-                Atención al Cliente & Retiro
+                Atención y Retiro en Local.
               </span>
               <p>
                 📍 <strong>Local:</strong> {STORE_CONFIG.location.address} (
-                {STORE_CONFIG.location.city})
+                {STORE_CONFIG.location.city}).
               </p>
               <p>
                 📞 <strong>WhatsApp:</strong>{" "}
@@ -914,19 +913,19 @@ function HomePageContent() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {STORE_CONFIG.contact.phoneDisplay}
+                  {STORE_CONFIG.contact.phoneDisplay}.
                 </a>
               </p>
               <p>
-                🕒 <strong>Horarios:</strong> {STORE_CONFIG.hours.weekdays} |{" "}
-                {STORE_CONFIG.hours.saturdays}
+                🕒 <strong>Horarios:</strong> {STORE_CONFIG.hours.weekdays}.{" "}
+                {STORE_CONFIG.hours.saturdays}.
               </p>
             </div>
           </div>
 
           <div className="mt-8 pt-6 border-t border-[#E6E2DC] flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#8C827A] gap-2">
-            <span>© 2026 OSSIL Envases & OSSIL Home. Todos los derechos reservados.</span>
-            <span>Desarrollado con Next.js 16, React 19 & Tailwind v4</span>
+            <span>© 2026 OSSIL Envases & Home. Todos los derechos reservados.</span>
+            <span>Hecho con Next.js 16 y React 19.</span>
           </div>
         </div>
       </footer>

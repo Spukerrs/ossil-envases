@@ -132,7 +132,7 @@ export const ProductCard = memo(function ProductCard({
                 className="w-full py-1.5 px-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFEA] border border-[#E0D9CE] text-[#835C3A] hover:text-[#141413] text-xs font-bold flex items-center justify-center gap-1.5 transition-all group-hover:border-[#9E734E] cursor-pointer"
               >
                 <Layers className="w-3.5 h-3.5 text-[#9E734E]" />
-                <span>Armar Combo con Tapa Compatible</span>
+                <span>Elegir Tapa para este Envase.</span>
               </button>
             )}
 
@@ -142,7 +142,7 @@ export const ProductCard = memo(function ProductCard({
                 onClick={() => onFilterThread(product.neckThread)}
                 className="w-full text-center text-[10px] font-semibold text-[#8C827A] hover:text-[#141413] transition-colors cursor-pointer"
               >
-                Filtrar catálogo solo con rosca {product.neckThread}
+                Ver todo con rosca {product.neckThread}.
               </button>
             )}
           </div>
@@ -154,20 +154,20 @@ export const ProductCard = memo(function ProductCard({
         {product.requiresManualQuote ? (
           <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs mb-3">
             <span className="font-bold block">⚠️ Producto Especial:</span>
-            Precio mayorista y flete a cotizar por asesor antes del pago.
+            Precio por mayor y flete a cotizar con un asesor.
           </div>
         ) : (
           <div className="mb-3.5">
             <div className="flex items-baseline justify-between mb-2">
               <span className="text-[11px] font-bold uppercase text-[#66615B]">
-                Escalas de Volumen:
+                Precio por cantidad.
               </span>
               <button
                 type="button"
                 onClick={() => setShowTiers(!showTiers)}
                 className="text-[11px] font-bold text-[#9E734E] underline hover:text-[#835C3A] cursor-pointer"
               >
-                {showTiers ? "Ocultar tabla" : "Ver descuentos"}
+                {showTiers ? "Cerrar tabla." : "Ver precios."}
               </button>
             </div>
 

@@ -18,9 +18,45 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OSSIL Envases & OSSIL Home | Distribuidora Mayorista y Minorista Córdoba",
+  metadataBase: new URL("https://ossil-envases-demo.vercel.app"),
+  title: "OSSIL Envases & Home | Mayorista en Córdoba",
   description:
-    "Catálogo oficial de envases para cosmética, perfumería, medicina, alimentos y bazar. Precios mayoristas por escala en Oncativo 69, Córdoba Capital. 4.9 estrellas en Google Maps con 7.466 opiniones.",
+    "Venta por mayor y menor de envases para cosmética, perfumería, velas y bazar en Oncativo 69, Córdoba. Envíos a todo el país y retiro hoy.",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  openGraph: {
+    title: "OSSIL Envases & Home | Mayorista en Córdoba",
+    description:
+      "Venta por mayor y menor de envases para cosmética, perfumería, velas y bazar en Oncativo 69, Córdoba. Envíos a todo el país y retiro hoy.",
+    url: "https://ossil-envases-demo.vercel.app/",
+    siteName: "OSSIL Envases & Home",
+    locale: "es_AR",
+    type: "website",
+    images: [
+      {
+        url: "/images/services/serigrafia-vitrificable.webp",
+        width: 1200,
+        height: 896,
+        alt: "Catálogo de envases de vidrio y plástico OSSIL Córdoba",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OSSIL Envases & Home | Mayorista en Córdoba",
+    description:
+      "Venta por mayor y menor de envases para cosmética, perfumería, velas y bazar en Oncativo 69, Córdoba. Envíos a todo el país y retiro hoy.",
+    images: ["/images/services/serigrafia-vitrificable.webp"],
+  },
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.ico",

@@ -38,56 +38,56 @@ export function WelcomeLanding({
     {
       id: "cosmetica-botellas",
       unit: "ENVASES" as BusinessUnit,
-      title: "Cosmética & Cuidado Personal",
-      subtitle: "Botellas PET, PEAD, potes acrílicos y bombas cremeras",
-      badge: "Rosca 24/410 • 28/410",
+      title: "Cosmética y Cuidado.",
+      subtitle: "Botellas PET, PEAD, potes de crema y bombas.",
+      badge: "Rosca 24/410 • 28/410.",
       image: "/images/products/venecia-250.webp",
-      count: "320+ referencias",
+      count: "320+ items.",
     },
     {
       id: "perfumeria",
       unit: "ENVASES" as BusinessUnit,
-      title: "Perfumería Fina & Esencias",
-      subtitle: "Frascos vidrio cristal y satinado, válvulas spray y esencias puras",
-      badge: "Boca B/E 15 • 18/415",
+      title: "Perfumes y Esencias.",
+      subtitle: "Frascos de vidrio fino, mate, sprays y aromas puros.",
+      badge: "Boca B/E 15 • 18/415.",
       image: "/images/products/equatone-30-satinado.webp",
-      count: "180+ referencias",
+      count: "180+ items.",
     },
     {
       id: "medicinal",
       unit: "ENVASES" as BusinessUnit,
-      title: "Laboratorio & Fitomedicina",
-      subtitle: "Frascos ámbar UV, goteros con pipeta de vidrio, viales y potes PEAD",
-      badge: "Boca B/R 18 • B/R 28",
+      title: "Salud y Farmacia.",
+      subtitle: "Frascos ámbar UV, goteros de vidrio, viales y potes.",
+      badge: "Boca B/R 18 • B/R 28.",
       image: "/images/products/gotero-ambar.webp",
-      count: "150+ referencias",
+      count: "150+ items.",
     },
     {
       id: "alimenticio",
       unit: "ENVASES" as BusinessUnit,
-      title: "Alimentos, Conservas & Bebidas",
-      subtitle: "Frascos boca axial, damajuanas, growlers, licoreras y tapas metálicas",
-      badge: "Boca B/AX 63 • B/AX 70",
+      title: "Alimentos y Bebidas.",
+      subtitle: "Frascos de vidrio, botellas, growlers y tapas de metal.",
+      badge: "Boca B/AX 63 • B/AX 70.",
       image: "/images/products/sevilla-ambar.webp",
-      count: "145+ referencias",
+      count: "145+ items.",
     },
     {
       id: "velas",
       unit: "HOME" as BusinessUnit,
-      title: "Insumos para Velas & Aromas",
-      subtitle: "Cera de soja pura, pabilos encerados, esencias, moldes y difusores",
-      badge: "OSSIL Home • Artesanal",
+      title: "Velas de Soja y Aromas.",
+      subtitle: "Cera de soja pura, pabilos, esencias, moldes y varillas.",
+      badge: "OSSIL Home.",
       image: "/images/products/difusor-hexagonal.webp",
-      count: "240+ referencias",
+      count: "240+ items.",
     },
     {
       id: "bazar",
       unit: "HOME" as BusinessUnit,
-      title: "Bazar, Térmicos & Deco",
-      subtitle: "Termos Stanley, mates imperiales, dispensers con canilla y cristalería",
-      badge: "Hogar & Gastronomía",
+      title: "Bazar, Termos y Deco.",
+      subtitle: "Termos Stanley, mates, frascos con canilla y vasos.",
+      badge: "Hogar y Cocina.",
       image: "/images/products/termo-stanley.webp",
-      count: "280+ referencias",
+      count: "280+ items.",
     },
   ];
 
@@ -102,11 +102,11 @@ export function WelcomeLanding({
           <div className="lg:col-span-7 space-y-6">
             <div className="flex sm:inline-flex flex-wrap items-center gap-2 sm:gap-2.5 p-2 sm:p-1.5 sm:pr-3.5 rounded-2xl sm:rounded-full liquid-glass max-w-full">
               <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FAF8F5] bg-[#141413] px-2.5 py-1 rounded-full shrink-0">
-                Bienvenidos a OSSIL
+                Bienvenidos a OSSIL.
               </span>
               <span className="text-xs font-medium text-[#57534E] flex items-center gap-1 shrink-0">
                 <MapPin className="w-3.5 h-3.5 text-[#9E734E]" />
-                <span>Oncativo 69, Córdoba Capital</span>
+                <span>Oncativo 69, Córdoba.</span>
               </span>
               <div className="shrink-0">
                 <StoreStatusBadge />
@@ -119,16 +119,16 @@ export function WelcomeLanding({
                 <span className="text-[#9E734E] underline decoration-[#E6E2DC] decoration-2 underline-offset-8">
                   envasar tu marca
                 </span>{" "}
-                y equipar tu proyecto.
+                y armar tu taller.
               </h1>
 
               <p className="text-sm sm:text-base text-[#57534E] leading-relaxed max-w-2xl">
-                Somos la distribuidora mayorista y minorista de referencia en Córdoba. Unimos{" "}
+                Somos tu casa de venta por mayor y menor en Córdoba. Tenemos{" "}
                 <strong className="text-[#141413] font-bold">
-                  1.316 artículos en stock inmediato
+                  1.316 productos en stock real.
                 </strong>{" "}
-                —desde envases técnicos con compatibilidad milimétrica de roscas hasta insumos para
-                velas de soja y bazar— con atención personalizada por sus propios dueños.
+                Hallá envases con calce exacto de rosca, cera de soja, esencias y bazar. Te
+                atendemos en el acto y al mejor precio.
               </p>
             </div>
 
@@ -139,7 +139,7 @@ export function WelcomeLanding({
                 onClick={() => onNavigateUnit("ENVASES")}
                 className="px-6 py-4 rounded-2xl bg-[#141413] hover:bg-[#2C2B29] text-[#FAF8F5] text-sm font-bold flex items-center justify-center gap-3 transition-all shadow-md active:scale-98 cursor-pointer group"
               >
-                <span>Explorar Catálogo de Envases</span>
+                <span>Ver Catálogo de Envases.</span>
                 <ArrowRight className="w-4 h-4 text-[#9E734E] group-hover:translate-x-1 transition-transform" />
               </button>
 
@@ -149,7 +149,7 @@ export function WelcomeLanding({
                 className="px-6 py-4 rounded-2xl bg-[#FFFFFF] hover:bg-[#F3EFEA] text-[#141413] border border-[#DCD6C9] hover:border-[#9E734E] text-sm font-bold flex items-center justify-center gap-2.5 transition-all shadow-2xs cursor-pointer"
               >
                 <Flame className="w-4 h-4 text-[#9E734E]" />
-                <span>Ver OSSIL Home & Velas</span>
+                <span>Ver OSSIL Home y Velas.</span>
               </button>
             </div>
 
@@ -159,24 +159,24 @@ export function WelcomeLanding({
                 <div className="flex items-center gap-1">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
                   <span className="font-mono text-base sm:text-lg font-black text-[#141413]">
-                    4.9 / 5.0
+                    4.9 / 5.0.
                   </span>
                 </div>
-                <p className="text-[11px] text-[#66615B] mt-0.5">7.466 reseñas en Google</p>
+                <p className="text-[11px] text-[#66615B] mt-0.5">7.466 notas en Google.</p>
               </div>
 
               <div className="border-l border-[#E6E2DC] pl-4">
                 <span className="font-mono text-base sm:text-lg font-black text-[#B45309] block">
-                  Hasta -28% OFF
+                  Hasta -28% OFF.
                 </span>
-                <p className="text-[11px] text-[#66615B] mt-0.5">Escalas automáticas (+10u)</p>
+                <p className="text-[11px] text-[#66615B] mt-0.5">Precios por bulto (+10u).</p>
               </div>
 
               <div className="border-l border-[#E6E2DC] pl-4">
                 <span className="font-mono text-base sm:text-lg font-black text-[#141413] block">
-                  Sin Mínimo
+                  Sin Mínimo.
                 </span>
-                <p className="text-[11px] text-[#66615B] mt-0.5">Compra minorista y mayorista</p>
+                <p className="text-[11px] text-[#66615B] mt-0.5">Venta por mayor y menor.</p>
               </div>
             </div>
           </div>
@@ -189,11 +189,11 @@ export function WelcomeLanding({
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#9E734E]" />
                   <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#141413]">
-                    Muestrario Técnico OSSIL
+                    Muestras OSSIL.
                   </span>
                 </div>
                 <span className="font-mono text-[10px] text-[#57534E] frosted-well px-2.5 py-1 rounded-md">
-                  Stock Real • Córdoba
+                  Stock Real • Córdoba.
                 </span>
               </div>
 
@@ -205,7 +205,7 @@ export function WelcomeLanding({
                   className="group relative rounded-2xl frosted-well liquid-glass-interactive p-3 text-left cursor-pointer overflow-hidden"
                 >
                   <span className="font-mono text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-white/85 border border-[#E6E2DC] text-[#141413] inline-block mb-1">
-                    Rosca 18/415
+                    Rosca 18/415.
                   </span>
                   <div className="relative h-28 w-full my-1">
                     <Image
@@ -216,9 +216,9 @@ export function WelcomeLanding({
                       className="object-contain group-hover:scale-105 transition-transform"
                     />
                   </div>
-                  <p className="text-xs font-bold text-[#141413] truncate">Perfumería & Vidrio</p>
+                  <p className="text-xs font-bold text-[#141413] truncate">Perfumes y Vidrio.</p>
                   <span className="text-[10px] text-[#9E734E] font-medium">
-                    Líneas Equatone & Vip →
+                    Línea Equatone y Vip.
                   </span>
                 </button>
 
@@ -228,7 +228,7 @@ export function WelcomeLanding({
                   className="group relative rounded-2xl frosted-well liquid-glass-interactive p-3 text-left cursor-pointer overflow-hidden"
                 >
                   <span className="font-mono text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-amber-50/90 border border-amber-200 text-[#B45309] inline-block mb-1">
-                    Ámbar UV • B/R 18
+                    Ámbar UV • B/R 18.
                   </span>
                   <div className="relative h-28 w-full my-1">
                     <Image
@@ -239,9 +239,9 @@ export function WelcomeLanding({
                       className="object-contain group-hover:scale-105 transition-transform"
                     />
                   </div>
-                  <p className="text-xs font-bold text-[#141413] truncate">Goteros & Laboratorio</p>
+                  <p className="text-xs font-bold text-[#141413] truncate">Goteros y Salud.</p>
                   <span className="text-[10px] text-[#9E734E] font-medium">
-                    Pipetas y precintos →
+                    Pipetas y tapas.
                   </span>
                 </button>
 
@@ -251,7 +251,7 @@ export function WelcomeLanding({
                   className="group relative rounded-2xl frosted-well liquid-glass-interactive p-3 text-left cursor-pointer overflow-hidden"
                 >
                   <span className="font-mono text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-white/85 border border-[#E6E2DC] text-[#141413] inline-block mb-1">
-                    OSSIL Home
+                    OSSIL Home.
                   </span>
                   <div className="relative h-28 w-full my-1">
                     <Image
@@ -262,9 +262,9 @@ export function WelcomeLanding({
                       className="object-contain group-hover:scale-105 transition-transform"
                     />
                   </div>
-                  <p className="text-xs font-bold text-[#141413] truncate">Velas & Aromaterapia</p>
+                  <p className="text-xs font-bold text-[#141413] truncate">Velas y Aromas.</p>
                   <span className="text-[10px] text-[#9E734E] font-medium">
-                    Cera de soja y esencias →
+                    Cera de soja y aromas.
                   </span>
                 </button>
 
@@ -274,7 +274,7 @@ export function WelcomeLanding({
                   className="group relative rounded-2xl frosted-well liquid-glass-interactive p-3 text-left cursor-pointer overflow-hidden"
                 >
                   <span className="font-mono text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-white/85 border border-[#E6E2DC] text-[#141413] inline-block mb-1">
-                    24/410 • 28/410
+                    24/410 • 28/410.
                   </span>
                   <div className="relative h-28 w-full my-1">
                     <Image
@@ -285,9 +285,9 @@ export function WelcomeLanding({
                       className="object-contain group-hover:scale-105 transition-transform"
                     />
                   </div>
-                  <p className="text-xs font-bold text-[#141413] truncate">Válvulas & Cierres</p>
+                  <p className="text-xs font-bold text-[#141413] truncate">Sprays y Tapas.</p>
                   <span className="text-[10px] text-[#9E734E] font-medium">
-                    Compatibilidad exacta →
+                    Calce sin fallas.
                   </span>
                 </button>
               </div>
@@ -295,8 +295,8 @@ export function WelcomeLanding({
               {/* Pie de Muestrario con Buscador de Roscas Rápido */}
               <div className="p-3 rounded-2xl frosted-well flex items-center justify-between gap-2">
                 <div className="text-[11px] text-[#4A4742]">
-                  <strong className="text-[#141413] block">¿Buscás una rosca específica?</strong>
-                  <span>Filtrá envases y tapas que encastran sin pérdidas.</span>
+                  <strong className="text-[#141413] block">¿Buscás una rosca justa?</strong>
+                  <span>Filtrá envases y tapas que cierran bien.</span>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   {["18/415", "24/410", "28/400"].map((th) => (
@@ -306,7 +306,7 @@ export function WelcomeLanding({
                       onClick={() => onNavigateUnit("ENVASES", "TODAS", th)}
                       className="px-2 py-1 rounded-lg bg-[#FFFFFF] hover:bg-[#141413] text-[#141413] hover:text-[#FAF8F5] font-mono text-[10px] font-bold border border-[#DCD6C9] transition-colors cursor-pointer"
                     >
-                      {th}
+                      {th}.
                     </button>
                   ))}
                 </div>
@@ -323,15 +323,14 @@ export function WelcomeLanding({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E6E2DC] pb-5">
           <div className="space-y-1.5">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
-              Estructura Comercial OSSIL
+              Nuestras Áreas.
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight">
-              ¿Qué estás buscando hoy? Elegí tu división
+              ¿Qué buscás hoy? Elegí tu sector.
             </h2>
           </div>
           <p className="text-xs sm:text-sm text-[#66615B] max-w-md">
-            Organizamos nuestro inventario en tres áreas especializadas para que encuentres tus
-            insumos sin perder tiempo.
+            Dividimos el stock en tres áreas claras. Así hallás tus insumos en pocos clics.
           </p>
         </div>
 
@@ -344,28 +343,27 @@ export function WelcomeLanding({
                   📦
                 </span>
                 <span className="font-mono text-xs font-bold text-[#9E734E] frosted-well px-3 py-1 rounded-full">
-                  796 Productos
+                  796 Items.
                 </span>
               </div>
               <div>
-                <h3 className="text-xl font-black text-[#141413]">1. OSSIL Envases</h3>
+                <h3 className="text-xl font-black text-[#141413]">1. OSSIL Envases.</h3>
                 <p className="text-xs font-bold text-[#9E734E] uppercase tracking-wider mt-0.5">
-                  Packaging Industrial & Mayorista
+                  Envases por Mayor y Menor.
                 </p>
               </div>
               <p className="text-xs sm:text-sm text-[#66615B] leading-relaxed">
-                Botellas PET y PEAD, frascos de vidrio para perfumería y conservas, potes
-                cosméticos, goteros medicinales, bidones de hasta 25 L y el sistema completo de
-                tapas, válvulas spray y bombas dosificadoras.
+                Botellas PET y PEAD, frascos de vidrio, potes de crema, goteros y bidones de hasta
+                25 L. Sumá tapas, válvulas spray y bombas que calzan sin pérdidas.
               </p>
               <ul className="space-y-1.5 text-xs text-[#4A4742] pt-1">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
-                  <span>Filtro inteligente de roscas (18/415, 24/410, 28/400, B/AX)</span>
+                  <span>Filtro rápido de roscas (18/415, 24/410, 28/400).</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
-                  <span>Descuentos por volumen automáticos en carrito</span>
+                  <span>Precios por bulto al toque en tu compra.</span>
                 </li>
               </ul>
             </div>
@@ -375,7 +373,7 @@ export function WelcomeLanding({
               onClick={() => onNavigateUnit("ENVASES")}
               className="w-full py-3.5 px-4 rounded-xl bg-[#141413] hover:bg-[#2C2B29] text-[#FAF8F5] text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              <span>Abrir Catálogo de Envases</span>
+              <span>Abrir Catálogo de Envases.</span>
               <ArrowRight className="w-4 h-4 text-[#9E734E]" />
             </button>
           </div>
@@ -388,28 +386,27 @@ export function WelcomeLanding({
                   🕯️
                 </span>
                 <span className="font-mono text-xs font-bold text-[#9E734E] frosted-well px-3 py-1 rounded-full">
-                  520 Productos
+                  520 Items.
                 </span>
               </div>
               <div>
-                <h3 className="text-xl font-black text-[#141413]">2. OSSIL Home</h3>
+                <h3 className="text-xl font-black text-[#141413]">2. OSSIL Home.</h3>
                 <p className="text-xs font-bold text-[#9E734E] uppercase tracking-wider mt-0.5">
-                  Insumos para Velas, Difusores & Bazar
+                  Velas de Soja, Aromas y Bazar.
                 </p>
               </div>
               <p className="text-xs sm:text-sm text-[#66615B] leading-relaxed">
-                Todo para fabricar velas de soja y aromatizantes de autor (cera de soja CPF,
-                esencias puras, pabilos, moldes de silicona y varillas), además de termos Stanley,
-                mates, dispensers de vidrio y cristalería deco.
+                Todo para hacer velas de soja y aromas: cera pura, esencias, pabilos, moldes y
+                varillas. También termos Stanley, mates, frascos con canilla y bazar.
               </p>
               <ul className="space-y-1.5 text-xs text-[#4A4742] pt-1">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
-                  <span>Insumos puros de alto rendimiento para emprendedores</span>
+                  <span>Insumos puros de gran rinde para tu taller.</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
-                  <span>Bazar gastronómico y línea térmica original</span>
+                  <span>Bazar para el hogar y línea térmica.</span>
                 </li>
               </ul>
             </div>
@@ -419,7 +416,7 @@ export function WelcomeLanding({
               onClick={() => onNavigateUnit("HOME")}
               className="w-full py-3.5 px-4 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              <span>Abrir Catálogo OSSIL Home</span>
+              <span>Abrir Catálogo OSSIL Home.</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -436,24 +433,23 @@ export function WelcomeLanding({
                 </span>
               </div>
               <div>
-                <h3 className="text-xl font-black text-white">3. Personalización B2B</h3>
+                <h3 className="text-xl font-black text-white">3. Diseño y Marca B2B.</h3>
                 <p className="text-xs font-bold text-[#9E734E] uppercase tracking-wider mt-0.5">
-                  Serigrafía, Satinado & Tampografía
+                  Pintura en Vidrio, Mate y Tapas.
                 </p>
               </div>
               <p className="text-xs sm:text-sm text-[#D4CEBF] leading-relaxed">
-                Llevá la presentación de tu laboratorio o marca al siguiente nivel con impresión
-                vitrificable horneada a 580°C sobre vidrio, esmerilado químico al ácido anti-huella
-                y tampografía industrial en tapas.
+                Sumá valor a tu marca con pintura horneada a 580°C en vidrio, baño mate suave al
+                tacto y logos en tapas. Te guiamos en todo el proceso con talleres aliados.
               </p>
               <ul className="space-y-1.5 text-xs text-[#D4CEBF] pt-1">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
-                  <span>Pinturas inorgánicas resistentes a alcohol y aceites</span>
+                  <span>Tintas firmes que resisten alcohol y aceites.</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
-                  <span>Muestras previas en nuestro local de Córdoba</span>
+                  <span>Muestras reales en nuestro local de Córdoba.</span>
                 </li>
               </ul>
             </div>
@@ -463,7 +459,7 @@ export function WelcomeLanding({
               onClick={() => onNavigateUnit("B2B")}
               className="w-full py-3.5 px-4 rounded-xl bg-[#FAF8F5] hover:bg-[#EBE7DF] text-[#141413] text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              <span>Ver Servicios de Personalización</span>
+              <span>Ver Acabados para Marcas.</span>
               <ArrowRight className="w-4 h-4 text-[#9E734E]" />
             </button>
           </div>
@@ -477,10 +473,10 @@ export function WelcomeLanding({
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E6E2DC] pb-5">
           <div className="space-y-1">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
-              Atajos por Industria
+              Accesos por Rubro.
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight">
-              Entrá directo a tu rubro de producción
+              Entrá directo a tu rubro.
             </h2>
           </div>
           <button
@@ -488,7 +484,7 @@ export function WelcomeLanding({
             onClick={() => onNavigateUnit("ENVASES")}
             className="text-xs font-bold text-[#9E734E] hover:text-[#141413] flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
           >
-            <span>Ver las {totalCatalogCount} referencias cargadas</span>
+            <span>Ver los {totalCatalogCount} productos en stock.</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -536,15 +532,14 @@ export function WelcomeLanding({
       <section className="p-6 sm:p-10 rounded-3xl bg-[#FFFFFF] border border-[#E6E2DC] shadow-xs space-y-8">
         <div className="max-w-2xl space-y-2">
           <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E] px-2.5 py-0.5 rounded-full bg-[#EBE7DF] border border-[#DCD6C9]">
-            Por qué elegirnos
+            Por qué elegirnos.
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight">
-            Diseñado para que comprar envases sea simple, exacto y rentable
+            Comprar envases hoy es más simple, exacto y rápido.
           </h2>
           <p className="text-xs sm:text-sm text-[#66615B] leading-relaxed">
-            Sabemos que un error en la medida de una rosca frena tu producción. Por eso combinamos
-            asesoramiento técnico presencial con herramientas digitales pensadas para emprendedores
-            y laboratorios.
+            Un error en la medida de una rosca frena tu taller. Por eso unimos ayuda técnica en el
+            local con filtros claros para marcas y Pymes.
           </p>
         </div>
 
@@ -554,11 +549,11 @@ export function WelcomeLanding({
               <Layers className="w-4 h-4" />
             </div>
             <h3 className="text-sm font-black text-[#141413]">
-              Compatibilidad de Roscas Garantizada
+              Calce de Roscas Seguro.
             </h3>
             <p className="text-xs text-[#66615B] leading-relaxed">
-              Cada envase muestra automáticamente solo las tapas, gatillos y válvulas spray que
-              coinciden con su cuello milimétrico (`18/415`, `24/410`, `28/400`, `B/AX`).
+              Cada envase muestra solo las tapas, gatillos y sprays que van con su boca (`18/415`,
+              `24/410`, `28/400`, `B/AX`).
             </p>
           </div>
 
@@ -566,10 +561,10 @@ export function WelcomeLanding({
             <div className="w-9 h-9 rounded-xl bg-[#FFFFFF] border border-[#E6E2DC] flex items-center justify-center text-[#B45309]">
               <Award className="w-4 h-4" />
             </div>
-            <h3 className="text-sm font-black text-[#141413]">Escalas Mayoristas Automáticas</h3>
+            <h3 className="text-sm font-black text-[#141413]">Precios por Mayor al Toque.</h3>
             <p className="text-xs text-[#66615B] leading-relaxed">
-              Sumá unidades en el carrito (+10u, +25u, +50u o +100u) y el sistema recalcula tu
-              descuento al instante hasta un <strong>-28% OFF</strong> sin pedir cotización previa.
+              Sumá +10u, +25u, +50u o +100u al pedido. La web baja el precio al instante hasta un{" "}
+              <strong>-28% OFF.</strong>
             </p>
           </div>
 
@@ -577,10 +572,10 @@ export function WelcomeLanding({
             <div className="w-9 h-9 rounded-xl bg-[#FFFFFF] border border-[#E6E2DC] flex items-center justify-center text-[#9E734E]">
               <PackageCheck className="w-4 h-4" />
             </div>
-            <h3 className="text-sm font-black text-[#141413]">Retiro Express en Oncativo 69</h3>
+            <h3 className="text-sm font-black text-[#141413]">Retiro Rápido en Oncativo 69.</h3>
             <p className="text-xs text-[#66615B] leading-relaxed">
-              Armá tu pedido online, generá tu código de orden y retirá en nuestro mostrador del
-              centro de Córdoba sin hacer fila ni esperar armado.
+              Armá tu pedido en la web y pasá por nuestro local del centro de Córdoba. Retirás sin
+              hacer fila ni esperar.
             </p>
           </div>
 
@@ -588,10 +583,10 @@ export function WelcomeLanding({
             <div className="w-9 h-9 rounded-xl bg-[#FFFFFF] border border-[#E6E2DC] flex items-center justify-center text-[#9E734E]">
               <Truck className="w-4 h-4" />
             </div>
-            <h3 className="text-sm font-black text-[#141413]">Envíos a Todo el País & Factura A</h3>
+            <h3 className="text-sm font-black text-[#141413]">Envíos al País y Factura A.</h3>
             <p className="text-xs text-[#66615B] leading-relaxed">
-              Despachamos embalados con protección reforzada por el expreso o transporte que elijas.
-              Registrate como cliente Mayorista con tu CUIT para Factura A.
+              Enviamos tu compra bien cuidada por el expreso que elijas. Cargá tu CUIT para pedir
+              Factura A o B.
             </p>
           </div>
         </div>
@@ -604,10 +599,10 @@ export function WelcomeLanding({
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E6E2DC] pb-5">
           <div className="space-y-1">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
-              Más Elegidos en Córdoba
+              Más Pedidos en Córdoba.
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight">
-              Artículos destacados de rotación diaria
+              Productos top de venta diaria.
             </h2>
           </div>
 
@@ -616,7 +611,7 @@ export function WelcomeLanding({
             onClick={() => onNavigateUnit("ENVASES")}
             className="px-5 py-2.5 rounded-xl bg-[#141413] hover:bg-[#2C2B29] text-[#FAF8F5] text-xs font-bold inline-flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto"
           >
-            <span>Ir al Catálogo Completo ({totalCatalogCount} productos)</span>
+            <span>Ver Catálogo Total ({totalCatalogCount} items).</span>
             <ArrowRight className="w-3.5 h-3.5 text-[#9E734E]" />
           </button>
         </div>
@@ -636,12 +631,10 @@ export function WelcomeLanding({
         <div className="p-6 sm:p-8 rounded-3xl bg-[#EBE7DF] border border-[#DCD6C9] flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center md:text-left">
             <h3 className="text-lg sm:text-xl font-black text-[#141413]">
-              ¿Querés explorar las {totalCatalogCount} referencias con filtros por material,
-              capacidad y rosca?
+              ¿Querés ver los {totalCatalogCount} productos por tipo, medida y rosca?
             </h3>
             <p className="text-xs sm:text-sm text-[#57534E]">
-              Accedé al buscador completo con precios por escala actualizados y armado de combos de
-              envase + tapa.
+              Usá el buscador con precios al día y armá tus combos de envase con tapa.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
@@ -650,7 +643,7 @@ export function WelcomeLanding({
               onClick={() => onNavigateUnit("ENVASES")}
               className="px-6 py-3.5 rounded-xl bg-[#141413] hover:bg-[#2C2B29] text-[#FAF8F5] text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer"
             >
-              <span>Ver Catálogo OSSIL Envases</span>
+              <span>Ver OSSIL Envases.</span>
               <ArrowRight className="w-4 h-4 text-[#9E734E]" />
             </button>
             <button
@@ -658,7 +651,7 @@ export function WelcomeLanding({
               onClick={() => onNavigateUnit("HOME")}
               className="px-5 py-3.5 rounded-xl bg-[#FFFFFF] hover:bg-[#FAF8F5] text-[#141413] border border-[#DCD6C9] text-xs font-bold transition-all cursor-pointer"
             >
-              Ver Catálogo OSSIL Home
+              Ver OSSIL Home.
             </button>
           </div>
         </div>
@@ -672,52 +665,50 @@ export function WelcomeLanding({
         <div className="lg:col-span-5 p-6 sm:p-8 rounded-3xl bg-[#141413] text-[#FAF8F5] flex flex-col justify-between space-y-6">
           <div className="space-y-2">
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#9E734E]">
-              Proceso Ágil B2B & Minorista
+              Compra Fácil y Rápida.
             </span>
-            <h2 className="text-2xl font-black text-white">Cómo realizar tu pedido en 3 pasos</h2>
+            <h2 className="text-2xl font-black text-white">Cómo hacer tu pedido en 3 pasos.</h2>
           </div>
 
           <div className="space-y-5">
             <div className="flex items-start gap-3.5">
               <span className="w-7 h-7 rounded-lg bg-[#9E734E] text-white font-mono text-xs font-black flex items-center justify-center shrink-0 mt-0.5">
-                01
+                01.
               </span>
               <div>
                 <h3 className="text-sm font-bold text-white">
-                  Elegí tus envases y combiná sus cierres
+                  Elegí tus envases y sus tapas.
                 </h3>
                 <p className="text-xs text-[#D4CEBF] mt-0.5 leading-relaxed">
-                  Usá el botón <em>“Elegir Tapa”</em> en cada tarjeta para sumar las válvulas o
-                  tapas que coinciden milimétricamente con tu envase.
+                  Tocá el botón <em>“Elegir Tapa”</em> en cada ficha. Así sumás el spray o tapa que
+                  calza justo en esa rosca.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-3.5">
               <span className="w-7 h-7 rounded-lg bg-[#9E734E] text-white font-mono text-xs font-black flex items-center justify-center shrink-0 mt-0.5">
-                02
+                02.
               </span>
               <div>
-                <h3 className="text-sm font-bold text-white">Aprovechá las escalas por cantidad</h3>
+                <h3 className="text-sm font-bold text-white">Sumá bultos y pagá menos.</h3>
                 <p className="text-xs text-[#D4CEBF] mt-0.5 leading-relaxed">
-                  Al superar 10, 25, 50 o 100 unidades por modelo, el carrito aplica automáticamente
-                  el precio mayorista correspondiente.
+                  Al llevar 10, 25, 50 o 100 piezas de un modelo, el carrito baja el precio solo.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-3.5">
               <span className="w-7 h-7 rounded-lg bg-[#9E734E] text-white font-mono text-xs font-black flex items-center justify-center shrink-0 mt-0.5">
-                03
+                03.
               </span>
               <div>
                 <h3 className="text-sm font-bold text-white">
-                  Confirmá por WhatsApp y retirá sin espera
+                  Pedí por WhatsApp y retirá hoy.
                 </h3>
                 <p className="text-xs text-[#D4CEBF] mt-0.5 leading-relaxed">
-                  Emití tu voucher digital hacia nuestro WhatsApp oficial (
-                  {STORE_CONFIG.contact.phoneDisplay}) para coordinar retiro en Oncativo 69 o envío
-                  a domicilio.
+                  Mandá tu orden a nuestro WhatsApp ({STORE_CONFIG.contact.phoneDisplay}). Coordiná
+                  el retiro en Oncativo 69 o el envío a tu puerta.
                 </p>
               </div>
             </div>
@@ -725,8 +716,8 @@ export function WelcomeLanding({
 
           <div className="pt-4 border-t border-[#2C2B29] flex items-center justify-between gap-3">
             <div className="text-[11px] text-[#D4CEBF]">
-              <strong className="text-white block">¿Necesitás asesoramiento directo?</strong>
-              <span>Escribinos y te ayudamos a elegir el envase ideal.</span>
+              <strong className="text-white block">¿Tenés dudas con un envase?</strong>
+              <span>Hablá con nosotros y te guiamos hoy.</span>
             </div>
             <a
               href={STORE_CONFIG.contact.whatsappUrl(
@@ -737,7 +728,7 @@ export function WelcomeLanding({
               className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shrink-0 transition-colors"
             >
               <MessageCircle className="w-3.5 h-3.5" />
-              <span>WhatsApp</span>
+              <span>WhatsApp.</span>
             </a>
           </div>
         </div>
@@ -747,10 +738,10 @@ export function WelcomeLanding({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F0ECE4] pb-4">
             <div>
               <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
-                Reputación Comprobada
+                Confianza Real.
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-[#141413]">
-                Lo que dicen nuestros clientes en Córdoba
+                Qué dicen los clientes en Córdoba.
               </h2>
             </div>
             <a
@@ -760,40 +751,39 @@ export function WelcomeLanding({
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#E0D9CE] hover:border-[#9E734E] text-xs font-bold text-[#141413] transition-colors self-start"
             >
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
-              <span>4.9 ★ (7.466 opiniones)</span>
+              <span>4.9 ★ (7.466 notas).</span>
             </a>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2.5 flex flex-col justify-between">
               <p className="text-xs text-[#4A4742] leading-relaxed italic">
-                “Excelente atención de Silvia y Oscar en el local de Oncativo. Conseguí frascos
-                goteros con rosca 18 exactos para mi laboratorio de cosmética natural, sin pérdidas
-                ni derrames.”
+                “Muy buena atención de Silvia y Oscar en el local de Oncativo. Llevé goteros con
+                rosca 18 para mi marca. Cierran diez puntos y no pierden nada.”
               </p>
               <div className="pt-2 border-t border-[#EAE5DC] flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-bold text-[#141413] block">Farm. Silvia M.</span>
-                  <span className="text-[10px] text-[#8C827A]">Fitofarmacia & Cosmética</span>
+                  <span className="text-xs font-bold text-[#141413] block">Silvia M.</span>
+                  <span className="text-[10px] text-[#8C827A]">Cosmética Natural.</span>
                 </div>
                 <span className="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  ✓ Verificado
+                  ✓ Cliente Real.
                 </span>
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-2.5 flex flex-col justify-between">
               <p className="text-xs text-[#4A4742] leading-relaxed italic">
-                “Compro la cera de soja pura, pabilos y esencias concentradas por mayor. Los precios
-                por escala me permitieron triplicar el margen en mi taller de velas artesanales.”
+                “Compro cera de soja pura, pabilos y esencias por mayor. Los precios por bulto me
+                ayudaron a ganar mucho más en mi taller de velas.”
               </p>
               <div className="pt-2 border-t border-[#EAE5DC] flex items-center justify-between">
                 <div>
                   <span className="text-xs font-bold text-[#141413] block">Marcos G.</span>
-                  <span className="text-[10px] text-[#8C827A]">Taller de Velas & Aromas</span>
+                  <span className="text-[10px] text-[#8C827A]">Taller de Velas.</span>
                 </div>
                 <span className="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  ✓ Verificado
+                  ✓ Cliente Real.
                 </span>
               </div>
             </div>
@@ -807,10 +797,10 @@ export function WelcomeLanding({
               </div>
               <div>
                 <strong className="text-[#141413] block">
-                  Showroom y Retiro: Oncativo 69, Local 1 (Centro, Córdoba)
+                  Local y Retiro: Oncativo 69, Local 1 (Centro, Córdoba).
                 </strong>
                 <span className="text-[#66615B]">
-                  Lunes a Viernes de 08:00 a 17:15 hs • Sábados de 09:00 a 13:30 hs
+                  Lunes a Viernes de 08:00 a 17:15 hs. Sábados de 09:00 a 13:30 hs.
                 </span>
               </div>
             </div>
@@ -828,14 +818,13 @@ export function WelcomeLanding({
             <div className="flex items-center gap-2 mb-1.5">
               <span className="w-2 h-2 rounded-full bg-[#9E734E]" />
               <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">
-                Punto de Retiro Oficial en Córdoba Capital
+                Punto de Retiro en Córdoba.
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-[#141413]">¿Dónde lo retiro?</h2>
             <p className="text-xs sm:text-sm text-[#57534E] mt-1 max-w-2xl leading-relaxed">
-              Showroom mayorista y depósito central en pleno centro de Córdoba. Retirá tu pedido
-              armado sin demoras o vení a conocer las muestras físicas de envases, roscas y
-              acabados.
+              Nuestro salón y depósito están en el centro de Córdoba. Retirá tu compra lista sin
+              esperas. También podés venir a ver y probar los envases y tapas en persona.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -854,13 +843,13 @@ export function WelcomeLanding({
                   </div>
                   <div>
                     <span className="text-[10px] font-mono uppercase font-bold text-[#8C827A] block">
-                      Dirección Showroom & Depósito
+                      Dirección del Local.
                     </span>
                     <strong className="text-sm font-bold text-[#141413] block">
-                      Oncativo 69, Local 1
+                      Oncativo 69, Local 1.
                     </strong>
                     <span className="text-xs text-[#57534E] block">
-                      Entre calles Alvear y Maipú • Córdoba Capital (X5000)
+                      Entre Alvear y Maipú • Córdoba Capital (X5000).
                     </span>
                   </div>
                 </div>
@@ -871,13 +860,13 @@ export function WelcomeLanding({
                   </div>
                   <div>
                     <span className="text-[10px] font-mono uppercase font-bold text-[#8C827A] block">
-                      Horarios de Atención y Entrega
+                      Días y Horarios.
                     </span>
                     <strong className="text-xs font-bold text-[#141413] block">
-                      Lunes a Viernes: 08:00 a 17:15 hs
+                      Lunes a Viernes: 08:00 a 17:15 hs.
                     </strong>
                     <span className="text-xs text-[#57534E] block">
-                      Sábados: 09:00 a 13:30 hs (Domingos y Feriados cerrado)
+                      Sábados: 09:00 a 13:30 hs. Domingos cerrado.
                     </span>
                   </div>
                 </div>
@@ -888,9 +877,9 @@ export function WelcomeLanding({
                 <div className="p-3.5 rounded-xl frosted-well flex items-start gap-3">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <div className="text-xs">
-                    <strong className="text-[#141413] block">0% Costo de Envío</strong>
+                    <strong className="text-[#141413] block">0% Costo de Envío.</strong>
                     <span className="text-[#57534E]">
-                      Retirás tu compra 100% gratis, sin montos mínimos obligatorios de flete.
+                      Retirás tu compra gratis y sin monto mínimo.
                     </span>
                   </div>
                 </div>
@@ -899,10 +888,10 @@ export function WelcomeLanding({
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <div className="text-xs">
                     <strong className="text-[#141413] block">
-                      Pase Express con tu Número de Orden
+                      Retiro Rápido con tu Orden.
                     </strong>
                     <span className="text-[#57534E]">
-                      Coordinando por WhatsApp, tu pedido te espera armado y chequeado en mostrador.
+                      Pedís por WhatsApp y tu caja te espera lista en el mostrador.
                     </span>
                   </div>
                 </div>
@@ -911,11 +900,10 @@ export function WelcomeLanding({
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <div className="text-xs">
                     <strong className="text-[#141413] block">
-                      Testeo de Roscas y Acabados en Vivo
+                      Prueba de Roscas en Vivo.
                     </strong>
                     <span className="text-[#57534E]">
-                      Probá la compatibilidad milimétrica de tus tapas y válvulas antes de
-                      llevarlas.
+                      Probá cómo calzan tus tapas y sprays antes de llevarlos.
                     </span>
                   </div>
                 </div>
@@ -931,7 +919,7 @@ export function WelcomeLanding({
                 className="flex-1 py-3 px-4 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98"
               >
                 <Navigation className="w-4 h-4" />
-                <span>Cómo llegar en Google Maps ↗</span>
+                <span>Ver mapa en Google Maps.</span>
               </a>
 
               <a
@@ -943,7 +931,7 @@ export function WelcomeLanding({
                 className="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>Consultar Retiro</span>
+                <span>Consultar Retiro.</span>
               </a>
             </div>
           </div>
