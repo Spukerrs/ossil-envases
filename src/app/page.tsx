@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { ActiveFilterChips } from "@/components/ActiveFilterChips";
 import { type B2BSample, B2BSampleLightboxModal } from "@/components/B2BSampleLightboxModal";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -161,7 +161,6 @@ function HomePageContent() {
     category = "TODAS",
     thread = "TODOS",
   ) => {
-    setActiveUnit(unit);
     let mappedCat = category;
     if (category === "cosmetica-botellas" || category === "perfumeria") mappedCat = "botellas";
     else if (category === "cosmetica-potes" || category === "alimenticio")
@@ -172,12 +171,15 @@ function HomePageContent() {
     else if (category === "velas") mappedCat = "velas-difusores";
     else if (category === "bazar") mappedCat = "bazar-cocina";
 
-    setSelectedCategory(mappedCat);
-    setSelectedSubcategory("TODAS");
-    setSelectedMaterial("TODOS");
-    setSelectedThread(thread);
-    setSelectedCapacityRange("TODAS");
-    setSearchQuery("");
+    startTransition(() => {
+      setActiveUnit(unit);
+      setSelectedCategory(mappedCat);
+      setSelectedSubcategory("TODAS");
+      setSelectedMaterial("TODOS");
+      setSelectedThread(thread);
+      setSelectedCapacityRange("TODAS");
+      setSearchQuery("");
+    });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -341,18 +343,66 @@ function HomePageContent() {
   const categoriesForUnit =
     activeUnit === "ENVASES" || activeUnit === "HOME" ? FAMILIES_BY_UNIT[activeUnit] : [];
 
+  // Paginación incremental de alto rendimiento (Batching inicial de 24 items para cero delay)
+  const PAGE_SIZE = 24;
+  const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  // Reiniciar a 24 cada vez que cambien los filtros o la unidad comercial
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [
+    activeUnit,
+    selectedCategory,
+    selectedSubcategory,
+    selectedMaterial,
+    selectedThread,
+    selectedCapacityRange,
+    searchQuery,
+  ]);
+
+  const displayedProducts = useMemo(() => {
+    return filteredProducts.slice(0, visibleCount);
+  }, [filteredProducts, visibleCount]);
+
+  const hasMoreProducts = visibleCount < filteredProducts.length;
+
+  const loadMoreProducts = () => {
+    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredProducts.length));
+  };
+
+  // IntersectionObserver para auto-cargar más productos suavemente al scrollear
+  useEffect(() => {
+    if (!hasMoreProducts) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMoreProducts();
+        }
+      },
+      { rootMargin: "350px" }
+    );
+    const target = sentinelRef.current;
+    if (target) observer.observe(target);
+    return () => {
+      if (target) observer.unobserve(target);
+    };
+  }, [hasMoreProducts, displayedProducts.length]);
+
   return (
     <div className="min-h-screen bg-[#FAF8F5] apothecary-grid-subtle flex flex-col justify-between selection:bg-[#9E734E]/20 selection:text-[#835C3A]">
       <div>
         <Navbar
           activeUnit={activeUnit}
           onSelectUnit={(unit) => {
-            setActiveUnit(unit);
-            setSelectedMaterial("TODOS");
-            setSelectedThread("TODOS");
-            setSelectedCategory("TODAS");
-            setSelectedSubcategory("TODAS");
-            setSelectedCapacityRange("TODAS");
+            startTransition(() => {
+              setActiveUnit(unit);
+              setSelectedMaterial("TODOS");
+              setSelectedThread("TODOS");
+              setSelectedCategory("TODAS");
+              setSelectedSubcategory("TODAS");
+              setSelectedCapacityRange("TODAS");
+            });
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           onOpenCart={() => setIsCartOpen(true)}
@@ -638,25 +688,44 @@ function HomePageContent() {
                     onClearAll={clearFilters}
                   />
 
-                  {/* Grilla de Productos */}
-                  <section className="animate-fade-in-stagger-2">
+                  {/* Grilla de Productos de Alto Rendimiento */}
+                  <section className="animate-fade-in">
                     {filteredProducts.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                        {filteredProducts.map((product) => (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            onFilterThread={(th) => {
-                              setSelectedThread(th);
-                              setActiveUnit("ENVASES");
-                            }}
-                            onOpenComboModal={(prod) => {
-                              setComboProduct(prod);
-                              setIsComboModalOpen(true);
-                            }}
-                          />
-                        ))}
-                      </div>
+                      <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                          {displayedProducts.map((product) => (
+                            <ProductCard
+                              key={product.id}
+                              product={product}
+                              onFilterThread={(th) => {
+                                setSelectedThread(th);
+                                setActiveUnit("ENVASES");
+                              }}
+                              onOpenComboModal={(prod) => {
+                                setComboProduct(prod);
+                                setIsComboModalOpen(true);
+                              }}
+                            />
+                          ))}
+                        </div>
+
+                        {/* Control de Carga Incremental y Sentinel para Infinite Scroll */}
+                        {hasMoreProducts && (
+                          <div className="pt-10 pb-4 flex flex-col items-center justify-center gap-3.5">
+                            <span className="text-xs text-[#8C827A] font-mono">
+                              Mostrando {displayedProducts.length} de {filteredProducts.length} productos
+                            </span>
+                            <button
+                              type="button"
+                              onClick={loadMoreProducts}
+                              className="px-6 py-3 rounded-2xl bg-white hover:bg-[#FAF8F5] border border-[#DCD6C9] hover:border-[#9E734E] text-[#141413] text-xs font-bold transition-all shadow-2xs hover:shadow-sm cursor-pointer active:scale-98"
+                            >
+                              Cargar más productos (+{Math.min(PAGE_SIZE, filteredProducts.length - displayedProducts.length)})
+                            </button>
+                            <div ref={sentinelRef} className="h-6 w-full pointer-events-none" />
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <div className="p-12 text-center rounded-3xl bg-[#FFFFFF] border border-[#E6E2DC] max-w-md mx-auto space-y-3">
                         <p className="font-bold text-[#141413] text-sm">

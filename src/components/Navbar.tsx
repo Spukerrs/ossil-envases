@@ -16,7 +16,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { StoreStatusBadge } from "@/components/StoreStatusBadge";
 import { IVA_RATE } from "@/lib/constants";
@@ -45,7 +45,9 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
 
   const handleNavigate = (unit: ActiveView) => {
     if (pathname === "/" && onSelectUnit) {
-      onSelectUnit(unit);
+      startTransition(() => {
+        onSelectUnit(unit);
+      });
       if (unit === "INICIO") {
         window.history.replaceState(null, "", "/");
       } else {
@@ -57,7 +59,9 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
 
     // Si el usuario está en /producto/[id] u otra subruta, redirigir de inmediato a la home con la vista seleccionada
     const targetUrl = unit === "INICIO" ? "/" : `/?unit=${unit}`;
-    router.push(targetUrl);
+    startTransition(() => {
+      router.push(targetUrl);
+    });
   };
 
   return (

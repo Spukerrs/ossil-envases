@@ -100,15 +100,17 @@ export function WelcomeLanding({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Columna Editorial Izquierda */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2.5 flex-wrap p-1.5 pr-3.5 rounded-full liquid-glass">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FAF8F5] bg-[#141413] px-2.5 py-1 rounded-full">
+            <div className="flex sm:inline-flex flex-wrap items-center gap-2 sm:gap-2.5 p-2 sm:p-1.5 sm:pr-3.5 rounded-2xl sm:rounded-full liquid-glass max-w-full">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FAF8F5] bg-[#141413] px-2.5 py-1 rounded-full shrink-0">
                 Bienvenidos a OSSIL
               </span>
-              <span className="text-xs font-medium text-[#57534E] flex items-center gap-1">
+              <span className="text-xs font-medium text-[#57534E] flex items-center gap-1 shrink-0">
                 <MapPin className="w-3.5 h-3.5 text-[#9E734E]" />
                 <span>Oncativo 69, Córdoba Capital</span>
               </span>
-              <StoreStatusBadge />
+              <div className="shrink-0">
+                <StoreStatusBadge />
+              </div>
             </div>
 
             <div className="space-y-4">

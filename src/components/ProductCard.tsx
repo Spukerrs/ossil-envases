@@ -3,7 +3,7 @@
 import { Layers, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { toast } from "sonner";
 import { getCapacityEquivalence } from "@/lib/capacity";
 import { IVA_RATE } from "@/lib/constants";
@@ -16,7 +16,11 @@ interface ProductCardProps {
   onOpenComboModal?: (product: Product) => void;
 }
 
-export function ProductCard({ product, onFilterThread, onOpenComboModal }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({
+  product,
+  onFilterThread,
+  onOpenComboModal,
+}: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [selectedQty, setSelectedQty] = useState<number>(1);
   const [showTiers, setShowTiers] = useState<boolean>(false);
@@ -247,4 +251,4 @@ export function ProductCard({ product, onFilterThread, onOpenComboModal }: Produ
       </div>
     </div>
   );
-}
+});

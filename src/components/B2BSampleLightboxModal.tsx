@@ -16,7 +16,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { STORE_CONFIG } from "@/lib/constants";
 
 export interface B2BSample {
@@ -45,6 +45,14 @@ export function B2BSampleLightboxModal({
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+  const [isTouchActive, setIsTouchActive] = useState<boolean>(false);
+
+  // Referencias para gestos táctiles multi-touch (Pinch-to-zoom y Pan en smartphones)
+  const touchStartDistRef = useRef<number | null>(null);
+  const touchStartZoomRef = useRef<number>(1);
+  const touchLastPosRef = useRef<{ x: number; y: number } | null>(null);
+  const lastTapRef = useRef<number>(0);
+  const isPinchingOrPanningRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (sample || isOpen) {
@@ -99,6 +107,104 @@ export function B2BSampleLightboxModal({
     else if (zoomLevel < 3.2) setZoomLevel(4.5);
     else if (zoomLevel < 5.5) setZoomLevel(7);
     else setZoomLevel(1);
+  };
+
+  const handleContainerClick = () => {
+    if (isPinchingOrPanningRef.current) {
+      return;
+    }
+    cycleZoom();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setIsTouchActive(true);
+    isPinchingOrPanningRef.current = false;
+
+    if (e.touches.length === 2) {
+      // Inicio de gesto de pellizco (Pinch con 2 dedos)
+      isPinchingOrPanningRef.current = true;
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      touchStartDistRef.current = dist;
+      touchStartZoomRef.current = zoomLevel;
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      const x = Math.max(0, Math.min(100, ((midX - rect.left) / rect.width) * 100));
+      const y = Math.max(0, Math.min(100, ((midY - rect.top) / rect.height) * 100));
+      setMousePos({ x, y });
+    } else if (e.touches.length === 1) {
+      const now = Date.now();
+      if (now - lastTapRef.current < 280) {
+        // Doble tap táctil: alternar instantáneamente entre 1x y 3.5x
+        isPinchingOrPanningRef.current = true;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
+        const y = Math.max(0, Math.min(100, ((touch.clientY - rect.top) / rect.height) * 100));
+        setMousePos({ x, y });
+        setZoomLevel((prev) => (prev > 1.2 ? 1 : 3.5));
+        lastTapRef.current = 0;
+        touchLastPosRef.current = null;
+        return;
+      }
+      lastTapRef.current = now;
+      touchLastPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 2 && touchStartDistRef.current) {
+      // Pellizco activo: zoom fluido proporcional continuo
+      isPinchingOrPanningRef.current = true;
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const factor = dist / touchStartDistRef.current;
+      const newZoom = Math.min(
+        7,
+        Math.max(1, Math.round(touchStartZoomRef.current * factor * 10) / 10)
+      );
+      setZoomLevel(newZoom);
+    } else if (e.touches.length === 1 && touchLastPosRef.current) {
+      // Arrastre con un dedo (Pan/Desplazamiento táctil cuando hay zoom activo)
+      const deltaX = e.touches[0].clientX - touchLastPosRef.current.x;
+      const deltaY = e.touches[0].clientY - touchLastPosRef.current.y;
+
+      if (Math.hypot(deltaX, deltaY) > 4) {
+        isPinchingOrPanningRef.current = true;
+      }
+
+      touchLastPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      if (zoomLevel > 1) {
+        const pctDeltaX = (deltaX / rect.width) * 100 * (0.85 / zoomLevel);
+        const pctDeltaY = (deltaY / rect.height) * 100 * (0.85 / zoomLevel);
+
+        setMousePos((prev) => ({
+          x: Math.max(0, Math.min(100, prev.x - pctDeltaX)),
+          y: Math.max(0, Math.min(100, prev.y - pctDeltaY)),
+        }));
+      } else {
+        const x = Math.max(0, Math.min(100, ((e.touches[0].clientX - rect.left) / rect.width) * 100));
+        const y = Math.max(0, Math.min(100, ((e.touches[0].clientY - rect.top) / rect.height) * 100));
+        setMousePos({ x, y });
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    touchStartDistRef.current = null;
+    touchLastPosRef.current = null;
+    setTimeout(() => {
+      setIsTouchActive(false);
+      isPinchingOrPanningRef.current = false;
+    }, 60);
   };
 
   const whatsappMessage = `Hola OSSIL, estoy interesado en el servicio de asesoramiento para ${sample.title} (${sample.tech}) en mis envases. ¿Podrían asesorarme con las opciones y cotizaciones?`;
@@ -201,18 +307,23 @@ export function B2BSampleLightboxModal({
               </button>
             </div>
 
-            {/* Contenedor Interactivo con Lupa de Seguimiento y Zoom Rueda */}
+            {/* Contenedor Interactivo con Lupa de Seguimiento, Zoom Rueda y Gesto Táctil (Pinch/Pan) */}
             <div
               className={`relative w-full aspect-4/3 rounded-2xl overflow-hidden shadow-lg border border-[#E6E2DC] bg-white select-none ${
                 zoomLevel > 1 ? "cursor-crosshair" : "cursor-zoom-in"
               }`}
+              style={{ touchAction: "none" }}
               onMouseMove={handleMouseMove}
               onWheel={handleWheel}
-              onClick={cycleZoom}
+              onClick={handleContainerClick}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
               title={
                 zoomLevel > 1
-                  ? "Click para ciclar zoom, rueda del ratón para regular o mové el cursor para recorrer"
-                  : "Click para activar zoom de alta definición (hasta 7x macro)"
+                  ? "Pellizcá o arrastrá para recorrer el acabado"
+                  : "Pellizcá con 2 dedos o hacé click para activar zoom macro (hasta 7x)"
               }
             >
               <div
@@ -220,7 +331,11 @@ export function B2BSampleLightboxModal({
                 style={{
                   transform: `scale(${zoomLevel})`,
                   transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
-                  transition: zoomLevel === 1 ? "transform 0.3s ease-out" : "transform 0.1s ease-out",
+                  transition: isTouchActive
+                    ? "none"
+                    : zoomLevel === 1
+                      ? "transform 0.3s ease-out"
+                      : "transform 0.12s ease-out",
                 }}
               >
                 <Image
@@ -240,14 +355,14 @@ export function B2BSampleLightboxModal({
                   <>
                     <ZoomOut className="w-3.5 h-3.5 text-[#FBBF24]" />
                     <span className="font-bold text-[#FBBF24]">{zoomLevel}x</span>
-                    <span className="text-[10px] text-white/80 hidden sm:inline">
-                      • Rueda o cursor para macro
+                    <span className="text-[10px] text-white/80">
+                      • Pellizcá o arrastrá para explorar
                     </span>
                   </>
                 ) : (
                   <>
                     <ZoomIn className="w-3.5 h-3.5 text-[#D4CEBF]" />
-                    <span className="font-bold">Click o rueda para lupa (hasta 7x)</span>
+                    <span className="font-bold">Pellizcá o tocá para lupa (hasta 7x)</span>
                   </>
                 )}
               </div>
@@ -438,21 +553,30 @@ export function B2BSampleLightboxModal({
             </div>
           </div>
 
-          {/* Lienzo Central con Lupa de Seguimiento a Pantalla Completa */}
+          {/* Lienzo Central con Lupa de Seguimiento a Pantalla Completa y Gestos Táctiles */}
           <div
             className={`flex-1 w-full my-4 rounded-3xl overflow-hidden relative border border-white/10 bg-black/40 flex items-center justify-center select-none ${
               zoomLevel > 1 ? "cursor-crosshair" : "cursor-zoom-in"
             }`}
+            style={{ touchAction: "none" }}
             onMouseMove={handleMouseMove}
             onWheel={handleWheel}
-            onClick={cycleZoom}
+            onClick={handleContainerClick}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchEnd}
           >
             <div
               className="w-full h-full relative"
               style={{
                 transform: `scale(${zoomLevel})`,
                 transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
-                transition: zoomLevel === 1 ? "transform 0.3s ease-out" : "transform 0.1s ease-out",
+                transition: isTouchActive
+                  ? "none"
+                  : zoomLevel === 1
+                    ? "transform 0.3s ease-out"
+                    : "transform 0.12s ease-out",
               }}
             >
               <Image
@@ -467,8 +591,8 @@ export function B2BSampleLightboxModal({
             </div>
 
             {/* Guía Flotante */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/80 text-white font-mono text-xs backdrop-blur-md border border-white/15 pointer-events-none">
-              <span>Zoom {zoomLevel}x — Deslizá el cursor para inspeccionar cada detalle</span>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/80 text-white font-mono text-xs backdrop-blur-md border border-white/15 pointer-events-none text-center max-w-[90vw]">
+              <span>Zoom {zoomLevel}x — Pellizcá con 2 dedos o deslizá para inspeccionar cada detalle</span>
             </div>
           </div>
 
