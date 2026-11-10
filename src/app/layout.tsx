@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description:
     "Venta por mayor y menor de envases para cosmética, perfumería, velas y bazar en Oncativo 69, Córdoba. Envíos a todo el país y retiro hoy.",
   alternates: {
-    canonical: "/",
+    canonical: "https://ossil-envases-demo.vercel.app/",
   },
   robots: {
     index: true,
