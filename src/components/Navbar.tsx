@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
+import { toast } from "sonner";
 import { AuthModal } from "@/components/AuthModal";
 import { StoreStatusBadge } from "@/components/StoreStatusBadge";
 import { IVA_RATE } from "@/lib/constants";
@@ -39,7 +40,7 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
   const netAmount = useCartStore((s) => s.getTotalAmount());
   const totalWithIva = Math.round(netAmount * (1 + IVA_RATE));
 
-  const { user, logout } = useAuthStore();
+  const { user, logout, loginDemo } = useAuthStore();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -200,14 +201,19 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
                       <span className="text-xs font-bold text-[#141413] leading-none truncate max-w-[110px]">
                         {user.fullName}
                       </span>
-                      <span className="text-[10px] text-[#B45309] font-mono font-bold leading-tight mt-0.5 flex items-center gap-1">
-                        {user.clientType === "mayorista" ? (
+                      <span className="text-[10px] font-mono font-bold leading-tight mt-0.5 flex items-center gap-1">
+                        {user.role === "admin" ? (
+                          <>
+                            <ShieldCheck className="w-2.5 h-2.5 text-[#141413]" />
+                            <span className="text-[#141413]">Admin ERP</span>
+                          </>
+                        ) : user.clientType === "mayorista" ? (
                           <>
                             <ShieldCheck className="w-2.5 h-2.5 text-[#B45309]" />
-                            <span>Mayorista B2B</span>
+                            <span className="text-[#B45309]">Mayorista B2B</span>
                           </>
                         ) : (
-                          "Emprendedor"
+                          <span className="text-[#66615B]">Minorista</span>
                         )}
                       </span>
                     </div>
@@ -247,6 +253,60 @@ export function Navbar({ activeUnit, onSelectUnit, onOpenCart }: NavbarProps) {
                           <span>Panel ERP Precios (Admin)</span>
                         </Link>
                       )}
+
+                      {/* Cambio rápido entre perfiles demo */}
+                      <div className="px-2 py-1.5 border-b border-[#E6E2DC] mb-1">
+                        <span className="text-[9px] font-mono uppercase tracking-wider text-[#8C827A] font-bold block px-1 mb-1">
+                          Cambiar perfil rápido (Demo):
+                        </span>
+                        <div className="grid grid-cols-3 gap-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              loginDemo("mayorista");
+                              setIsUserMenuOpen(false);
+                              toast.success("Modo Mayorista B2B activado");
+                            }}
+                            className={`px-1.5 py-1 rounded-lg text-[10px] font-bold transition-colors cursor-pointer ${
+                              user.clientType === "mayorista" && user.role !== "admin"
+                                ? "bg-[#141413] text-white"
+                                : "bg-white/80 text-[#57534E] hover:bg-white"
+                            }`}
+                          >
+                            Mayorista
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              loginDemo("minorista");
+                              setIsUserMenuOpen(false);
+                              toast.success("Modo Minorista activado");
+                            }}
+                            className={`px-1.5 py-1 rounded-lg text-[10px] font-bold transition-colors cursor-pointer ${
+                              user.clientType === "minorista"
+                                ? "bg-[#9E734E] text-white"
+                                : "bg-white/80 text-[#57534E] hover:bg-white"
+                            }`}
+                          >
+                            Minorista
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              loginDemo("admin");
+                              setIsUserMenuOpen(false);
+                              toast.success("Perfil Administrador Demo activado");
+                            }}
+                            className={`px-1.5 py-1 rounded-lg text-[10px] font-bold transition-colors cursor-pointer ${
+                              user.role === "admin"
+                                ? "bg-[#141413] text-[#E5B88B]"
+                                : "bg-white/80 text-[#57534E] hover:bg-white"
+                            }`}
+                          >
+                            Admin
+                          </button>
+                        </div>
+                      </div>
 
                       <button
                         type="button"

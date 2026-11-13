@@ -1,12 +1,15 @@
 "use client";
 
-import { Layers, Plus } from "lucide-react";
+import { Building2, Layers, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { QuantityStepper } from "@/components/QuantityStepper";
 import { getCapacityEquivalence } from "@/lib/capacity";
-import { IVA_RATE, STORE_CONFIG } from "@/lib/constants";
+import { STORE_CONFIG } from "@/lib/constants";
+import { computeProductPricing, getRecommendedQtyForClientType } from "@/lib/pricing";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
 import type { Product } from "@/types/catalog";
 
@@ -22,18 +25,27 @@ export const ProductCard = memo(function ProductCard({
   onOpenComboModal,
 }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
-  const [selectedQty, setSelectedQty] = useState<number>(1);
+  const clientType = useAuthStore((s) => s.user?.clientType);
+  const isWholesale = clientType === "mayorista";
+
+  const [selectedQty, setSelectedQty] = useState<number>(() =>
+    getRecommendedQtyForClientType(product, clientType),
+  );
   const [showTiers, setShowTiers] = useState<boolean>(false);
 
-  // Calcular precio unitario para la cantidad seleccionada
-  const activeTier = [...product.priceTiers]
-    .sort((a, b) => b.minQty - a.minQty)
-    .find((t) => selectedQty >= t.minQty);
+  // Al cambiar entre perfil Mayorista B2B y Minorista, ajustar el pack sugerido inmediatamente
+  useEffect(() => {
+    setSelectedQty(getRecommendedQtyForClientType(product, clientType));
+  }, [clientType, product]);
 
-  const effectiveUnitPrice = activeTier ? activeTier.unitPrice : product.basePrice;
-  const discountPct = activeTier ? activeTier.discountPct : 0;
-  const subtotal = effectiveUnitPrice * selectedQty;
-  const totalConIva = Math.round(subtotal * (1 + IVA_RATE));
+  const {
+    unitNetPrice: effectiveUnitPrice,
+    baseUnitPrice,
+    discountPct,
+    subtotalNeto: subtotal,
+    totalConIva,
+    savingsNeto,
+  } = computeProductPricing(product, selectedQty);
 
   const handleAdd = () => {
     addItem(product, selectedQty);
@@ -159,15 +171,22 @@ export const ProductCard = memo(function ProductCard({
         ) : (
           <div className="mb-3.5">
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-[11px] font-bold uppercase text-[#66615B]">
-                Precio por cantidad.
+              <span className="text-[11px] font-bold uppercase text-[#66615B] flex items-center gap-1">
+                {isWholesale ? (
+                  <>
+                    <Building2 className="w-3 h-3 text-[#9E734E]" />
+                    <span>Escala B2B (Neto)</span>
+                  </>
+                ) : (
+                  <span>Precio por cantidad</span>
+                )}
               </span>
               <button
                 type="button"
                 onClick={() => setShowTiers(!showTiers)}
                 className="text-[11px] font-bold text-[#9E734E] underline hover:text-[#835C3A] cursor-pointer"
               >
-                {showTiers ? "Cerrar tabla." : "Ver precios."}
+                {showTiers ? "Cerrar tabla" : "Ver precios"}
               </button>
             </div>
 
@@ -186,7 +205,9 @@ export const ProductCard = memo(function ProductCard({
                     onClick={() => setSelectedQty(qty)}
                     className={`flex flex-col items-center py-1.5 rounded-lg border text-center transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-[#141413] border-[#141413] text-white shadow-xs"
+                        ? isWholesale
+                          ? "bg-[#9E734E] border-[#9E734E] text-white shadow-xs"
+                          : "bg-[#141413] border-[#141413] text-white shadow-xs"
                         : "bg-[#FAF8F5] border-[#E6E2DC] text-[#141413] hover:border-[#9E734E]"
                     }`}
                   >
@@ -194,7 +215,7 @@ export const ProductCard = memo(function ProductCard({
                     <span
                       className={`text-[9px] font-bold ${
                         isSelected
-                          ? "text-amber-300"
+                          ? "text-amber-100"
                           : tier && tier.discountPct > 0
                             ? "text-[#B45309]"
                             : "text-[#66615B]"
@@ -205,6 +226,17 @@ export const ProductCard = memo(function ProductCard({
                   </button>
                 );
               })}
+            </div>
+
+            {/* Ingreso Libre de Cantidad (ej. 250, 1000 u.) */}
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <span className="text-[10px] font-bold text-[#66615B]">Cantidad libre:</span>
+              <QuantityStepper
+                value={selectedQty}
+                onChange={setSelectedQty}
+                size="sm"
+                ariaLabel={`Cantidad de ${product.name}`}
+              />
             </div>
 
             {/* Desglose de Tabla de Precios Expandible */}
@@ -224,25 +256,61 @@ export const ProductCard = memo(function ProductCard({
           </div>
         )}
 
-        {/* Precio Total con IVA y Botón Agregar */}
-        <div className="flex items-center justify-between pt-1">
-          <div>
-            <span className="text-[10px] font-bold text-[#66615B] block">
-              Neto: ${subtotal.toLocaleString("es-AR")} (
-              {effectiveUnitPrice.toLocaleString("es-AR")} u.)
-            </span>
-            <div className="flex items-baseline gap-1">
-              <span className="font-mono text-lg font-black text-[#141413]">
-                ${totalConIva.toLocaleString("es-AR")}
+        {/* Precio Total Diferenciado por Perfil (Mayorista Neto B2B vs Minorista Final c/IVA) */}
+        <div className="flex items-center justify-between gap-2 pt-1">
+          {isWholesale ? (
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-[#141413] text-[#E5B88B]">
+                  {discountPct > 0 ? `B2B -${discountPct}%` : "Neto B2B"}
+                </span>
+                {discountPct > 0 && (
+                  <span className="font-mono text-[10px] text-[#8C827A] line-through">
+                    ${baseUnitPrice.toLocaleString("es-AR")}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-baseline gap-1 mt-0.5">
+                <span className="font-mono text-lg font-black text-[#141413]">
+                  ${effectiveUnitPrice.toLocaleString("es-AR")}
+                </span>
+                <span className="text-[10px] font-bold text-[#9E734E]">neto c/u</span>
+              </div>
+              <span className="text-[10px] font-medium text-[#66615B] block leading-tight">
+                {selectedQty}u: ${subtotal.toLocaleString("es-AR")} neto • $
+                {totalConIva.toLocaleString("es-AR")} c/IVA
+                {savingsNeto > 0 && (
+                  <strong className="text-emerald-700 ml-1">
+                    (Ahorrás ${savingsNeto.toLocaleString("es-AR")})
+                  </strong>
+                )}
               </span>
-              <span className="text-[10px] font-semibold text-[#9E734E]">c/IVA</span>
             </div>
-          </div>
+          ) : (
+            <div>
+              <span className="text-[10px] font-bold text-[#66615B] block">
+                Final ({selectedQty} u.) • Neto: ${subtotal.toLocaleString("es-AR")}
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="font-mono text-lg font-black text-[#141413]">
+                  ${totalConIva.toLocaleString("es-AR")}
+                </span>
+                <span className="text-[10px] font-semibold text-[#9E734E]">c/IVA</span>
+              </div>
+              <span className="text-[10px] text-[#66615B] block leading-tight">
+                (${effectiveUnitPrice.toLocaleString("es-AR")} neto c/u • Factura B)
+              </span>
+            </div>
+          )}
 
           <button
             type="button"
             onClick={handleAdd}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-white text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer shrink-0 ${
+              isWholesale
+                ? "bg-[#141413] hover:bg-[#9E734E]"
+                : "bg-[#9E734E] hover:bg-[#835C3A]"
+            }`}
           >
             <Plus className="w-4 h-4" />
             <span>Agregar</span>

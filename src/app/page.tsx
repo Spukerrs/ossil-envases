@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AccountModeBanner } from "@/components/AccountModeBanner";
 import { ActiveFilterChips } from "@/components/ActiveFilterChips";
 import { type B2BSample, B2BSampleLightboxModal } from "@/components/B2BSampleLightboxModal";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -467,6 +468,7 @@ function HomePageContent() {
 
               {/* Hero Editorial Apothecary con Entrada Suave */}
               <section className="mb-8 animate-fade-in-up">
+                <AccountModeBanner />
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-[#E6E2DC]">
                   <div className="max-w-2xl space-y-2">
                     <div className="flex items-center gap-2 flex-wrap">

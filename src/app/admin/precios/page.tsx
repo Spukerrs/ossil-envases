@@ -183,6 +183,7 @@ export default function AdminPreciosPage() {
   };
 
   const user = useAuthStore((s) => s.user);
+  const loginDemo = useAuthStore((s) => s.loginDemo);
 
   if (user?.role !== "admin") {
     return (
@@ -198,11 +199,21 @@ export default function AdminPreciosPage() {
             <h1 className="text-xl font-black text-[#141413]">Módulo ERP Exclusivo</h1>
             <p className="text-xs text-[#66615B] leading-relaxed">
               El panel de actualización de precios e ingesta masiva está reservado únicamente para
-              usuarios con permisos administrativos verificados. Los accesos de administrador se
-              gestionan internamente y no pueden ser creados desde la tienda pública.
+              usuarios con permisos administrativos verificados. Podés probarlo activando el perfil
+              demo de administrador o volver a la tienda.
             </p>
           </div>
           <div className="pt-2 flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                loginDemo("admin");
+                toast.success("Perfil Demo Administrador activado.");
+              }}
+              className="w-full py-3 px-4 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold transition-all shadow-md active:scale-98 cursor-pointer"
+            >
+              Activar Perfil Demo Administrador
+            </button>
             <Link
               href="/"
               className="w-full py-3 px-4 rounded-xl bg-[#141413] hover:bg-[#2C2B29] text-white text-xs font-bold transition-all shadow-md active:scale-98"

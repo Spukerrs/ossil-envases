@@ -2,23 +2,24 @@
 
 import {
   AlertCircle,
+  Building2,
   CheckCircle2,
   Clock,
   FileText,
   MapPin,
   MessageCircle,
   MessageSquare,
-  Minus,
-  Plus,
   Sparkles,
   Store,
   Ticket,
   Trash2,
   Truck,
+  User,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { QuantityStepper } from "@/components/QuantityStepper";
 import { PRODUCTS_SEED } from "@/data/catalog";
 import { STORE_CONFIG } from "@/lib/constants";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -51,11 +52,13 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
   } = useCartStore();
 
   const authUser = useAuthStore((s) => s.user);
+  const loginDemo = useAuthStore((s) => s.loginDemo);
 
   const [deliveryMethod, setDeliveryMethod] = useState<"LOCAL" | "ENVIO">("LOCAL");
   const [paymentMethod, setPaymentMethod] = useState<"TRANSFERENCIA" | "TARJETA">("TRANSFERENCIA");
   const [customerName, setCustomerName] = useState<string>("");
   const [customerNotes, setCustomerNotes] = useState<string>("");
+  const prevAuthUserIdRef = useRef<string | null>(null);
   // Selección de asesor de WhatsApp
   const [selectedAdvisor, setSelectedAdvisor] = useState<string>(
     STORE_CONFIG.contact.salesLines[0].clean,
@@ -64,10 +67,16 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
   const [selectedCapByThread, setSelectedCapByThread] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (authUser && !customerName) {
-      setCustomerName(authUser.fullName);
+    const nextId = authUser?.id ?? null;
+    if (nextId !== prevAuthUserIdRef.current) {
+      prevAuthUserIdRef.current = nextId;
+      if (authUser) {
+        setCustomerName(authUser.businessName || authUser.fullName);
+      }
     }
-  }, [authUser, customerName]);
+  }, [authUser]);
+
+  const isWholesaleAccount = authUser?.clientType === "mayorista";
 
   // Código de voucher express estable por sesión
   const expressVoucherCode = useMemo(() => {
@@ -155,6 +164,7 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
       name: customerName || authUser?.fullName,
       cuit: authUser?.cuit,
       businessName: authUser?.businessName,
+      clientType: authUser?.clientType,
       voucherCode: deliveryMethod === "LOCAL" ? expressVoucherCode : undefined,
       deliveryMethod,
       paymentMethod,
@@ -176,23 +186,69 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
         <div className="w-screen max-w-md liquid-glass-strong border-l border-white/80 shadow-2xl flex flex-col justify-between">
           {/* Cabecera del Drawer */}
-          <div className="p-5 border-b border-[#E6E2DC]/80 bg-white/80 flex items-center justify-between">
-            <div>
-              <h2 className="text-base sm:text-lg font-black text-[#141413] flex items-center gap-2">
-                <span>Mi Pedido Mayorista / Minorista</span>
-              </h2>
-              <span className="text-xs text-[#66615B]">
-                {totalItems} unidades • Precios con escala + IVA (21%)
-              </span>
+          <div className="p-5 border-b border-[#E6E2DC]/80 bg-white/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-[#141413] flex items-center gap-2">
+                  <span>{isWholesaleAccount ? "Mi Pedido Mayorista B2B" : "Mi Pedido Minorista"}</span>
+                </h2>
+                <span className="text-xs text-[#66615B]">
+                  {totalItems} unidades •{" "}
+                  {isWholesaleAccount
+                    ? "Neto s/IVA + Factura A (CUIT)"
+                    : "Precios con escala + IVA (21%)"}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Cerrar carrito"
+                className="p-2 rounded-xl frosted-well text-[#66615B] hover:text-[#141413] transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Cerrar carrito"
-              className="p-2 rounded-xl frosted-well text-[#66615B] hover:text-[#141413] transition-colors cursor-pointer"
+
+            {/* Indicador de Modo de Cuenta Activo + Switch Rápido */}
+            <div
+              className={`rounded-xl px-3 py-2 flex items-center justify-between gap-2 text-[11px] border ${
+                isWholesaleAccount
+                  ? "bg-[#141413] text-[#FAF8F5] border-[#2C2B29]"
+                  : "bg-[#FAF8F5] text-[#141413] border-[#E6E2DC]"
+              }`}
             >
-              <X className="w-5 h-5" />
-            </button>
+              <div className="flex items-center gap-1.5 min-w-0">
+                {isWholesaleAccount ? (
+                  <Building2 className="w-3.5 h-3.5 text-[#E5B88B] shrink-0" />
+                ) : (
+                  <User className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
+                )}
+                <span className="truncate font-bold">
+                  {isWholesaleAccount
+                    ? `B2B • Factura A${authUser?.cuit ? ` (${authUser.cuit})` : ""}`
+                    : "Minorista • Factura B / Final"}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = isWholesaleAccount ? "minorista" : "mayorista";
+                  loginDemo(next);
+                  toast.success(
+                    next === "mayorista"
+                      ? "Perfil cambiado a Mayorista B2B (Factura A)"
+                      : "Perfil cambiado a Minorista (Factura B)",
+                  );
+                }}
+                className={`text-[10px] font-bold underline shrink-0 cursor-pointer ${
+                  isWholesaleAccount
+                    ? "text-[#E5B88B] hover:text-white"
+                    : "text-[#9E734E] hover:text-[#141413]"
+                }`}
+              >
+                {isWholesaleAccount ? "Pasar a Minorista" : "Pasar a Mayorista"}
+              </button>
+            </div>
           </div>
 
           {/* Lista de Productos y Resumen con Scroll */}
@@ -371,30 +427,15 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
                       </button>
                     </div>
 
-                    {/* Selector de Cantidad y Precios Netos */}
-                    <div className="flex items-center justify-between pt-2 border-t border-[#E6E2DC]/70">
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center border border-[#E6E2DC] rounded-lg bg-[#FAF8F5]">
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                            className="p-1.5 text-[#66615B] hover:text-[#141413] cursor-pointer"
-                            aria-label="Restar unidad"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="font-mono text-xs font-bold px-3 text-[#141413]">
-                            {item.quantity}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                            className="p-1.5 text-[#66615B] hover:text-[#141413] cursor-pointer"
-                            aria-label="Sumar unidad"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        </div>
+                    {/* Selector de Cantidad Libre (+/- o tipeo directo ej: 1000) y Precios Netos */}
+                    <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#E6E2DC]/70">
+                      <div className="flex items-center gap-1.5">
+                        <QuantityStepper
+                          value={item.quantity}
+                          onChange={(qty) => updateQuantity(item.product.id, qty)}
+                          size="sm"
+                          ariaLabel={`Cantidad de ${item.product.name}`}
+                        />
                         <span className="text-[11px] text-[#66615B]">u.</span>
                       </div>
 
@@ -489,7 +530,7 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
                     >
                       <div className="flex items-center gap-1.5 font-bold text-[#141413]">
                         <Truck className="w-3.5 h-3.5 text-[#9E734E]" />
-                        <span>Envío por Expreso</span>
+                        <span>Envío Express</span>
                       </div>
                       <span className="text-[10px] text-[#66615B] mt-1">
                         Interior / Todo el País
@@ -520,8 +561,8 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
                   ) : (
                     <div className="mt-2.5 p-3 rounded-xl frosted-well text-xs text-[#66615B]">
                       <p className="text-[11px]">
-                        📦 Despachamos vía expresos (Vía Cargo, Andreani, Credifin o comisionista a
-                        elección). El flete se abona en destino o al despachar.
+                        📦 Despachamos por envío express o transporte (Vía Cargo, Andreani, Credifin
+                        o comisionista a elección). El flete se abona en destino o al despachar.
                       </p>
                     </div>
                   )}
@@ -589,7 +630,9 @@ export function CartDrawer({ isOpen, onClose, onSelectThreadFilter }: CartDrawer
                       Detalle de lo que vas a comprar
                     </span>
                     <span className="font-mono text-[10px] text-[#66615B]">
-                      {authUser?.cuit ? `Factura A (${authUser.cuit})` : "Consumidor Final / B"}
+                      {isWholesaleAccount
+                        ? `Factura A${authUser?.cuit ? ` (${authUser.cuit})` : " (B2B)"}`
+                        : "Consumidor Final / Factura B"}
                     </span>
                   </div>
 

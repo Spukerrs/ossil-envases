@@ -7,6 +7,7 @@ interface WhatsAppCheckoutOptions {
   name?: string;
   cuit?: string;
   businessName?: string;
+  clientType?: "minorista" | "mayorista";
   voucherCode?: string;
   deliveryMethod: "LOCAL" | "ENVIO";
   paymentMethod: "TRANSFERENCIA" | "TARJETA";
@@ -167,7 +168,7 @@ export const useCartStore = create<CartStore>()(
         const deliveryText =
           customerData?.deliveryMethod === "LOCAL"
             ? `Retiro en Local (Oncativo 69, Cordoba)${customerData.voucherCode ? ` - Pase #${customerData.voucherCode}` : ""}`
-            : "Envio por Expreso / Transporte (a coordinar)";
+            : "Envio Express / Transporte (a coordinar)";
         const paymentText =
           customerData?.paymentMethod === "TRANSFERENCIA"
             ? "Transferencia Bancaria / Efectivo (0% Recargo)"
@@ -176,6 +177,11 @@ export const useCartStore = create<CartStore>()(
         // Formato seguro sin caracteres especiales de dibujo ni selectores de variación que WhatsApp renderiza como '?'
         let msg = `*ORDEN DE COMPRA DIGITAL - OSSIL ENVASES & HOME*\n`;
         msg += `--------------------------------------------------\n`;
+        msg += `*Perfil:* ${
+          customerData?.clientType === "mayorista"
+            ? "Mayorista B2B (Factura A)"
+            : "Minorista / Consumidor Final (Factura B)"
+        }\n`;
         if (customerData?.name) {
           msg += `*Cliente:* ${customerData.name}\n`;
         }

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { STORE_CONFIG } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import type { UserProfile } from "@/types/catalog";
 
@@ -18,7 +19,7 @@ interface AuthState {
     businessName?: string;
   }) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
-  loginDemo: (type: "minorista" | "mayorista") => void;
+  loginDemo: (type: "minorista" | "mayorista" | "admin") => void;
   clearError: () => void;
 }
 
@@ -195,7 +196,25 @@ export const useAuthStore = create<AuthState>()(
         set({ user: null, isLoading: false, error: null });
       },
 
-      loginDemo: (type: "minorista" | "mayorista") => {
+      loginDemo: (type: "minorista" | "mayorista" | "admin") => {
+        if (type === "admin") {
+          set({
+            user: {
+              id: "demo_admin_01",
+              email: "admin@ossilenvases.com.ar",
+              fullName: "Dirección OSSIL (Admin)",
+              businessName: "OSSIL Envases & Home — Casa Central",
+              cuit: "30-71122334-9",
+              clientType: "mayorista",
+              phone: STORE_CONFIG.contact.salesLines[0].phoneDisplay,
+              city: "Córdoba Capital",
+              role: "admin",
+            },
+            error: null,
+          });
+          return;
+        }
+
         if (type === "mayorista") {
           set({
             user: {
@@ -205,8 +224,9 @@ export const useAuthStore = create<AuthState>()(
               businessName: "Laboratorios del Centro S.R.L.",
               cuit: "30-71458923-8",
               clientType: "mayorista",
-              phone: "+54 9 351 244-0156",
+              phone: STORE_CONFIG.contact.salesLines[0].phoneDisplay,
               city: "Córdoba Capital",
+              role: "customer",
             },
             error: null,
           });
@@ -218,8 +238,9 @@ export const useAuthStore = create<AuthState>()(
               fullName: "Clara Aromas & Deco",
               businessName: "Emprendimiento Velas de Soja",
               clientType: "minorista",
-              phone: "+54 9 351 319-6225",
+              phone: STORE_CONFIG.contact.salesLines[1].phoneDisplay,
               city: "Córdoba Capital",
+              role: "customer",
             },
             error: null,
           });

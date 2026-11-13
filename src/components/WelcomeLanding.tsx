@@ -16,6 +16,7 @@ import {
   Truck,
 } from "lucide-react";
 import Image from "next/image";
+import { AccountModeBanner } from "@/components/AccountModeBanner";
 import { ProductCard } from "@/components/ProductCard";
 import { StoreStatusBadge } from "@/components/StoreStatusBadge";
 import { STORE_CONFIG } from "@/lib/constants";
@@ -583,10 +584,10 @@ export function WelcomeLanding({
             <div className="w-9 h-9 rounded-xl bg-[#FFFFFF] border border-[#E6E2DC] flex items-center justify-center text-[#9E734E]">
               <Truck className="w-4 h-4" />
             </div>
-            <h3 className="text-sm font-black text-[#141413]">Envíos al País y Factura A.</h3>
+            <h3 className="text-sm font-black text-[#141413]">Envíos Express y Factura A.</h3>
             <p className="text-xs text-[#66615B] leading-relaxed">
-              Enviamos tu compra bien cuidada por el expreso que elijas. Cargá tu CUIT para pedir
-              Factura A o B.
+              Enviamos tu compra bien cuidada por envío express o el transporte que elijas. Cargá tu
+              CUIT para pedir Factura A o B.
             </p>
           </div>
         </div>
@@ -596,6 +597,7 @@ export function WelcomeLanding({
       {/* 5. SELECCIÓN CURADA DE DESTACADOS (4 PRODUCTOS PARA NO SATURAR)        */}
       {/* ===================================================================== */}
       <section className="space-y-6">
+        <AccountModeBanner />
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E6E2DC] pb-5">
           <div className="space-y-1">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#9E734E]">

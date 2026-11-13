@@ -15,12 +15,14 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { STORE_CONFIG } from "@/lib/constants";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface Admin2FAGuardProps {
   children: React.ReactNode;
 }
 
 export function Admin2FAGuard({ children }: Admin2FAGuardProps) {
+  const user = useAuthStore((s) => s.user);
   const [step, setStep] = useState<1 | 2>(1);
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
@@ -284,8 +286,22 @@ export function Admin2FAGuard({ children }: Admin2FAGuardProps) {
                 <span>→</span>
               </button>
 
-              {/* Acceso Rápido Autorizado para Testing Local */}
-              <div className="pt-3 border-t border-[#E6E2DC] text-center">
+              {/* Acceso Rápido Autorizado para Testing Local / Demo Admin */}
+              <div className="pt-3 border-t border-[#E6E2DC] space-y-2 text-center">
+                {user?.id === "demo_admin_01" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsVerified(true);
+                      sessionStorage.setItem("ossil_erp_2fa_session", "authorized");
+                      setSecondsRemaining(1800);
+                      toast.success("Panel ERP desbloqueado con Perfil Demo Administrador.");
+                    }}
+                    className="w-full py-2.5 px-3 rounded-xl bg-[#9E734E] hover:bg-[#835C3A] text-white text-xs font-bold transition-all cursor-pointer"
+                  >
+                    Entrar directo como Demo Admin (sin esperar 2FA)
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => {

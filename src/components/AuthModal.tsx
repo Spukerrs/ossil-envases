@@ -3,6 +3,7 @@
 import {
   Building2,
   CheckCircle2,
+  FileSpreadsheet,
   Lock,
   Mail,
   Phone,
@@ -208,16 +209,16 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
               </button>
 
               {/* Acceso Rápido Demo Local */}
-              <div className="pt-3 border-t border-[#E6E2DC] space-y-2">
+              <div className="pt-3 border-t border-[#E6E2DC] space-y-2.5">
                 <span className="text-[10px] uppercase font-bold text-[#8C827A] tracking-wider block text-center">
-                  Acceso Rápido de Prueba (Localhost / Demo)
+                  Perfiles Demo Interactivos (Probá la diferencia al instante)
                 </span>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => {
                       loginDemo("mayorista");
-                      setSuccessMsg("Sesión Demo Mayorista iniciada.");
+                      setSuccessMsg("Sesión Demo Mayorista iniciada (Tarifa B2B + Factura A).");
                       setTimeout(() => {
                         setSuccessMsg(null);
                         onClose();
@@ -225,12 +226,12 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
                     }}
                     className="p-2.5 rounded-xl border border-[#E6E2DC] bg-[#FAF8F5] hover:bg-[#EBE7DF] hover:border-[#9E734E] text-left transition-all cursor-pointer group"
                   >
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-[#141413] group-hover:text-[#9E734E]">
-                      <Building2 className="w-3.5 h-3.5 text-[#9E734E]" />
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#141413] group-hover:text-[#9E734E]">
+                      <Building2 className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
                       <span>Mayorista B2B</span>
                     </div>
-                    <span className="text-[10px] text-[#8C827A] block truncate">
-                      Laboratorio Central
+                    <span className="text-[10px] text-[#66615B] block mt-0.5 leading-snug">
+                      Pack 25u (-17% base), neto s/IVA y Factura A (CUIT).
                     </span>
                   </button>
 
@@ -238,7 +239,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
                     type="button"
                     onClick={() => {
                       loginDemo("minorista");
-                      setSuccessMsg("Sesión Demo Minorista iniciada.");
+                      setSuccessMsg("Sesión Demo Minorista iniciada (Desde 1u. c/IVA).");
                       setTimeout(() => {
                         setSuccessMsg(null);
                         onClose();
@@ -246,13 +247,46 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
                     }}
                     className="p-2.5 rounded-xl border border-[#E6E2DC] bg-[#FAF8F5] hover:bg-[#EBE7DF] hover:border-[#9E734E] text-left transition-all cursor-pointer group"
                   >
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-[#141413] group-hover:text-[#9E734E]">
-                      <User className="w-3.5 h-3.5 text-[#9E734E]" />
-                      <span>Emprendedor</span>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#141413] group-hover:text-[#9E734E]">
+                      <User className="w-3.5 h-3.5 text-[#9E734E] shrink-0" />
+                      <span>Minorista / Emprendedor</span>
                     </div>
-                    <span className="text-[10px] text-[#8C827A] block truncate">Clara Aromas</span>
+                    <span className="text-[10px] text-[#66615B] block mt-0.5 leading-snug">
+                      Desde 1 unidad, precio final c/IVA y Factura B.
+                    </span>
                   </button>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    loginDemo("admin");
+                    setSuccessMsg("Sesión Demo Administrador iniciada (Acceso ERP).");
+                    setTimeout(() => {
+                      setSuccessMsg(null);
+                      onClose();
+                    }, 600);
+                  }}
+                  className="w-full p-2.5 rounded-xl border border-[#2C2B29] bg-[#141413] hover:bg-[#242321] text-left transition-all cursor-pointer flex items-center justify-between gap-2 group"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-7 h-7 rounded-lg bg-[#9E734E]/25 border border-[#9E734E]/50 text-[#E5B88B] flex items-center justify-center shrink-0">
+                      <FileSpreadsheet className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#FAF8F5]">
+                        <span>Administrador (Demo ERP)</span>
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#E5B88B] shrink-0" />
+                      </div>
+                      <span className="text-[10px] text-[#D4CEBF] block truncate">
+                        Habilita Panel ERP de Precios (/admin/precios) + Tarifa Mayorista
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-[#E5B88B] shrink-0">
+                    Ingresar →
+                  </span>
+                </button>
               </div>
             </form>
           ) : (

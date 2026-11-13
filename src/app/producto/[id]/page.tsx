@@ -8,7 +8,6 @@ import {
   Layers,
   MapPin,
   MessageCircle,
-  Minus,
   Package,
   Plus,
   ShieldCheck,
@@ -18,15 +17,19 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { use, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { AccountModeBanner } from "@/components/AccountModeBanner";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Navbar } from "@/components/Navbar";
 import { ProductCard } from "@/components/ProductCard";
+import { QuantityStepper } from "@/components/QuantityStepper";
 import { ThreadInspectorDrawer } from "@/components/ThreadInspectorDrawer";
 import { PRODUCTS_SEED } from "@/data/catalog";
 import { getCapacityEquivalence } from "@/lib/capacity";
-import { IVA_RATE, STORE_CONFIG } from "@/lib/constants";
+import { STORE_CONFIG } from "@/lib/constants";
+import { computeProductPricing, getRecommendedQtyForClientType } from "@/lib/pricing";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
 import type { Product } from "@/types/catalog";
 
@@ -38,7 +41,11 @@ export default function ProductDetailPage({ params }: PageProps) {
   const { id } = use(params);
   const product = PRODUCTS_SEED.find((p) => p.id === id);
 
-  const [quantity, setQuantity] = useState<number>(1);
+  const clientType = useAuthStore((s) => s.user?.clientType);
+  const isWholesale = clientType === "mayorista";
+  const [quantity, setQuantity] = useState<number>(() =>
+    product ? getRecommendedQtyForClientType(product, clientType) : 1,
+  );
   const capacityEquiv = product
     ? getCapacityEquivalence(product.capacity, product.capacityValue)
     : null;
@@ -46,6 +53,12 @@ export default function ProductDetailPage({ params }: PageProps) {
   const [inspectorOpen, setInspectorOpen] = useState<boolean>(false);
   const [inspectedItem, setInspectedItem] = useState<Product | null>(null);
   const addItem = useCartStore((s) => s.addItem);
+
+  useEffect(() => {
+    if (product) {
+      setQuantity(getRecommendedQtyForClientType(product, clientType));
+    }
+  }, [clientType, product]);
 
   if (!product) {
     notFound();
@@ -74,16 +87,15 @@ export default function ProductDetailPage({ params }: PageProps) {
   }, [product]);
 
   // Calcular precio según la escala de volumen + IVA 21%
-  const activeTier = [...product.priceTiers]
-    .sort((a, b) => b.minQty - a.minQty)
-    .find((t) => quantity >= t.minQty);
-
-  const unitPrice = activeTier ? activeTier.unitPrice : product.basePrice;
-  const discountPct = activeTier ? activeTier.discountPct : 0;
-  const subtotalNeto = unitPrice * quantity;
-  const ivaAmount = Math.round(subtotalNeto * IVA_RATE);
-  const totalConIva = subtotalNeto + ivaAmount;
-  const savings = Math.max(0, product.basePrice * quantity - subtotalNeto);
+  const {
+    unitNetPrice: unitPrice,
+    baseUnitPrice,
+    discountPct,
+    subtotalNeto,
+    ivaAmount,
+    totalConIva,
+    savingsNeto: savings,
+  } = computeProductPricing(product, quantity);
 
   const handleAddToCart = () => {
     addItem(product, quantity);
@@ -272,14 +284,24 @@ export default function ProductDetailPage({ params }: PageProps) {
                   </div>
                 )}
 
+                {/* Indicador Activo Mayorista vs Minorista */}
+                <AccountModeBanner />
+
                 {/* Selector de Cantidad Dinámico y Total con IVA Discriminado */}
                 <div className="p-5 rounded-2xl liquid-glass space-y-4">
                   <div className="flex items-center justify-between flex-wrap gap-3">
                     <div>
                       <span className="text-xs text-[#66615B] block">
-                        Precio Unitario Neto Aplicado:
+                        {isWholesale
+                          ? "Tarifa Mayorista B2B Aplicada (Neto s/IVA):"
+                          : "Precio Unitario Neto Aplicado:"}
                       </span>
                       <div className="flex items-baseline gap-2">
+                        {isWholesale && discountPct > 0 && (
+                          <span className="font-mono text-sm text-[#8C827A] line-through">
+                            ${baseUnitPrice.toLocaleString("es-AR")}
+                          </span>
+                        )}
                         <span className="font-mono text-2xl font-black text-[#141413]">
                           ${unitPrice.toLocaleString("es-AR")}
                         </span>
@@ -292,35 +314,13 @@ export default function ProductDetailPage({ params }: PageProps) {
                       </div>
                     </div>
 
-                    {/* Selector Numérico */}
-                    <div className="flex items-center border border-[#DCD6C9] rounded-xl overflow-hidden bg-[#FAF8F5]">
-                      <button
-                        type="button"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="p-2.5 text-[#141413] hover:bg-[#EBE7DF] transition-colors cursor-pointer"
-                        title="Disminuir"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <input
-                        type="number"
-                        min={1}
-                        value={quantity}
-                        aria-label="Cantidad de unidades"
-                        onChange={(e) =>
-                          setQuantity(Math.max(1, Number.parseInt(e.target.value, 10) || 1))
-                        }
-                        className="w-16 text-center font-mono font-bold text-sm bg-transparent border-none focus:outline-hidden text-[#141413]"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="p-2.5 text-[#141413] hover:bg-[#EBE7DF] transition-colors cursor-pointer"
-                        title="Aumentar"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Selector Numérico Libre (soporta ej. 1000 u.) */}
+                    <QuantityStepper
+                      value={quantity}
+                      onChange={setQuantity}
+                      size="md"
+                      ariaLabel="Cantidad de unidades"
+                    />
                   </div>
 
                   {/* Desglose Neto + IVA 21% y Botones de Acción */}

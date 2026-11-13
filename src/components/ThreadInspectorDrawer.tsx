@@ -4,9 +4,7 @@ import {
   CheckCircle2,
   ExternalLink,
   Layers,
-  Minus,
   Package,
-  Plus,
   Ruler,
   ShieldCheck,
   ShoppingBag,
@@ -16,6 +14,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { QuantityStepper } from "@/components/QuantityStepper";
 import { IVA_RATE } from "@/lib/constants";
 import { useCartStore } from "@/store/useCartStore";
 import type { NeckThread, Product } from "@/types/catalog";
@@ -524,34 +523,12 @@ export function ThreadInspectorDrawer({
               {activeItem && (
                 <div className="p-5 sm:p-6 border-t border-[#E6E2DC] bg-white/90 space-y-3">
                   <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center border border-[#DCD6C9] rounded-xl bg-[#FAF8F5]">
-                      <button
-                        type="button"
-                        onClick={() => setQty(Math.max(1, qty - 1))}
-                        className="p-2 text-[#141413] hover:bg-[#EBE7DF] rounded-l-xl cursor-pointer"
-                        aria-label="Restar unidad"
-                      >
-                        <Minus className="w-3.5 h-3.5" />
-                      </button>
-                      <input
-                        type="number"
-                        min={1}
-                        value={qty}
-                        onChange={(e) =>
-                          setQty(Math.max(1, Number.parseInt(e.target.value, 10) || 1))
-                        }
-                        aria-label="Cantidad de tapas o accesorios"
-                        className="w-14 text-center font-mono text-xs font-bold bg-transparent text-[#141413] focus:outline-hidden"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setQty(qty + 1)}
-                        className="p-2 text-[#141413] hover:bg-[#EBE7DF] rounded-r-xl cursor-pointer"
-                        aria-label="Sumar unidad"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                    <QuantityStepper
+                      value={qty}
+                      onChange={setQty}
+                      size="md"
+                      ariaLabel="Cantidad de tapas o accesorios"
+                    />
 
                     <div className="text-right">
                       <span className="text-[10px] text-[#66615B] block">
