@@ -15,7 +15,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActiveFilterChips } from "@/components/ActiveFilterChips";
 import { type B2BSample, B2BSampleLightboxModal } from "@/components/B2BSampleLightboxModal";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -105,8 +105,21 @@ const B2B_SAMPLES: B2BSample[] = [
   },
 ];
 
-function HomePageContent() {
+function SearchParamsSync({
+  onSync,
+}: {
+  onSync: (unit: string | null, thread: string | null) => void;
+}) {
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    onSync(searchParams.get("unit"), searchParams.get("thread"));
+  }, [searchParams, onSync]);
+
+  return null;
+}
+
+function HomePageContent() {
   const [activeUnit, setActiveUnit] = useState<ActiveView>("INICIO");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("TODAS");
@@ -122,9 +135,7 @@ function HomePageContent() {
   const [isB2BModalOpen, setIsB2BModalOpen] = useState<boolean>(false);
 
   // Sincronizar ?unit=ENVASES | HOME | B2B cuando se redirige desde /producto/[id] o /links
-  useEffect(() => {
-    const unitParam = searchParams.get("unit");
-    const threadParam = searchParams.get("thread");
+  const handleSearchParamsSync = useCallback((unitParam: string | null, threadParam: string | null) => {
     if (unitParam === "ENVASES" || unitParam === "HOME" || unitParam === "B2B") {
       setActiveUnit(unitParam);
     } else if (!unitParam) {
@@ -133,7 +144,7 @@ function HomePageContent() {
     if (threadParam) {
       setSelectedThread(threadParam);
     }
-  }, [searchParams]);
+  }, []);
 
   // Totales para mobile sticky pill (con IVA incluido)
   const totalItemsCount = useCartStore((s) => s.getTotalItemsCount());
@@ -1275,14 +1286,14 @@ function HomePageContent() {
           setActiveUnit("ENVASES");
         }}
       />
+
+      <Suspense fallback={null}>
+        <SearchParamsSync onSync={handleSearchParamsSync} />
+      </Suspense>
     </div>
   );
 }
 
 export default function HomePage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-[#FAF8F5]" />}>
-      <HomePageContent />
-    </Suspense>
-  );
+  return <HomePageContent />;
 }
